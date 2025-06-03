@@ -1,7 +1,7 @@
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import DefaultHeader from "./ui/default-header";
 import {
-  Ammo,
+  AmmoProperties,
   BackpackItem,
   Trader,
   VendorBuy,
@@ -10,12 +10,12 @@ import {
 } from "@/app/api/types";
 import Link from "next/link";
 import { caliberColors } from "./ui/ammo-caliber-color";
-
-//Columns weapon/[id]/WeaponPageClient
+// Trader sell
 const columnHelperTraderSell = createColumnHelper<VendorSell>();
 export const columnsTraderSell = (traders: Trader[]) =>
   [
     columnHelperTraderSell.accessor("vendor.name", {
+      id: "name",
       header: (info) => <DefaultHeader info={info} name="Vendor:" />,
       cell: (info) => {
         const vendorName = info.getValue();
@@ -42,19 +42,26 @@ export const columnsTraderSell = (traders: Trader[]) =>
         const vendorName = row.vendor.name;
         const isUSD = vendorName === "Peacekeeper";
 
-        const value = isUSD ? row.price : row.priceRUB;
+        const price = row.price;
+        const priceRUB = row.priceRUB;
+
+        console.log(`Vendor: ${vendorName}, USD: ${price}, RUB: ${priceRUB}`);
+
+        const value = isUSD ? price : priceRUB;
         const symbol = isUSD ? "$" : "₽";
+
+        if (typeof value !== "number" || isNaN(value)) return "—";
 
         return `${value.toLocaleString()} ${symbol}`;
       },
     }),
   ] as ColumnDef<VendorSell, unknown>[];
-
-//Columns weapon/[id]/weaponPageClient
+// Trader Buy
 const columnHelperTraderBuy = createColumnHelper<VendorBuy>();
 export const columnsTraderBuy = (traders: Trader[]) =>
   [
     columnHelperTraderBuy.accessor("vendor.name", {
+      id: "name",
       header: (info) => <DefaultHeader info={info} name="Vendor:" />,
       cell: (info) => {
         const vendorName = info.getValue();
@@ -84,6 +91,8 @@ export const columnsTraderBuy = (traders: Trader[]) =>
         const value = isUSD ? row.price : row.priceRUB;
         const symbol = isUSD ? "$" : "₽";
 
+        if (typeof value !== "number") return "—";
+
         return `${value.toLocaleString()} ${symbol}`;
       },
     }),
@@ -93,13 +102,14 @@ export const columnsTraderBuy = (traders: Trader[]) =>
 const columnHelperWeapon = createColumnHelper<WeaponItem>();
 export const columnsWeapon = [
   columnHelperWeapon.accessor("name", {
+    id: "name",
     header: (info) => <DefaultHeader info={info} name="Name" />,
     cell: (info) => {
       const row = info.row.original;
       const caliberRaw = info.getValue<string>();
       return (
         <div className="flex flex-row gap-8">
-          <Link href={`weapons/${row.id}`}>
+          <Link href={`/item/${row.id}`}>
             <span>{caliberRaw}</span>
           </Link>
         </div>
@@ -143,9 +153,10 @@ export const columnsWeapon = [
 ] as ColumnDef<WeaponItem, unknown>[];
 
 //Columns /ammo
-const columnHelperAmmo = createColumnHelper<Ammo>();
+const columnHelperAmmo = createColumnHelper<AmmoProperties>();
 export const columnsAmmo = [
   columnHelperAmmo.accessor("caliber", {
+    id: "name",
     header: (info) => <DefaultHeader info={info} name="Caliber" />,
     cell: (info) => {
       const row = info.row.original;
@@ -159,8 +170,10 @@ export const columnsAmmo = [
 
       return (
         <div className={`flex items-center gap-2 text-black  ${bgClass}`}>
-          <img src={row.item.iconLink} alt="ammo" width={40} />
-          <span>{caliberFormatted}</span>
+          <Link href={`/item/${row.item.id}`}>
+            <img src={row.item.iconLink} alt="ammo" width={40} />
+            <span>{caliberFormatted}</span>
+          </Link>
         </div>
       );
     },
@@ -236,27 +249,29 @@ export const columnsAmmo = [
       return `${Math.round(value * 100)}%`;
     },
   }),
-] as ColumnDef<Ammo, unknown>[];
+] as ColumnDef<AmmoProperties, unknown>[];
 
 //Columns /backpacks
 const columnHelperBackpacks = createColumnHelper<BackpackItem>();
 export const columnsBackpacks = [
   columnHelperBackpacks.accessor((row) => row.name, {
-    id: "nameWithImage",
+    id: "name",
     header: (info) => <DefaultHeader info={info} name="Name" />,
     cell: (info) => {
       const name = info.getValue();
       const row = info.row.original;
 
       return (
-        <div className="flex items-center gap-2">
-          <img
-            src={row.gridImageLink}
-            alt={name}
-            className="w-32 object-contain"
-          />
-          <span>{name}</span>
-        </div>
+        <Link href={`/item/${row.id}`}>
+          <div className="flex items-center gap-2">
+            <img
+              src={row.gridImageLink}
+              alt={name}
+              className="w-32 object-contain"
+            />
+            <span>{name}</span>
+          </div>
+        </Link>
       );
     },
   }),

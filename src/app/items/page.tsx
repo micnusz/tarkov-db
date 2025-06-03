@@ -2,7 +2,6 @@
 
 import ItemCategoryCard from "@/components/ui/item-category-card";
 import { itemCategories } from "@/lib/categories";
-
 const ItemsPage = () => {
   return (
     <main className="flex flex-col gap-10 justify-center max-w-6xl mx-auto py-10">

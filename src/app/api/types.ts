@@ -7,12 +7,27 @@ export type Item = {
   id: string;
   name: string;
   shortName: string;
+  description?: string;
   basePrice: number;
+  image8xLink?: string;
+  iconLink?: string;
+  gridImageLink?: string;
+  wikiLink: string;
+  sellFor: VendorSell[];
+  buyFor: VendorBuy[];
   category: Category | null;
+  properties: ItemProperties | null;
 };
+
 export type GetItemsResponse = {
   items: Item[];
 };
+
+export type ItemProperties =
+  | AmmoProperties
+  | WeaponItemProperties
+  | BackpackItemProperties
+  | OtherProperties; // fallback for unknown types
 
 export type GetItemCategoriesResponse = {
   items: Item[];
@@ -25,8 +40,8 @@ export type AmmoItem = {
   iconLink: string;
 };
 
-export type Ammo = {
-  __typename: string;
+export interface AmmoProperties {
+  __typename: "ItemPropertiesAmmo";
   caliber: string;
   penetrationPower: number;
   damage: number;
@@ -38,16 +53,17 @@ export type Ammo = {
   ricochetChance: number;
   penetrationChance: number;
   penetrationPowerDeviation: number;
-  item: AmmoItem;
-};
+}
+
 export type GetAmmoResponse = {
-  ammo: Ammo[];
+  ammo: AmmoProperties[];
 };
 
 export type Trader = {
   image4xLink: string;
   id: string;
   name: string;
+  currency: string;
 };
 
 export type GetTradersResponse = {
@@ -77,6 +93,7 @@ export interface WeaponItemProperties {
   ergonomics: number;
   effectiveDistance: number;
 }
+
 export interface VendorSell {
   vendor: {
     name: string;
@@ -131,6 +148,10 @@ export interface BackpackItemProperties {
 export interface BackpackGrid {
   width: number;
   height: number;
+}
+
+export interface OtherProperties {
+  __typename: string;
 }
 
 export interface GetBackpacksResponse {

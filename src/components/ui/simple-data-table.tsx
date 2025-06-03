@@ -4,8 +4,6 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
@@ -18,41 +16,26 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useState } from "react";
-import Filters from "./filters";
-import { Button } from "./button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 
-interface DataTableProps<TData, TValue> {
+interface SimpleDataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
 
-export function DataTable<TData, TValue>({
+export function SimpleDataTable<TData, TValue>({
   columns,
   data,
-}: DataTableProps<TData, TValue>) {
-  const [columnFilters, setColumnFilters] = useState([]);
-
+}: SimpleDataTableProps<TData, TValue>) {
   const table = useReactTable({
     columns,
     data,
-    state: {
-      columnFilters,
-    },
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
   });
 
   return (
     <div className="w-full flex flex-col gap-4 ">
       <div className="rounded-md border flex flex-2/3 flex-col overflow-hidden">
-        <Filters
-          columnFilters={columnFilters}
-          setColumnFilters={setColumnFilters}
-        />
         <Table>
           <TableHeader className="sticky top-0 z-10 bg-background shadow-md">
             {table.getHeaderGroups().map((headerGroup) => (
@@ -101,28 +84,6 @@ export function DataTable<TData, TValue>({
             )}
           </TableBody>
         </Table>
-        <div className="m-3 flex justify-center">
-          <Button
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-            className="mr-3"
-          >
-            <ChevronLeft />
-          </Button>
-
-          <Button
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            <ChevronRight />
-          </Button>
-        </div>
-        <div className="mx-3 mb-3">
-          <p>
-            Page: {table.getState().pagination.pageIndex + 1} of{" "}
-            {table.getPageCount()}
-          </p>
-        </div>
       </div>
     </div>
   );

@@ -24,6 +24,9 @@ export const Navbar = () => {
           <Link href="/maps">MAPS</Link>
         </Button>
         <Button>
+          <Link href="/">FLEA MARKET</Link>
+        </Button>
+        <Button>
           <Link href="/tasks">TASKS</Link>
         </Button>
       </div>

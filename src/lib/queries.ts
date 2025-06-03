@@ -1,12 +1,44 @@
 import { gql } from "graphql-request";
 
-export const GET_ITEMS = gql`
-  query getItems($limit: Int, $offset: Int) {
-    items(limit: $limit, offset: $offset) {
+export const GET_ITEM_ID = gql`
+  query GetItemById($ids: [ID]) {
+    items(ids: $ids) {
+      id
       name
       shortName
-      id
+      description
       basePrice
+      image8xLink
+      iconLink
+      wikiLink
+      gridImageLink
+      buyFor {
+        vendor {
+          name
+        }
+        price
+        priceRUB
+      }
+      sellFor {
+        vendor {
+          name
+        }
+        price
+        priceRUB
+      }
+      properties {
+        __typename
+        ... on ItemPropertiesBackpack {
+          turnPenalty
+          ergoPenalty
+          speedPenalty
+          capacity
+          grids {
+            width
+            height
+          }
+        }
+      }
     }
   }
 `;
@@ -137,6 +169,51 @@ export const GET_TRADERS = gql`
 export const GET_BACKPACKS = gql`
   query GetBackpacks {
     items(type: backpack) {
+      id
+      name
+      shortName
+      description
+      wikiLink
+      types
+      basePrice
+      weight
+      image8xLink
+      iconLink
+      gridImageLink
+      buyFor {
+        vendor {
+          name
+        }
+        price
+        priceRUB
+      }
+      sellFor {
+        vendor {
+          name
+        }
+        price
+        priceRUB
+      }
+      properties {
+        __typename
+        ... on ItemPropertiesBackpack {
+          turnPenalty
+          ergoPenalty
+          speedPenalty
+          capacity
+          grids {
+            width
+            height
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const GET_BACKPACK_ID = gql`
+  query GetBackpackById($ids: [ID]) {
+    items(type: backpack, ids: $ids) {
       id
       name
       shortName
