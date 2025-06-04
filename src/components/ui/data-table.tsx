@@ -11,6 +11,16 @@ import {
 } from "@tanstack/react-table";
 
 import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+import {
   Table,
   TableBody,
   TableCell,
@@ -22,6 +32,7 @@ import { useState } from "react";
 import Filters from "./filters";
 import { Button } from "./button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { PaginationControls } from "../PaginationControl";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -102,22 +113,9 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
         <div className="m-3 flex justify-center">
-          <Button
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-            className="mr-3"
-          >
-            <ChevronLeft />
-          </Button>
-
-          <Button
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            <ChevronRight />
-          </Button>
+          <PaginationControls table={table} />
         </div>
-        <div className="mx-3 mb-3">
+        <div className="mx-3 mb-3 justify-center">
           <p>
             Page: {table.getState().pagination.pageIndex + 1} of{" "}
             {table.getPageCount()}

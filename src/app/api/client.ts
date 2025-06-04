@@ -4,6 +4,8 @@ import {
   GET_BACKPACK_ID,
   GET_BACKPACKS,
   GET_ITEM_ID,
+  GET_ITEMS,
+  GET_TASKS,
   GET_TRADERS,
   GET_WEAPON_ID,
 } from "@/lib/queries";
@@ -13,15 +15,22 @@ import {
   GetAmmoResponse,
   GetBackpacksResponse,
   GetItemsResponse,
+  GetTasksResponse,
   GetTradersResponse,
   GetWeaponResponse,
   Item,
+  Task,
   Trader,
   WeaponItem,
 } from "./types";
 import { graphqlClient } from "@/lib/graphql-client";
 
 export const client = {
+  async getItems(): Promise<Item[]> {
+    const data = await graphqlClient.request<GetItemsResponse>(GET_ITEMS);
+    return data.items;
+  },
+
   async getItem(id: string): Promise<Item[]> {
     const data = await graphqlClient.request<GetItemsResponse>(GET_ITEM_ID, {
       ids: [id],
@@ -67,5 +76,9 @@ export const client = {
       }
     );
     return data.items;
+  },
+  async getTasks(): Promise<Task[]> {
+    const data = await graphqlClient.request<GetTasksResponse>(GET_TASKS);
+    return data.tasks;
   },
 };

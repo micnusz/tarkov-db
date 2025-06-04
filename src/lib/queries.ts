@@ -1,5 +1,41 @@
 import { gql } from "graphql-request";
 
+export const GET_ITEMS = gql`
+  query GetItemFleaMarket {
+    items {
+      name
+      id
+      gridImageLink
+      wikiLink
+      category {
+        parent {
+          name
+          id
+        }
+        name
+        id
+      }
+      buyFor {
+        vendor {
+          name
+        }
+        priceRUB
+        price
+      }
+      sellFor {
+        vendor {
+          name
+        }
+        price
+        priceRUB
+      }
+      avg24hPrice
+      low24hPrice
+      high24hPrice
+    }
+  }
+`;
+
 export const GET_ITEM_ID = gql`
   query GetItemById($ids: [ID]) {
     items(ids: $ids) {
@@ -250,6 +286,62 @@ export const GET_BACKPACK_ID = gql`
             width
             height
           }
+        }
+      }
+    }
+  }
+`;
+export const GET_TASKS = gql`
+  query GetTasks {
+    tasks {
+      id
+      kappaRequired
+      taskImageLink
+      name
+      experience
+      minPlayerLevel
+      lightkeeperRequired
+      wikiLink
+      startRewards {
+        items {
+          quantity
+          count
+          item {
+            name
+          }
+        }
+      }
+      finishRewards {
+        items {
+          quantity
+          count
+          item {
+            id
+            name
+          }
+        }
+        __typename
+        skillLevelReward {
+          name
+          level
+        }
+      }
+      objectives {
+        description
+        id
+        optional
+      }
+      map {
+        name
+        id
+      }
+      trader {
+        id
+        name
+        imageLink
+        image4xLink
+        reputationLevels {
+          __typename
         }
       }
     }

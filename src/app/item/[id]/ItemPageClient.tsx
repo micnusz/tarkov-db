@@ -2,7 +2,6 @@
 
 import { client } from "@/app/api/client";
 import { columnsTraderBuy, columnsTraderSell } from "@/components/columns";
-import { DataTable } from "@/components/ui/data-table";
 import { SimpleDataTable } from "@/components/ui/simple-data-table";
 import { useQuery } from "@tanstack/react-query";
 import React, { useEffect } from "react";

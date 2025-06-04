@@ -1,6 +1,10 @@
 export type Category = {
   id: string;
   name: string;
+  parent: {
+    name: string;
+    id: string;
+  };
 };
 
 export type Item = {
@@ -9,6 +13,9 @@ export type Item = {
   shortName: string;
   description?: string;
   basePrice: number;
+  avg24hPrice?: number;
+  low24hPrice?: number;
+  high24hPrice?: number;
   image8xLink?: string;
   iconLink?: string;
   gridImageLink?: string;
@@ -157,3 +164,66 @@ export interface OtherProperties {
 export interface GetBackpacksResponse {
   items: BackpackItem[];
 }
+
+export type GetTasksResponse = {
+  tasks: Task[];
+};
+
+export type Task = {
+  id: string;
+  kappaRequired: boolean;
+  taskImageLink: string;
+  name: string;
+  experience: number;
+  minPlayerLevel: number;
+  lightkeeperRequired: boolean;
+  wikiLink: string;
+  startRewards: TaskRewards;
+  finishRewards: TaskRewardsWithSkills;
+  objectives: TaskObjective[];
+  map: TaskMap | null;
+  trader: TaskTrader;
+};
+
+export type TaskRewards = {
+  items: TaskRewardItem[];
+};
+
+export type TaskRewardsWithSkills = TaskRewards & {
+  skillLevelReward?: SkillLevelReward | null;
+};
+
+export type TaskRewardItem = {
+  quantity?: number | null;
+  count?: number | null;
+  item: {
+    name: string;
+    id: string;
+  };
+};
+
+export type SkillLevelReward = {
+  name: string;
+  level: number;
+};
+
+export type TaskObjective = {
+  description: string;
+  id: string;
+  optional?: boolean;
+};
+
+export type TaskMap = {
+  name: string;
+  id: string;
+};
+
+export type TaskTrader = {
+  id: string;
+  name: string;
+  imageLink: string;
+  image4xLink: string;
+  reputationLevels: {
+    __typename: string;
+  }[];
+};

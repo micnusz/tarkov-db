@@ -1,20 +1,20 @@
 "use server";
 import { getQueryClient } from "@/lib/get-query-client";
-import { client } from "./api/client";
+import { client } from "../api/client";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-import FleaMarketClient from "@/components/FleaMarketClient";
+import TasksClient from "@/components/TasksClient";
 
-export default async function Home() {
+const TasksServer = async () => {
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({
-    queryKey: ["items"],
-    queryFn: () => client.getItems(),
-    staleTime: 300000,
+    queryKey: ["tasks"],
+    queryFn: () => client.getTasks(),
   });
-
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <FleaMarketClient />
+      <TasksClient />
     </HydrationBoundary>
   );
-}
+};
+
+export default TasksServer;

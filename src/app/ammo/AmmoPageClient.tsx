@@ -1,21 +1,15 @@
 "use client";
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { client } from "../api/client";
 import { DataTable } from "@/components/ui/data-table";
 import { columnsAmmo } from "@/components/columns";
 
 const AmmoPageClient = () => {
-  const {
-    data = [],
-    error,
-    isError,
-    isPending,
-  } = useQuery({
+  const { data = [] } = useQuery({
     queryKey: ["ammo"],
     queryFn: () => client.getAmmo(),
+    placeholderData: keepPreviousData,
   });
-  if (isError) return <span>Error: {error.message}</span>;
-  if (isPending) return <span>Loading...</span>;
 
   return (
     <div className="w-full h-full flex-col justify-center items-center p-10">
