@@ -20,15 +20,6 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
     queryFn: () => client.getTraders(),
   });
 
-  const item = itemData[0];
-
-  // Ustaw tytuł strony po załadowaniu danych
-  useEffect(() => {
-    if (item) {
-      document.title = item.name;
-    }
-  }, [item]);
-
   return (
     <div>
       {itemData.map((item) => (

@@ -294,6 +294,7 @@ export const GET_BACKPACK_ID = gql`
 export const GET_TASKS = gql`
   query GetTasks {
     tasks {
+      successMessageId
       id
       kappaRequired
       taskImageLink
@@ -302,6 +303,12 @@ export const GET_TASKS = gql`
       minPlayerLevel
       lightkeeperRequired
       wikiLink
+      taskRequirements {
+        task {
+          id
+          name
+        }
+      }
       startRewards {
         items {
           quantity
@@ -320,13 +327,16 @@ export const GET_TASKS = gql`
             name
           }
         }
-        __typename
         skillLevelReward {
           name
           level
         }
       }
       objectives {
+        maps {
+          name
+          id
+        }
         description
         id
         optional

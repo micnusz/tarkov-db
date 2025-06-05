@@ -1,6 +1,7 @@
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import DefaultHeader from "./ui/default-header";
 import {
+  AmmoItem,
   AmmoProperties,
   BackpackItem,
   Item,
@@ -11,15 +12,27 @@ import {
   VendorSell,
   WeaponItem,
 } from "@/app/api/types";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 import Link from "next/link";
 import { caliberColors } from "./ui/ammo-caliber-color";
-import { ChevronRight } from "lucide-react";
+import { Briefcase, ChevronRight, TowerControl } from "lucide-react";
+import { Button } from "./ui/button";
 // Trader sell
 const columnHelperTraderSell = createColumnHelper<VendorSell>();
 export const columnsTraderSell = (traders: Trader[]) =>
   [
     columnHelperTraderSell.accessor("vendor.name", {
       id: "name",
+      filterFn: "includesString",
       header: (info) => <DefaultHeader info={info} name="Vendor:" />,
       cell: (info) => {
         const vendorName = info.getValue();
@@ -66,6 +79,7 @@ export const columnsTraderBuy = (traders: Trader[]) =>
   [
     columnHelperTraderBuy.accessor("vendor.name", {
       id: "name",
+      filterFn: "includesString",
       header: (info) => <DefaultHeader info={info} name="Vendor:" />,
       cell: (info) => {
         const vendorName = info.getValue();
@@ -84,6 +98,7 @@ export const columnsTraderBuy = (traders: Trader[]) =>
           </div>
         );
       },
+      filterFn: "includesString",
     }),
     columnHelperTraderBuy.accessor("price", {
       header: (info) => <DefaultHeader info={info} name="Price:" />,
@@ -119,6 +134,7 @@ export const columnsWeapon = [
         </div>
       );
     },
+    filterFn: "includesString",
   }),
   columnHelperWeapon.accessor("properties.caliber", {
     header: (info) => <DefaultHeader info={info} name="Caliber" />,
@@ -160,98 +176,104 @@ export const columnsWeapon = [
 const columnHelperAmmo = createColumnHelper<AmmoProperties>();
 export const columnsAmmo = [
   columnHelperAmmo.accessor("caliber", {
-    id: "name",
+    id: "caliber",
     header: (info) => <DefaultHeader info={info} name="Caliber" />,
     cell: (info) => {
-      const row = info.row.original;
       const caliberRaw = info.getValue<string>();
-      const caliberStripped = caliberRaw.replace(/^Caliber/, "");
-      const caliberFormatted = caliberStripped.replace(
-        /^(\d)(\d{2}x\d+)/,
-        "$1.$2"
-      );
-      const bgClass = caliberColors[caliberFormatted] ?? "bg-gray-500";
 
       return (
-        <div className={`flex items-center gap-2 text-black  ${bgClass}`}>
-          <Link href={`/item/${row.item.id}`}>
-            <img src={row.item.iconLink} alt="ammo" width={40} />
-            <span>{caliberFormatted}</span>
-          </Link>
-        </div>
+        <Link href={`/item/${info.row.original.item.id}`}>
+          <div className={`flex flex-row items-center gap-2`}>
+            <img src={info.row.original.item.iconLink} alt={caliberRaw} />
+            <span>{caliberRaw}</span>
+          </div>
+        </Link>
       );
     },
+    filterFn: "equals",
   }),
+
   columnHelperAmmo.accessor("item.name", {
+    id: "name",
     header: (info) => <DefaultHeader info={info} name="Name" />,
     cell: (info) => {
       const fullName = info.getValue<string>();
+      if (!fullName) return null;
+
       const nameParts = fullName.split(" ");
       const bulletName = nameParts.slice(1).join(" ");
-      return bulletName;
+
+      return (
+        <Link href={`/item/${info.row.original.item.id}`}>
+          <span>{bulletName}</span>
+        </Link>
+      );
     },
+    filterFn: "includesString",
   }),
-  columnHelperAmmo.accessor("item.basePrice", {
-    header: (info) => <DefaultHeader info={info} name="Price" />,
-    cell: (info) => `${info.getValue()}₽`,
-  }),
+
   columnHelperAmmo.accessor("penetrationPower", {
     header: (info) => <DefaultHeader info={info} name="Pen" />,
     cell: (info) => info.getValue(),
   }),
+
   columnHelperAmmo.accessor("damage", {
     header: (info) => <DefaultHeader info={info} name="Dmg" />,
     cell: (info) => info.getValue(),
   }),
+
   columnHelperAmmo.accessor("armorDamage", {
     header: (info) => <DefaultHeader info={info} name="ArD" />,
     cell: (info) => info.getValue(),
   }),
+
   columnHelperAmmo.accessor("accuracyModifier", {
     header: (info) => <DefaultHeader info={info} name="Acc" />,
     cell: (info) => {
-      const value = info.getValue<number>();
-      const percent = Math.round(value * 100);
-
-      const style = {
-        color: percent < 0 ? "red" : percent > 0 ? "green" : "inherit",
-        fontWeight: 500,
-      };
-
-      return <span style={style}>{percent}%</span>;
+      const percent = Math.round(info.getValue() * 100);
+      return (
+        <span
+          style={{
+            color: percent < 0 ? "red" : percent > 0 ? "green" : undefined,
+            fontWeight: 500,
+          }}
+        >
+          {percent}%
+        </span>
+      );
     },
   }),
+
   columnHelperAmmo.accessor("recoilModifier", {
     header: (info) => <DefaultHeader info={info} name="Recoil" />,
     cell: (info) => {
-      const value = info.getValue<number>();
-      const percent = Math.round(value * 100);
-
-      const style = {
-        color: percent < 0 ? "red" : percent > 0 ? "green" : "inherit",
-        fontWeight: 500,
-      };
-
-      return <span style={style}>{percent}%</span>;
+      const percent = Math.round(info.getValue() * 100);
+      return (
+        <span
+          style={{
+            color: percent < 0 ? "red" : percent > 0 ? "green" : undefined,
+            fontWeight: 500,
+          }}
+        >
+          {percent}%
+        </span>
+      );
     },
   }),
+
   columnHelperAmmo.accessor("fragmentationChance", {
     header: (info) => <DefaultHeader info={info} name="Frag" />,
-    cell: (info) => {
-      const value = info.getValue<number>();
-      return `${Math.round(value * 100)}%`;
-    },
+    cell: (info) => `${Math.round(info.getValue() * 100)}%`,
   }),
+
   columnHelperAmmo.accessor("initialSpeed", {
     header: (info) => <DefaultHeader info={info} name="Speed m/s" />,
     cell: (info) => info.getValue(),
   }),
+
   columnHelperAmmo.accessor("ricochetChance", {
     header: (info) => <DefaultHeader info={info} name="Ricochet" />,
-    cell: (info) => {
-      const value = info.getValue<number>();
-      return `${Math.round(value * 100)}%`;
-    },
+    cell: (info) => `${Math.round(info.getValue() * 100)}%`,
   }),
 ] as ColumnDef<AmmoProperties, unknown>[];
 
@@ -278,6 +300,7 @@ export const columnsBackpacks = [
         </Link>
       );
     },
+    filterFn: "includesString",
   }),
   columnHelperBackpacks.accessor("properties.grids", {
     header: (info) => <DefaultHeader info={info} name="Grid" />,
@@ -549,43 +572,52 @@ export const columnsFleaMarket = [
 //Columns /Tasks
 const columnHelperTasks = createColumnHelper<Task>();
 export const columnsTasks = [
+  columnHelperTasks.accessor((row) => row.trader.name, {
+    id: "trader",
+    filterFn: "includesString",
+    header: (info) => <DefaultHeader info={info} name="Trader" />,
+    cell: (info) => {
+      const name = info.getValue();
+      const row = info.row.original;
+
+      return (
+        <div className="flex items-center gap-2 flex-wrap max-w-full">
+          <img
+            src={row.trader.imageLink}
+            alt={name}
+            className="w-24 object-contain"
+          />
+        </div>
+      );
+    },
+  }),
   columnHelperTasks.accessor((row) => row.name, {
     id: "name",
+    filterFn: "includesString",
     header: (info) => <DefaultHeader info={info} name="Task" />,
     cell: (info) => {
       const name = info.getValue();
       const row = info.row.original;
 
       return (
-        <Link href={`/task/${row.id}`}>
-          <div className="flex items-center gap-2 flex-wrap max-w-full">
-            <img
-              src={row.trader.imageLink}
-              alt={name}
-              className="w-18 object-contain"
-            />
-            <span className="text-sm font-medium break-words whitespace-normal">
-              {name}
-            </span>
-          </div>
-        </Link>
+        <div className="flex items-center gap-2 flex-wrap max-w-full">
+          <span className="text-sm font-medium break-words whitespace-normal">
+            {name}
+          </span>
+        </div>
       );
     },
   }),
-  columnHelperTasks.accessor("objectives", {
-    header: (info) => <DefaultHeader info={info} name="Objectives" />,
+  columnHelperTasks.accessor((row) => row.taskRequirements, {
+    id: "taskRequirements",
+    header: (info) => <DefaultHeader info={info} name="Required tasks" />,
     cell: (info) => {
-      const objectives = info.getValue(); // TaskObjective[]
-      return objectives && objectives.length > 0 ? (
+      const requirements = info.getValue(); // TaskRequirement[]
+      return requirements && requirements.length > 0 ? (
         <div className="flex flex-col gap-1">
-          {objectives.map((obj) => (
-            <div
-              key={obj.id}
-              className={`text-sm ${
-                obj.optional ? "text-gray-400 italic" : ""
-              }`}
-            >
-              • {obj.description}
+          {requirements.map((req) => (
+            <div key={req.task.id} className="text-sm">
+              {req.task.name}
             </div>
           ))}
         </div>
@@ -600,6 +632,7 @@ export const columnsTasks = [
     cell: (info) => info.getValue(),
   }),
   columnHelperTasks.accessor("map.name", {
+    id: "map.name",
     header: (info) => <DefaultHeader info={info} name="Map" />,
     cell: (info) => {
       const mapName = info.getValue();
@@ -611,21 +644,6 @@ export const columnsTasks = [
     },
   }),
 
-  columnHelperTasks.accessor("finishRewards.items", {
-    header: (info) => <DefaultHeader info={info} name="Rewards" />,
-    cell: (info) => {
-      const rewards = info.getValue();
-      return (
-        <div className="flex flex-col gap-1">
-          {rewards.map((reward) => (
-            <div key={reward.item.id}>
-              {reward.item.name}: {reward.count}
-            </div>
-          ))}
-        </div>
-      );
-    },
-  }),
   columnHelperTasks.accessor(
     (row) => ({
       kappa: row.kappaRequired,
@@ -633,7 +651,7 @@ export const columnsTasks = [
     }),
     {
       id: "requirements",
-      header: (info) => <DefaultHeader info={info} name="Reqs" />,
+      header: (info) => <DefaultHeader info={info} name="Required for" />,
       cell: (info) => {
         const { kappa, lightkeeper } = info.getValue();
 
@@ -641,22 +659,8 @@ export const columnsTasks = [
 
         return hasAny ? (
           <div className="flex items-center gap-2">
-            {kappa && (
-              <img
-                src="/icons/kappa.png" // 🔁 zmień ścieżkę na faktyczną
-                alt="Kappa Required"
-                title="Kappa Required"
-                className="w-5 h-5 object-contain"
-              />
-            )}
-            {lightkeeper && (
-              <img
-                src="/icons/lightkeeper.png"
-                alt="Lightkeeper Required"
-                title="Lightkeeper Required"
-                className="w-5 h-5 object-contain"
-              />
-            )}
+            {kappa && <Briefcase className="w-5 h-5 object-contain" />}
+            {lightkeeper && <TowerControl className="w-5 h-5 object-contain" />}
           </div>
         ) : (
           <span className="text-gray-400 italic">Not Req</span>

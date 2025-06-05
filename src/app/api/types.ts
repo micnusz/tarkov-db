@@ -171,18 +171,27 @@ export type GetTasksResponse = {
 
 export type Task = {
   id: string;
-  kappaRequired: boolean;
-  taskImageLink: string;
   name: string;
   experience: number;
-  minPlayerLevel: number;
+  kappaRequired: boolean;
   lightkeeperRequired: boolean;
+  minPlayerLevel: number;
+  taskImageLink: string;
   wikiLink: string;
+  successMessageId?: string;
+  taskRequirements: TaskRequirement[];
   startRewards: TaskRewards;
   finishRewards: TaskRewardsWithSkills;
   objectives: TaskObjective[];
   map: TaskMap | null;
   trader: TaskTrader;
+};
+
+export type TaskRequirement = {
+  task: {
+    id: string;
+    name: string;
+  };
 };
 
 export type TaskRewards = {
@@ -197,8 +206,8 @@ export type TaskRewardItem = {
   quantity?: number | null;
   count?: number | null;
   item: {
+    id?: string;
     name: string;
-    id: string;
   };
 };
 
@@ -208,14 +217,15 @@ export type SkillLevelReward = {
 };
 
 export type TaskObjective = {
-  description: string;
   id: string;
+  description: string;
   optional?: boolean;
+  maps?: TaskMap[];
 };
 
 export type TaskMap = {
-  name: string;
   id: string;
+  name: string;
 };
 
 export type TaskTrader = {

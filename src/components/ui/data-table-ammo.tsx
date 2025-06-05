@@ -2,6 +2,7 @@
 
 import {
   ColumnDef,
+  ColumnFiltersState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -21,21 +22,24 @@ import {
 import { useState } from "react";
 import Filters from "./filters";
 import { Button } from "./button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { PaginationControls } from "../PaginationControl";
-import TaskDetailsDrawer from "../TaskDetailsDrawer";
+import { AmmoItem } from "@/app/api/types";
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+interface DataTableAmmoProps<AmmoProperties, TValue> {
+  columns: ColumnDef<AmmoProperties, TValue>[];
+  data: AmmoProperties[];
 }
 
-export function DataTable<TData, TValue>({
+export function DataTableAmmo<AmmoProperties, TValue>({
   columns,
   data,
-}: DataTableProps<TData, TValue>) {
-  const [columnFilters, setColumnFilters] = useState([]);
-
+}: DataTableAmmoProps<AmmoProperties, TValue>) {
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [selectedCaliber, setSelectedCaliber] = useState<string | null>(null);
+  const calibers = Array.from(new Set(data.map((ammo) => ammo.caliber))).sort();
+  const clearFilters = () => {
+    setColumnFilters([]);
+    setSelectedCaliber(null);
+  };
   const table = useReactTable({
     columns,
     data,
@@ -43,7 +47,6 @@ export function DataTable<TData, TValue>({
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
   });
 
   return (
@@ -52,7 +55,31 @@ export function DataTable<TData, TValue>({
         <Filters
           columnFilters={columnFilters}
           setColumnFilters={setColumnFilters}
+          selectedCaliber={selectedCaliber}
+          setSelectedCaliber={setSelectedCaliber}
         />
+        <div className="flex flex-wrap gap-2">
+          {calibers.map((caliber) => (
+            <Button
+              key={caliber}
+              variant={selectedCaliber === caliber ? "default" : "outline"}
+              size="sm"
+              onPointerDown={() => {
+                if (selectedCaliber === caliber) {
+                  clearFilters();
+                } else {
+                  setSelectedCaliber(caliber);
+                  setColumnFilters((prev) => [
+                    ...prev.filter((f) => f.id !== "caliber"),
+                    { id: "caliber", value: caliber },
+                  ]);
+                }
+              }}
+            >
+              {caliber}
+            </Button>
+          ))}
+        </div>
         <Table>
           <TableHeader className="sticky top-0 z-10 bg-background shadow-md">
             {table.getHeaderGroups().map((headerGroup) => (
@@ -99,15 +126,6 @@ export function DataTable<TData, TValue>({
             )}
           </TableBody>
         </Table>
-        <div className="m-3 flex justify-center">
-          <PaginationControls table={table} />
-        </div>
-        <div className="mx-3 mb-3 justify-center">
-          <p>
-            Page: {table.getState().pagination.pageIndex + 1} of{" "}
-            {table.getPageCount()}
-          </p>
-        </div>
       </div>
     </>
   );

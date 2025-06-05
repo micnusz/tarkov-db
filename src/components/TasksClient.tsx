@@ -2,19 +2,19 @@
 
 import { client } from "@/app/api/client";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { DataTable } from "./ui/data-table";
 import { columnsTasks } from "./columns";
+import { DataTableTasks } from "./ui/data-table-tasks";
 
 const TasksClient = () => {
-  const { data } = useQuery({
+  const { data = [] } = useQuery({
     queryKey: ["tasks"],
-    queryFn: () => client.getAmmo(),
+    queryFn: () => client.getTasks(),
     placeholderData: keepPreviousData,
   });
 
   return (
-    <div className="w-full h-full flex-col justify-center items-center p-10">
-      <DataTable data={data} columns={columnsTasks} />
+    <div className="w-full h-full flex-col justify-center items-center p-4 md:p-10">
+      <DataTableTasks data={data} columns={columnsTasks} />
     </div>
   );
 };

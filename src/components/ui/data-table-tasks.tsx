@@ -5,7 +5,6 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
@@ -20,21 +19,39 @@ import {
 } from "@/components/ui/table";
 import { useState } from "react";
 import Filters from "./filters";
-import { Button } from "./button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { PaginationControls } from "../PaginationControl";
 import TaskDetailsDrawer from "../TaskDetailsDrawer";
+import { Button } from "./button";
+import { Task } from "@/app/api/types";
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+interface DataTableTasksProps<Task, TValue> {
+  columns: ColumnDef<Task, TValue>[];
+  data: Task[];
 }
 
-export function DataTable<TData, TValue>({
+export function DataTableTasks<Task, TValue>({
   columns,
   data,
-}: DataTableProps<TData, TValue>) {
+}: DataTableTasksProps<Task, TValue>) {
   const [columnFilters, setColumnFilters] = useState([]);
+  const [selectedRow, setSelectedRow] = useState<Task | null>(null);
+  const [selectedTrader, setSelectedTrader] = useState<string | null>(null);
+  const [selectedMap, setSelectedMap] = useState<string | null>(null);
+  const tasks = Array.from(
+    new Set(data.map((task) => task.trader.name))
+  ).sort();
+  const maps = Array.from(
+    new Set(
+      data
+        .map((item) => item.map?.name)
+        .filter((name): name is string => Boolean(name))
+    )
+  ).sort();
+
+  const clearFilters = () => {
+    setColumnFilters([]);
+    setSelectedTrader(null);
+    setSelectedMap(null);
+  };
 
   const table = useReactTable({
     columns,
@@ -43,7 +60,6 @@ export function DataTable<TData, TValue>({
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
   });
 
   return (
@@ -53,6 +69,50 @@ export function DataTable<TData, TValue>({
           columnFilters={columnFilters}
           setColumnFilters={setColumnFilters}
         />
+        <div className="flex flex-wrap gap-2">
+          {tasks.map((trader) => (
+            <Button
+              key={trader}
+              variant={selectedTrader === trader ? "default" : "outline"}
+              size="sm"
+              onPointerDown={() => {
+                if (selectedTrader === trader) {
+                  clearFilters();
+                } else {
+                  setSelectedTrader(trader);
+                  setColumnFilters((prev) => [
+                    ...prev.filter((f) => f.id !== "trader"),
+                    { id: "trader", value: trader },
+                  ]);
+                }
+              }}
+            >
+              {trader}
+            </Button>
+          ))}
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {maps.map((mapName) => (
+            <Button
+              key={mapName}
+              variant={selectedMap === mapName ? "default" : "outline"}
+              size="sm"
+              onPointerDown={() => {
+                if (selectedMap === mapName) {
+                  clearFilters();
+                } else {
+                  setSelectedMap(mapName);
+                  setColumnFilters((prev) => [
+                    ...prev.filter((f) => f.id !== "map.name"),
+                    { id: "map.name", value: mapName },
+                  ]);
+                }
+              }}
+            >
+              {mapName}
+            </Button>
+          ))}
+        </div>
         <Table>
           <TableHeader className="sticky top-0 z-10 bg-background shadow-md">
             {table.getHeaderGroups().map((headerGroup) => (
@@ -75,6 +135,7 @@ export function DataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
+                  onClick={() => setSelectedRow(row.original)}
                   className="cursor-pointer "
                 >
                   {row.getVisibleCells().map((cell) => (
@@ -99,16 +160,12 @@ export function DataTable<TData, TValue>({
             )}
           </TableBody>
         </Table>
-        <div className="m-3 flex justify-center">
-          <PaginationControls table={table} />
-        </div>
-        <div className="mx-3 mb-3 justify-center">
-          <p>
-            Page: {table.getState().pagination.pageIndex + 1} of{" "}
-            {table.getPageCount()}
-          </p>
-        </div>
       </div>
+      <TaskDetailsDrawer
+        data={selectedRow}
+        open={!!selectedRow}
+        onClose={() => setSelectedRow(null)}
+      />
     </>
   );
 }
