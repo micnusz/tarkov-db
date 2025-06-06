@@ -1,10 +1,18 @@
 "use client";
 
+import { LucideGithub } from "lucide-react";
+
 const Footer = () => {
   return (
-    <footer className="text-center p-16">
+    <footer className="text-center justify-center flex py-8 md:py-12 gap-4">
+      <a
+        href="https://github.com/micnusz/tarkov-db"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <LucideGithub />
+      </a>
       <h1>Work in progress</h1>
-      <p>Micnus</p>
     </footer>
   );
 };

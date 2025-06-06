@@ -136,6 +136,22 @@ export const columnsWeapon = [
     },
     filterFn: "includesString",
   }),
+  columnHelperWeapon.accessor("category.name", {
+    id: "category",
+    header: (info) => <DefaultHeader info={info} name="Category" />,
+    cell: (info) => {
+      const row = info.row.original;
+      const category = info.getValue<string>();
+      return (
+        <div className="flex flex-row gap-8">
+          <Link href={`/item/${row.id}`}>
+            <span>{category}</span>
+          </Link>
+        </div>
+      );
+    },
+    filterFn: "includesString",
+  }),
   columnHelperWeapon.accessor("properties.caliber", {
     header: (info) => <DefaultHeader info={info} name="Caliber" />,
     cell: (info) => {
@@ -574,7 +590,7 @@ const columnHelperTasks = createColumnHelper<Task>();
 export const columnsTasks = [
   columnHelperTasks.accessor((row) => row.trader.name, {
     id: "trader",
-    filterFn: "includesString",
+    filterFn: "equals",
     header: (info) => <DefaultHeader info={info} name="Trader" />,
     cell: (info) => {
       const name = info.getValue();
@@ -632,6 +648,7 @@ export const columnsTasks = [
     cell: (info) => info.getValue(),
   }),
   columnHelperTasks.accessor("map.name", {
+    filterFn: "equals",
     id: "map.name",
     header: (info) => <DefaultHeader info={info} name="Map" />,
     cell: (info) => {

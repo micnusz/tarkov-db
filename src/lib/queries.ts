@@ -122,6 +122,10 @@ export const GET_ALL_WEAPONS = gql`
       id
       name
       shortName
+      category {
+        name
+        id
+      }
       types
       basePrice
       image8xLink
@@ -159,6 +163,10 @@ export const GET_WEAPON_ID = gql`
       name
       shortName
       description
+      category {
+        name
+        id
+      }
       wikiLink
       types
       basePrice

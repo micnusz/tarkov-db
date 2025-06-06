@@ -1,15 +1,14 @@
 "use client";
 
 import { client } from "@/app/api/client";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { columnsTasks } from "./columns";
 import { DataTableTasks } from "./ui/data-table-tasks";
 
 const TasksClient = () => {
-  const { data = [] } = useQuery({
+  const { data = [] } = useSuspenseQuery({
     queryKey: ["tasks"],
     queryFn: () => client.getTasks(),
-    placeholderData: keepPreviousData,
   });
 
   return (

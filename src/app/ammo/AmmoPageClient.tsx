@@ -1,15 +1,14 @@
 "use client";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { client } from "../api/client";
 
 import { columnsAmmo } from "@/components/columns";
 import { DataTableAmmo } from "@/components/ui/data-table-ammo";
 
 const AmmoPageClient = () => {
-  const { data = [] } = useQuery({
+  const { data = [] } = useSuspenseQuery({
     queryKey: ["ammo"],
     queryFn: () => client.getAmmo(),
-    placeholderData: keepPreviousData,
   });
 
   return (

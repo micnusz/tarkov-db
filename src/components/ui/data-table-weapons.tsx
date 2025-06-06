@@ -22,40 +22,37 @@ import {
 import { useState } from "react";
 import Filters from "./filters";
 import { Button } from "./button";
-import { PaginationControls } from "../PaginationControl";
-import { AmmoProperties } from "@/app/api/types";
+import { AmmoItem } from "@/app/api/types";
 
-interface DataTableAmmoProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+interface DataTableWeaponsProps<WeaponItem, TValue> {
+  columns: ColumnDef<WeaponItem, TValue>[];
+  data: WeaponItem[];
 }
 
-export function DataTableAmmo<TData extends AmmoProperties, TValue>({
+export function DataTableWeapons<WeaponItem, TValue>({
   columns,
   data,
-}: DataTableAmmoProps<TData, TValue>) {
+}: DataTableWeaponsProps<WeaponItem, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [selectedCaliber, setSelectedCaliber] = useState<string | null>(null);
-  const calibers = Array.from(new Set(data.map((ammo) => ammo.caliber))).sort();
+  const [selectedCaregory, setSelectedCategory] = useState<string | null>(null);
+  const categories = Array.from(
+    new Set(
+      data
+        .map((item) => item.category?.name)
+        .filter((name): name is string => Boolean(name))
+    )
+  ).sort();
   const clearFilters = () => {
     setColumnFilters([]);
-    setSelectedCaliber(null);
+    setSelectedCategory(null);
   };
   const table = useReactTable({
     columns,
     data,
-    state: {
-      columnFilters,
-    },
-    initialState: {
-      pagination: {
-        pageSize: 20,
-      },
-    },
+    state: { columnFilters },
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
   });
 
   return (
@@ -64,28 +61,26 @@ export function DataTableAmmo<TData extends AmmoProperties, TValue>({
         <Filters
           columnFilters={columnFilters}
           setColumnFilters={setColumnFilters}
-          selectedCaliber={selectedCaliber}
-          setSelectedCaliber={setSelectedCaliber}
         />
         <div className="flex flex-wrap gap-2">
-          {calibers.map((caliber) => (
+          {categories.map((category) => (
             <Button
-              key={caliber}
-              variant={selectedCaliber === caliber ? "default" : "outline"}
+              key={category}
+              variant={selectedCaregory === category ? "default" : "outline"}
               size="sm"
               onPointerDown={() => {
-                if (selectedCaliber === caliber) {
+                if (selectedCaregory === category) {
                   clearFilters();
                 } else {
-                  setSelectedCaliber(caliber);
+                  setSelectedCategory(category);
                   setColumnFilters((prev) => [
-                    ...prev.filter((f) => f.id !== "caliber"),
-                    { id: "caliber", value: caliber },
+                    ...prev.filter((f) => f.id !== "category"),
+                    { id: "category", value: category },
                   ]);
                 }
               }}
             >
-              {caliber}
+              {category}
             </Button>
           ))}
         </div>
@@ -135,7 +130,6 @@ export function DataTableAmmo<TData extends AmmoProperties, TValue>({
             )}
           </TableBody>
         </Table>
-        <PaginationControls table={table} />
       </div>
     </>
   );

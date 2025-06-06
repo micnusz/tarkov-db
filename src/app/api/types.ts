@@ -84,6 +84,10 @@ export interface WeaponItem {
   types: string[];
   basePrice: number;
   description: string;
+  category: {
+    name: string;
+    id: string;
+  };
   wikiLink: string;
   image8xLink: string;
   sellFor: VendorSell[];

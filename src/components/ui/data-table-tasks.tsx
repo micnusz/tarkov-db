@@ -2,9 +2,11 @@
 
 import {
   ColumnDef,
+  ColumnFiltersState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
+  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
@@ -17,27 +19,28 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useState } from "react";
+import React, { useState } from "react";
 import Filters from "./filters";
 import TaskDetailsDrawer from "../TaskDetailsDrawer";
 import { Button } from "./button";
 import { Task } from "@/app/api/types";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { PaginationControls } from "../PaginationControl";
 
-interface DataTableTasksProps<Task, TValue> {
-  columns: ColumnDef<Task, TValue>[];
-  data: Task[];
+interface DataTableTasksProps<TData, TValue> {
+  columns: ColumnDef<TData, TValue>[];
+  data: TData[];
 }
-
-export function DataTableTasks<Task, TValue>({
+export function DataTableTasks<TData extends Task, TValue>({
   columns,
   data,
-}: DataTableTasksProps<Task, TValue>) {
-  const [columnFilters, setColumnFilters] = useState([]);
-  const [selectedRow, setSelectedRow] = useState<Task | null>(null);
+}: DataTableTasksProps<TData, TValue>) {
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [selectedRow, setSelectedRow] = useState<TData | null>(null);
   const [selectedTrader, setSelectedTrader] = useState<string | null>(null);
   const [selectedMap, setSelectedMap] = useState<string | null>(null);
   const tasks = Array.from(
-    new Set(data.map((task) => task.trader.name))
+    new Set((data as Task[]).map((task) => task.trader.name))
   ).sort();
   const maps = Array.from(
     new Set(
@@ -46,7 +49,6 @@ export function DataTableTasks<Task, TValue>({
         .filter((name): name is string => Boolean(name))
     )
   ).sort();
-
   const clearFilters = () => {
     setColumnFilters([]);
     setSelectedTrader(null);
@@ -57,9 +59,15 @@ export function DataTableTasks<Task, TValue>({
     columns,
     data,
     state: { columnFilters },
+    initialState: {
+      pagination: {
+        pageSize: 20,
+      },
+    },
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
   });
 
   return (
@@ -160,12 +168,13 @@ export function DataTableTasks<Task, TValue>({
             )}
           </TableBody>
         </Table>
+        <PaginationControls table={table} />
+        <TaskDetailsDrawer
+          data={selectedRow}
+          open={!!selectedRow}
+          onClose={() => setSelectedRow(null)}
+        />
       </div>
-      <TaskDetailsDrawer
-        data={selectedRow}
-        open={!!selectedRow}
-        onClose={() => setSelectedRow(null)}
-      />
     </>
   );
 }

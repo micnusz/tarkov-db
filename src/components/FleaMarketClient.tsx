@@ -1,16 +1,15 @@
 "use client";
 
 import { client } from "@/app/api/client";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { DataTable } from "./ui/data-table";
 import { columnsFleaMarket } from "./columns";
 
 const FleaMarketClient = () => {
-  const { data: itemsFlea = [] } = useQuery({
+  const { data: itemsFlea = [] } = useSuspenseQuery({
     queryKey: ["items"],
     queryFn: () => client.getItems(),
     staleTime: 300000,
-    placeholderData: keepPreviousData,
   });
 
   return (

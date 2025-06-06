@@ -17,6 +17,10 @@ const ItemPageServer = async ({ params }: Props) => {
     queryKey: ["item", id],
     queryFn: () => client.getItem(id),
   });
+  await queryClient.prefetchQuery({
+    queryKey: ["traders"],
+    queryFn: () => client.getTraders(),
+  });
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

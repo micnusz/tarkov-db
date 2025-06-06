@@ -3,19 +3,19 @@
 import { client } from "@/app/api/client";
 import { columnsTraderBuy, columnsTraderSell } from "@/components/columns";
 import { SimpleDataTable } from "@/components/ui/simple-data-table";
-import { useQuery } from "@tanstack/react-query";
-import React, { useEffect } from "react";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import React from "react";
 
 type ItemPageClientProps = {
   id: string;
 };
 
 const ItemPageClient = ({ id }: ItemPageClientProps) => {
-  const { data: itemData = [] } = useQuery({
+  const { data: itemData = [] } = useSuspenseQuery({
     queryKey: ["item", id],
     queryFn: () => client.getItem(id),
   });
-  const { data: tradersData } = useQuery({
+  const { data: tradersData } = useSuspenseQuery({
     queryKey: ["traders"],
     queryFn: () => client.getTraders(),
   });
@@ -24,9 +24,7 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
     <div>
       {itemData.map((item) => (
         <div key={item.id} className="flex flex-col px-6 md:px-20">
-          {/* Nagłówek i obrazek – responsywny układ */}
           <div className="mb-6 flex flex-col md:flex-row gap-6">
-            {/* Tekst po lewej */}
             <div className="flex-1">
               <h1 className="text-left text-4xl font-extrabold tracking-tight">
                 {item.name}
@@ -45,7 +43,6 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
               </a>
             </div>
 
-            {/* Obrazek po prawej */}
             <div className="flex justify-center items-center md:w-1/2">
               <img
                 src={item.gridImageLink}
@@ -55,7 +52,6 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
             </div>
           </div>
 
-          {/* Sell for */}
           <div className="mb-6">
             <h2 className="border-b pb-2 text-3xl font-semibold tracking-tight">
               Sell for:
@@ -68,7 +64,6 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
             )}
           </div>
 
-          {/* Buy for */}
           <div className="mb-6">
             <h2 className="border-b pb-2 text-3xl font-semibold tracking-tight">
               Buy for:
@@ -81,7 +76,6 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
             )}
           </div>
 
-          {/* Statistics */}
           <div className="mb-6">
             <h2 className="border-b pb-2 text-3xl font-semibold tracking-tight">
               Statistics:

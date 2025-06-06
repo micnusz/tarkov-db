@@ -2,11 +2,11 @@
 import { client } from "@/app/api/client";
 import { columnsBackpacks } from "@/components/columns";
 import { DataTable } from "@/components/ui/data-table";
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import React from "react";
 
 const BackpacksPageClient = () => {
-  const { data = [] } = useQuery({
+  const { data = [] } = useSuspenseQuery({
     queryKey: ["backpacks"],
     queryFn: () => client.getBackpacks(),
   });

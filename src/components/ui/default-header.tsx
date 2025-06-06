@@ -41,7 +41,7 @@ export default function DefaultHeader<TData, TValue>({
           .map((column) => (
             <ContextMenuCheckboxItem
               key={column.id}
-              className="capitalize bg-red-300"
+              className="capitalize"
               checked={column.getIsVisible()}
               onCheckedChange={(value) => column.toggleVisibility(!!value)}
             >

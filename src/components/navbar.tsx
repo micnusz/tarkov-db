@@ -2,6 +2,7 @@
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { ModeToggle } from "./ui/mode-toggle";
+import { usePathname } from "next/navigation";
 
 export const Navbar = () => {
   return (
@@ -9,7 +10,6 @@ export const Navbar = () => {
       <div className="absolute right-4">
         <ModeToggle />
       </div>
-
       <div className="flex justify-center gap-4">
         <Button>
           <Link href="/ammo">AMMO</Link>
