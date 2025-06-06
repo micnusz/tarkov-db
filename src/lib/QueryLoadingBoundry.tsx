@@ -1,4 +1,3 @@
-import { Card } from "@/components/ui/card";
 import React, { ReactNode, Suspense } from "react";
 import Spinner from "./Spinner";
 

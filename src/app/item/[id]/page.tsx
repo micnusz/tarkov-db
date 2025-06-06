@@ -4,9 +4,9 @@ import { getQueryClient } from "@/lib/get-query-client";
 import ItemPageClient from "./ItemPageClient";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
-interface Props {
+type Props = {
   params: { id: string };
-}
+};
 
 const ItemPageServer = async ({ params }: Props) => {
   const resolvedParams = await params;

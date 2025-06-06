@@ -24,7 +24,6 @@ import Filters from "./filters";
 import TaskDetailsDrawer from "../TaskDetailsDrawer";
 import { Button } from "./button";
 import { Task } from "@/app/api/types";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { PaginationControls } from "../PaginationControl";
 
 interface DataTableTasksProps<TData, TValue> {

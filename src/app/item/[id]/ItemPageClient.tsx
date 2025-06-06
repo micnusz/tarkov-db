@@ -1,10 +1,12 @@
 "use client";
 
 import { client } from "@/app/api/client";
-import { columnsTraderBuy, columnsTraderSell } from "@/components/columns";
+import { VendorBuy, VendorSell } from "@/app/api/types";
+import DefaultHeader from "@/components/ui/default-header";
 import { SimpleDataTable } from "@/components/ui/simple-data-table";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import React from "react";
+import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
+import React, { useMemo } from "react";
 
 type ItemPageClientProps = {
   id: string;
@@ -19,6 +21,98 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
     queryKey: ["traders"],
     queryFn: () => client.getTraders(),
   });
+
+  const columnHelperBuy = createColumnHelper<VendorBuy>();
+  const columnsBuy: ColumnDef<VendorBuy, any>[] = useMemo(
+    () => [
+      columnHelperBuy.accessor("vendor.name", {
+        id: "name",
+        filterFn: "includesString",
+        header: (info) => <DefaultHeader info={info} name="Vendor:" />,
+        cell: (info) => {
+          const vendorName = info.getValue();
+          const trader = tradersData.find((t) => t.name === vendorName);
+
+          return (
+            <div className="flex items-center gap-2">
+              {trader && (
+                <img
+                  src={trader.image4xLink}
+                  alt={trader.name}
+                  className="rounded-sm w-16"
+                />
+              )}
+              <span>{vendorName}</span>
+            </div>
+          );
+        },
+      }),
+      columnHelperBuy.accessor("price", {
+        header: (info) => <DefaultHeader info={info} name="Price:" />,
+        cell: (info) => {
+          const row = info.row.original;
+          const vendorName = row.vendor.name;
+          const isUSD = vendorName === "Peacekeeper";
+
+          const value = isUSD ? row.price : row.priceRUB;
+          const symbol = isUSD ? "$" : "₽";
+
+          if (typeof value !== "number") return "—";
+
+          return `${value.toLocaleString()} ${symbol}`;
+        },
+      }),
+    ],
+    [tradersData] // <-- dodaj tutaj traders, aby memo działało poprawnie
+  );
+  const columnHelperSell = createColumnHelper<VendorSell>();
+  const columnsSell: ColumnDef<VendorSell, any>[] = useMemo(
+    () => [
+      columnHelperSell.accessor("vendor.name", {
+        id: "name",
+        filterFn: "includesString",
+        header: (info) => <DefaultHeader info={info} name="Vendor:" />,
+        cell: (info) => {
+          const vendorName = info.getValue();
+          const trader = tradersData.find((t) => t.name === vendorName);
+
+          return (
+            <div className="flex items-center gap-2">
+              {trader && (
+                <img
+                  src={trader.image4xLink}
+                  alt={trader.name}
+                  className="rounded-sm w-16"
+                />
+              )}
+              <span>{vendorName}</span>
+            </div>
+          );
+        },
+      }),
+      columnHelperSell.accessor("price", {
+        header: (info) => <DefaultHeader info={info} name="Price:" />,
+        cell: (info) => {
+          const row = info.row.original;
+          const vendorName = row.vendor.name;
+          const isUSD = vendorName === "Peacekeeper";
+
+          const price = row.price;
+          const priceRUB = row.priceRUB;
+
+          console.log(`Vendor: ${vendorName}, USD: ${price}, RUB: ${priceRUB}`);
+
+          const value = isUSD ? price : priceRUB;
+          const symbol = isUSD ? "$" : "₽";
+
+          if (typeof value !== "number" || isNaN(value)) return "—";
+
+          return `${value.toLocaleString()} ${symbol}`;
+        },
+      }),
+    ],
+    [tradersData] // <-- dodaj tutaj traders!
+  );
 
   return (
     <div>
@@ -57,10 +151,7 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
               Sell for:
             </h2>
             {tradersData && (
-              <SimpleDataTable
-                data={item.sellFor}
-                columns={columnsTraderSell(tradersData)}
-              />
+              <SimpleDataTable data={item.sellFor} columns={columnsSell} />
             )}
           </div>
 
@@ -69,10 +160,7 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
               Buy for:
             </h2>
             {tradersData && (
-              <SimpleDataTable
-                data={item.buyFor}
-                columns={columnsTraderBuy(tradersData)}
-              />
+              <SimpleDataTable data={item.buyFor} columns={columnsBuy} />
             )}
           </div>
 

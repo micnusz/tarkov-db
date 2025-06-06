@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 
 export const Navbar = () => {
   return (
-    <div className="relative w-screen p-6 mb-6">
+    <div className="relative w-screen p-6 ">
       <div className="absolute right-4">
         <ModeToggle />
       </div>
