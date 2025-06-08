@@ -1,7 +1,6 @@
 import React from "react";
 import { Input } from "./input";
 import { ColumnFiltersState } from "@tanstack/react-table";
-import { Button } from "./button";
 
 type FiltersProps = {
   columnFilters: ColumnFiltersState;

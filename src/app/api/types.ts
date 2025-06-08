@@ -60,6 +60,7 @@ export interface AmmoProperties {
   ricochetChance: number;
   penetrationChance: number;
   penetrationPowerDeviation: number;
+  item: AmmoItem;
 }
 
 export type GetAmmoResponse = {

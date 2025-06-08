@@ -21,34 +21,36 @@ export default function DefaultHeader<TData, TValue>({
   const { table } = info;
 
   return (
-    <ContextMenu>
-      <ContextMenuTrigger
-        className="flex w-full h-full justify-start items-center gap-4 cursor-pointer"
-        onPointerDown={(e) => {
-          e.preventDefault();
-          if (e.button == 2) return;
-          info.column.toggleSorting(info.column.getIsSorted() === "asc");
-        }}
-      >
-        {name}
-        {sorted == "asc" && <ChevronUp size={16} />}
-        {sorted == "desc" && <ChevronDown size={16} />}
-      </ContextMenuTrigger>
-      <ContextMenuContent>
-        {table
-          .getAllColumns()
-          .filter((column) => column.getCanHide())
-          .map((column) => (
-            <ContextMenuCheckboxItem
-              key={column.id}
-              className="capitalize"
-              checked={column.getIsVisible()}
-              onCheckedChange={(value) => column.toggleVisibility(!!value)}
-            >
-              {column.id}
-            </ContextMenuCheckboxItem>
-          ))}
-      </ContextMenuContent>
-    </ContextMenu>
+    <div className="h-[4.5rem]">
+      <ContextMenu>
+        <ContextMenuTrigger
+          className="flex w-full h-full items-center gap-4 cursor-pointer "
+          onPointerDown={(e) => {
+            e.preventDefault();
+            if (e.button == 2) return;
+            info.column.toggleSorting(info.column.getIsSorted() === "asc");
+          }}
+        >
+          {name}
+          {sorted == "asc" && <ChevronUp size={16} />}
+          {sorted == "desc" && <ChevronDown size={16} />}
+        </ContextMenuTrigger>
+        <ContextMenuContent>
+          {table
+            .getAllColumns()
+            .filter((column) => column.getCanHide())
+            .map((column) => (
+              <ContextMenuCheckboxItem
+                key={column.id}
+                className="capitalize"
+                checked={column.getIsVisible()}
+                onCheckedChange={(value) => column.toggleVisibility(!!value)}
+              >
+                {column.id}
+              </ContextMenuCheckboxItem>
+            ))}
+        </ContextMenuContent>
+      </ContextMenu>
+    </div>
   );
 }

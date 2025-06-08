@@ -5,6 +5,7 @@ import {
   GET_BACKPACKS,
   GET_ITEM_ID,
   GET_ITEMS,
+  GET_ITEMS_SEARCH_BAR,
   GET_TASKS,
   GET_TRADERS,
   GET_WEAPON_ID,
@@ -35,6 +36,16 @@ export const client = {
     const data = await graphqlClient.request<GetItemsResponse>(GET_ITEM_ID, {
       ids: [id],
     });
+    return data.items;
+  },
+
+  async getItemsSearchBar(name: string): Promise<Item[]> {
+    const data = await graphqlClient.request<GetItemsResponse>(
+      GET_ITEMS_SEARCH_BAR,
+      {
+        name: name,
+      }
+    );
     return data.items;
   },
 

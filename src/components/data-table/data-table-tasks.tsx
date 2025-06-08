@@ -8,6 +8,7 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
+  SortingState,
   useReactTable,
 } from "@tanstack/react-table";
 
@@ -20,11 +21,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import React, { useState } from "react";
-import Filters from "./filters";
+import Filters from "../ui/filters";
 import TaskDetailsDrawer from "../TaskDetailsDrawer";
-import { Button } from "./button";
+import { Button } from "../ui/button";
 import { Task } from "@/app/api/types";
-import { PaginationControls } from "../PaginationControl";
+import { DataTablePagination } from "./data-table-pagination";
+import { Input } from "../ui/input";
 
 interface DataTableTasksProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -34,7 +36,10 @@ export function DataTableTasks<TData extends Task, TValue>({
   columns,
   data,
 }: DataTableTasksProps<TData, TValue>) {
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  );
   const [selectedRow, setSelectedRow] = useState<TData | null>(null);
   const [selectedTrader, setSelectedTrader] = useState<string | null>(null);
   const [selectedMap, setSelectedMap] = useState<string | null>(null);
@@ -57,14 +62,19 @@ export function DataTableTasks<TData extends Task, TValue>({
   const table = useReactTable({
     columns,
     data,
-    state: { columnFilters },
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
+    state: {
+      sorting,
+      columnFilters,
+    },
     initialState: {
       pagination: {
         pageSize: 20,
       },
     },
     getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
+    onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });
@@ -72,13 +82,20 @@ export function DataTableTasks<TData extends Task, TValue>({
   return (
     <>
       <div className="w-full flex flex-col gap-4 ">
-        <Filters
-          columnFilters={columnFilters}
-          setColumnFilters={setColumnFilters}
-        />
+        <div className="flex items-center py-4">
+          <Input
+            placeholder="Search"
+            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+            onChange={(event) =>
+              table.getColumn("name")?.setFilterValue(event.target.value)
+            }
+            className="max-w-sm"
+          />
+        </div>
         <div className="flex flex-wrap gap-2">
           {tasks.map((trader) => (
             <Button
+              aria-label={`Trader: ${trader}`}
               key={trader}
               variant={selectedTrader === trader ? "default" : "outline"}
               size="sm"
@@ -101,6 +118,7 @@ export function DataTableTasks<TData extends Task, TValue>({
         <div className="flex flex-wrap gap-2">
           {maps.map((mapName) => (
             <Button
+              aria-label={`Map: ${mapName}`}
               key={mapName}
               variant={selectedMap === mapName ? "default" : "outline"}
               size="sm"
@@ -137,13 +155,13 @@ export function DataTableTasks<TData extends Task, TValue>({
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows.length > 0 ? (
+            {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
                   onClick={() => setSelectedRow(row.original)}
-                  className="cursor-pointer "
+                  className="cursor-pointer"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -167,7 +185,7 @@ export function DataTableTasks<TData extends Task, TValue>({
             )}
           </TableBody>
         </Table>
-        <PaginationControls table={table} />
+        <DataTablePagination table={table} />
         <TaskDetailsDrawer
           data={selectedRow}
           open={!!selectedRow}

@@ -1,7 +1,7 @@
 "use client";
 import { client } from "@/app/api/client";
 import { BackpackItem } from "@/app/api/types";
-import { DataTableBackpacks } from "@/components/ui/data-table-backpacks";
+import { DataTableBackpacks } from "@/components/data-table/data-table-backpacks";
 import DefaultHeader from "@/components/ui/default-header";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";

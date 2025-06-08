@@ -41,6 +41,7 @@ export default function TaskDetailsDrawer({
             <div className="flex flex-col gap-2">
               <div className="relative">
                 <img
+                  aria-label={`Image of task: ${task.name}`}
                   src={task.taskImageLink}
                   alt={task.name}
                   className="rounded-md"
@@ -49,9 +50,10 @@ export default function TaskDetailsDrawer({
                 <div className="absolute top-1 left-1">
                   <Badge
                     variant="secondary"
-                    className="flex items-center gap-2 px-2 py-1 text-sm shadow-md"
+                    className="flex items-center gap-2 px-2 py-1 text-sm shadow-md bg-chart-5"
                   >
                     <img
+                      aria-label={`Icon of trader: ${task.trader.name}`}
                       src={task.trader.imageLink}
                       alt={task.trader.name}
                       className="w-6 h-6 object-contain"

@@ -8,6 +8,7 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
+  SortingState,
   useReactTable,
 } from "@tanstack/react-table";
 
@@ -19,32 +20,42 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useState } from "react";
-import Filters from "./filters";
-import { Button } from "./button";
-import { PaginationControls } from "../PaginationControl";
-import { AmmoProperties } from "@/app/api/types";
+import React, { useState } from "react";
 
-interface DataTableAmmoProps<TData, TValue> {
+import { Button } from "../ui/button";
+import { AmmoProperties, WeaponItem } from "@/app/api/types";
+import { DataTablePagination } from "./data-table-pagination";
+import { Input } from "../ui/input";
+
+interface DataTableWeaponsProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
-
-export function DataTableAmmo<TData extends AmmoProperties, TValue>({
+export function DataTableWeapons<TData extends WeaponItem, TValue>({
   columns,
   data,
-}: DataTableAmmoProps<TData, TValue>) {
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [selectedCaliber, setSelectedCaliber] = useState<string | null>(null);
-  const calibers = Array.from(new Set(data.map((ammo) => ammo.caliber))).sort();
+}: DataTableWeaponsProps<TData, TValue>) {
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  );
+  const [selectedWeapon, setSelectedWeapon] = useState<string | null>(null);
+  const weapons = Array.from(
+    new Set((data as WeaponItem[]).map((weapon) => weapon.category.name))
+  ).sort();
+
   const clearFilters = () => {
     setColumnFilters([]);
-    setSelectedCaliber(null);
+    setSelectedWeapon(null);
   };
+
   const table = useReactTable({
     columns,
     data,
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
     state: {
+      sorting,
       columnFilters,
     },
     initialState: {
@@ -53,7 +64,7 @@ export function DataTableAmmo<TData extends AmmoProperties, TValue>({
       },
     },
     getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
+    onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });
@@ -61,31 +72,36 @@ export function DataTableAmmo<TData extends AmmoProperties, TValue>({
   return (
     <>
       <div className="w-full flex flex-col gap-4 ">
-        <Filters
-          columnFilters={columnFilters}
-          setColumnFilters={setColumnFilters}
-          selectedCaliber={selectedCaliber}
-          setSelectedCaliber={setSelectedCaliber}
-        />
+        <div className="flex items-center py-4">
+          <Input
+            placeholder="Search"
+            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+            onChange={(event) =>
+              table.getColumn("name")?.setFilterValue(event.target.value)
+            }
+            className="max-w-sm"
+          />
+        </div>
         <div className="flex flex-wrap gap-2">
-          {calibers.map((caliber) => (
+          {weapons.map((weapon) => (
             <Button
-              key={caliber}
-              variant={selectedCaliber === caliber ? "default" : "outline"}
+              aria-label={`Ammo: ${weapon}`}
+              key={weapon}
+              variant={selectedWeapon === weapon ? "default" : "outline"}
               size="sm"
               onPointerDown={() => {
-                if (selectedCaliber === caliber) {
+                if (selectedWeapon === weapon) {
                   clearFilters();
                 } else {
-                  setSelectedCaliber(caliber);
+                  setSelectedWeapon(weapon);
                   setColumnFilters((prev) => [
-                    ...prev.filter((f) => f.id !== "caliber"),
-                    { id: "caliber", value: caliber },
+                    ...prev.filter((f) => f.id !== "category"),
+                    { id: "category", value: weapon },
                   ]);
                 }
               }}
             >
-              {caliber}
+              {weapon}
             </Button>
           ))}
         </div>
@@ -106,12 +122,12 @@ export function DataTableAmmo<TData extends AmmoProperties, TValue>({
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows.length > 0 ? (
+            {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className="cursor-pointer "
+                  className="cursor-pointer"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -135,7 +151,7 @@ export function DataTableAmmo<TData extends AmmoProperties, TValue>({
             )}
           </TableBody>
         </Table>
-        <PaginationControls table={table} />
+        <DataTablePagination table={table} />
       </div>
     </>
   );

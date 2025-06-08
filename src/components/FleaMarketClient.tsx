@@ -7,17 +7,39 @@ import { Item } from "@/app/api/types";
 import { useMemo } from "react";
 import Link from "next/link";
 import DefaultHeader from "./ui/default-header";
-import { DataTableFleaMarket } from "./ui/data-table-flea";
+import { DataTableFleaMarket } from "./data-table/data-table-flea";
 
 const FleaMarketClient = () => {
   const { data: itemsFlea } = useSuspenseQuery({
     queryKey: ["items"],
     queryFn: () => client.getItems(),
-    staleTime: 300000,
   });
+
   const columnHelper = createColumnHelper<Item>();
   const columns: ColumnDef<Item, any>[] = useMemo(
     () => [
+      columnHelper.accessor((row) => row.gridImageLink, {
+        id: "icon",
+        header: (info) => <DefaultHeader info={info} name="Icon" />,
+        cell: (info) => {
+          const icon = info.getValue();
+          const row = info.row.original;
+
+          return (
+            <Link href={`/item/${row.id}`}>
+              <div className="flex items-center gap-3">
+                <img
+                  src={icon}
+                  alt={row.name}
+                  className="w-16 h-16 object-contain"
+                />
+              </div>
+            </Link>
+          );
+        },
+        enableSorting: false,
+        enableHiding: false,
+      }),
       columnHelper.accessor((row) => row.name, {
         id: "name",
         header: (info) => <DefaultHeader info={info} name="Name" />,
@@ -27,51 +49,50 @@ const FleaMarketClient = () => {
 
           return (
             <Link href={`/item/${row.id}`}>
-              <div className="flex items-center gap-3">
-                <img
-                  src={row.gridImageLink}
-                  alt={name}
-                  className="w-18 h-18 object-contain"
-                />
+              <div className="flex items-center  gap-3">
                 <span className="text-sm font-medium">{name}</span>
               </div>
             </Link>
           );
         },
       }),
-
-      columnHelper.accessor((row) => row.category?.name, {
+      columnHelper.accessor((row) => row.category?.parent.name ?? "", {
         id: "category",
         header: (info) => <DefaultHeader info={info} name="Category" />,
         cell: (info) => {
-          const name = info.getValue();
           const row = info.row.original;
+          const name = row.category?.name;
           const parentName = row.category?.parent.name;
 
           return name ? (
-            <div className="flex flex-col">
-              <span className="text-sm text-gray-700">{parentName}</span>
-              <span className="text-base font-medium">{name}</span>
+            <div className="flex flex-col ">
+              <span className="text-sm text-muted">{parentName}</span>
+              <span className="text-base  font-medium">{name}</span>
             </div>
           ) : (
-            <span className="text-gray-400 italic">N/A</span>
+            <span className="text-muted italic">N/A</span>
           );
         },
+        filterFn: (row, columnId, filterValue) => {
+          const value = row.original.category?.parent.name ?? "";
+          return value.toLowerCase().includes(filterValue.toLowerCase());
+        },
       }),
-
       columnHelper.accessor("wikiLink", {
         header: (info) => <DefaultHeader info={info} name="Wiki" />,
         cell: (info) => {
           const wikiLink = info.getValue();
           return wikiLink ? (
-            <a
-              className="text-red-600 hover:text-gray-700 underline text-sm"
-              href={wikiLink}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Wiki
-            </a>
+            <div className="">
+              <a
+                className="text-chart-1 hover:text-gray-700 underline text-sm flex items-center "
+                href={wikiLink}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Wiki
+              </a>
+            </div>
           ) : (
             <span className="text-gray-400 italic">N/A</span>
           );
@@ -197,7 +218,7 @@ const FleaMarketClient = () => {
   );
 
   return (
-    <div className="flex flex-col px-6 md:px-20">
+    <div className="w-full h-full flex-col justify-center items-center p-2 md:p-10">
       <DataTableFleaMarket data={itemsFlea} columns={columns} />
     </div>
   );

@@ -20,11 +20,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import React, { useState } from "react";
-import Filters from "./filters";
-import TaskDetailsDrawer from "../TaskDetailsDrawer";
-import { Button } from "./button";
-import { BackpackItem, Task } from "@/app/api/types";
-import { PaginationControls } from "../PaginationControl";
+import Filters from "../ui/filters";
+import { BackpackItem } from "@/app/api/types";
 
 interface DataTableBackpacksProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -95,7 +92,6 @@ export function DataTableBackpacks<TData extends BackpackItem, TValue>({
           )}
         </TableBody>
       </Table>
-      <PaginationControls table={table} />
     </>
   );
 }

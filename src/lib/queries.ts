@@ -1,7 +1,7 @@
 import { gql } from "graphql-request";
 
 export const GET_ITEMS = gql`
-  query GetItemFleaMarket {
+  query GetItems {
     items {
       name
       id
@@ -32,6 +32,15 @@ export const GET_ITEMS = gql`
       avg24hPrice
       low24hPrice
       high24hPrice
+    }
+  }
+`;
+
+export const GET_ITEMS_SEARCH_BAR = gql`
+  query GetItemsSearchBar($name: String) {
+    items(name: $name) {
+      id
+      name
     }
   }
 `;
@@ -129,6 +138,7 @@ export const GET_ALL_WEAPONS = gql`
       types
       basePrice
       image8xLink
+      gridImageLink
       buyFor {
         vendor {
           name

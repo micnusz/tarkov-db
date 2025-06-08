@@ -2,7 +2,7 @@
 
 import { client } from "@/app/api/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { DataTableTasks } from "./ui/data-table-tasks";
+import { DataTableTasks } from "./data-table/data-table-tasks";
 import { useMemo } from "react";
 import { Briefcase, TowerControl } from "lucide-react";
 import DefaultHeader from "./ui/default-header";
@@ -29,9 +29,10 @@ const TasksClient = () => {
           return (
             <div className="flex items-center gap-2 flex-wrap max-w-full">
               <img
+                aria-label={`Image of trader: ${name}`}
                 src={row.trader.imageLink}
                 alt={name}
-                className="w-24 object-contain"
+                className="w-16 object-contain"
               />
             </div>
           );
@@ -103,9 +104,17 @@ const TasksClient = () => {
 
             return hasAny ? (
               <div className="flex items-center gap-2">
-                {kappa && <Briefcase className="w-5 h-5 object-contain" />}
+                {kappa && (
+                  <Briefcase
+                    className="w-5 h-5 object-contain"
+                    aria-label="Icon of kappa container"
+                  />
+                )}
                 {lightkeeper && (
-                  <TowerControl className="w-5 h-5 object-contain" />
+                  <TowerControl
+                    className="w-5 h-5 object-contain"
+                    aria-label="Icon of lighthouse"
+                  />
                 )}
               </div>
             ) : (
