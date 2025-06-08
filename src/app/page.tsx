@@ -5,7 +5,6 @@ import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import FleaMarketClient from "@/components/FleaMarketClient";
 import { Metadata } from "next";
 import React from "react";
-import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
 
 export const generateMetadata = async (): Promise<Metadata> => {
   return {

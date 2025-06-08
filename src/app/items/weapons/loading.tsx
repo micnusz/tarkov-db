@@ -4,6 +4,8 @@ export default function Loading() {
   return (
     <DataTableSkeleton
       columnCount={9}
+      filterCount={10}
+      searchCount={1}
       cellWidths={[
         "5rem",
         "30rem",
@@ -16,7 +18,6 @@ export default function Loading() {
         "6rem",
       ]}
       shrinkZero
-      searchCount={1}
     />
   );
 }

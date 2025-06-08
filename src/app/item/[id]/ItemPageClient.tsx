@@ -2,6 +2,7 @@
 
 import { client } from "@/app/api/client";
 import { VendorBuy, VendorSell } from "@/app/api/types";
+import DataTableBuyItem from "@/components/data-table/data-table-buy-item";
 import DefaultHeader from "@/components/ui/default-header";
 import { SimpleDataTable } from "@/components/ui/simple-data-table";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -22,13 +23,12 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
     queryFn: () => client.getTraders(),
   });
 
-  const columnHelperBuy = createColumnHelper<VendorBuy>();
-  const columnsBuy: ColumnDef<VendorBuy, any>[] = useMemo(
+  const columnHelperSell = createColumnHelper<VendorSell>();
+  const columnsSell: ColumnDef<VendorSell, any>[] = useMemo(
     () => [
-      columnHelperBuy.accessor("vendor.name", {
-        id: "name",
-        filterFn: "includesString",
-        header: (info) => <DefaultHeader info={info} name="Vendor:" />,
+      columnHelperSell.accessor("vendor.name", {
+        id: "icon",
+        header: (info) => <DefaultHeader info={info} name="Icon:" />,
         cell: (info) => {
           const vendorName = info.getValue();
           const trader = tradersData.find((t) => t.name === vendorName);
@@ -42,49 +42,19 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
                   className="rounded-sm w-16"
                 />
               )}
-              <span>{vendorName}</span>
             </div>
           );
         },
       }),
-      columnHelperBuy.accessor("price", {
-        header: (info) => <DefaultHeader info={info} name="Price:" />,
-        cell: (info) => {
-          const row = info.row.original;
-          const vendorName = row.vendor.name;
-          const isUSD = vendorName === "Peacekeeper";
-
-          const value = isUSD ? row.price : row.priceRUB;
-          const symbol = isUSD ? "$" : "₽";
-
-          if (typeof value !== "number") return "—";
-
-          return `${value.toLocaleString()} ${symbol}`;
-        },
-      }),
-    ],
-    [tradersData] // <-- dodaj tutaj traders, aby memo działało poprawnie
-  );
-  const columnHelperSell = createColumnHelper<VendorSell>();
-  const columnsSell: ColumnDef<VendorSell, any>[] = useMemo(
-    () => [
       columnHelperSell.accessor("vendor.name", {
         id: "name",
         filterFn: "includesString",
         header: (info) => <DefaultHeader info={info} name="Vendor:" />,
         cell: (info) => {
           const vendorName = info.getValue();
-          const trader = tradersData.find((t) => t.name === vendorName);
 
           return (
             <div className="flex items-center gap-2">
-              {trader && (
-                <img
-                  src={trader.image4xLink}
-                  alt={trader.name}
-                  className="rounded-sm w-16"
-                />
-              )}
               <span>{vendorName}</span>
             </div>
           );
@@ -111,13 +81,68 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
         },
       }),
     ],
-    [tradersData] // <-- dodaj tutaj traders!
+    [tradersData]
+  );
+  const columnHelperBuy = createColumnHelper<VendorBuy>();
+  const columnsBuy: ColumnDef<VendorBuy, any>[] = useMemo(
+    () => [
+      columnHelperBuy.accessor("vendor.name", {
+        id: "icon",
+        header: (info) => <DefaultHeader info={info} name="Icon:" />,
+        cell: (info) => {
+          const vendorName = info.getValue();
+          const trader = tradersData.find((t) => t.name === vendorName);
+
+          return (
+            <div className="flex items-center gap-2">
+              {trader && (
+                <img
+                  src={trader.image4xLink}
+                  alt={trader.name}
+                  className="rounded-sm w-16"
+                />
+              )}
+            </div>
+          );
+        },
+      }),
+      columnHelperBuy.accessor("vendor.name", {
+        id: "name",
+        filterFn: "includesString",
+        header: (info) => <DefaultHeader info={info} name="Vendor:" />,
+        cell: (info) => {
+          const vendorName = info.getValue();
+
+          return (
+            <div className="flex items-center gap-2">
+              <span>{vendorName}</span>
+            </div>
+          );
+        },
+      }),
+      columnHelperBuy.accessor("price", {
+        header: (info) => <DefaultHeader info={info} name="Price:" />,
+        cell: (info) => {
+          const row = info.row.original;
+          const vendorName = row.vendor.name;
+          const isUSD = vendorName === "Peacekeeper";
+
+          const value = isUSD ? row.price : row.priceRUB;
+          const symbol = isUSD ? "$" : "₽";
+
+          if (typeof value !== "number") return "—";
+
+          return `${value.toLocaleString()} ${symbol}`;
+        },
+      }),
+    ],
+    [tradersData]
   );
 
   return (
     <div>
       {itemData.map((item) => (
-        <div key={item.id} className="flex flex-col px-6 md:px-20">
+        <div key={item.id} className="flex flex-col px-6 md:px-20 mt-15">
           <div className="mb-6 flex flex-col md:flex-row gap-6">
             <div className="flex-1">
               <h1 className="text-left text-4xl font-extrabold tracking-tight">
@@ -129,7 +154,7 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
               <p className="leading-7 mt-2">{item.description}</p>
               <a
                 href={item.wikiLink}
-                className="text-red-600 hover:text-black mt-2 inline-block"
+                className="text-chart-1 hover:text-muted mt-2 inline-block"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -139,9 +164,9 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
 
             <div className="flex justify-center items-center md:w-1/2">
               <img
-                src={item.gridImageLink}
+                src={item.image8xLink}
                 alt={item.name}
-                className="max-w-full h-auto object-contain"
+                className="max-w-1/4 h-auto object-contain"
               />
             </div>
           </div>

@@ -15,7 +15,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "./ui/separator";
 import Link from "next/link";
-import { Button } from "./ui/button";
+import SearchBarLoading from "./ui/search-bar-loading";
 
 const SearchBar = () => {
   const [search, setSearch] = useState("");
@@ -60,7 +60,7 @@ const SearchBar = () => {
         }}
       >
         <DialogTrigger asChild>
-          <div className="w-[10rem] md:w-[20rem] duration-200 ease-in-out max-w-sm rounded-md border-3 border-input bg-muted/20 px-3 py-2 text-sm text-muted-foreground shadow-sm cursor-pointer transition-colors hover:border-chart-1 hover:text-foreground ">
+          <div className="flex flex-grow flex-shrink max-w-60 md:w-60 duration-200 ease-in-out rounded-md border-3 border-input bg-muted/20 px-3 py-2 text-sm text-muted-foreground shadow-sm cursor-pointer transition-colors hover:border-chart-1 hover:text-foreground ">
             Search
           </div>
         </DialogTrigger>
@@ -77,7 +77,8 @@ const SearchBar = () => {
             <DialogTitle hidden={true}>Search Items</DialogTitle>
             <DialogDescription asChild>
               <ScrollArea className="h-[25rem] w-full rounded-md border">
-                <div>
+                <>
+                  {isLoading && <SearchBarLoading />}
                   {data?.map((item) => (
                     <React.Fragment key={item.id}>
                       <Link
@@ -89,7 +90,7 @@ const SearchBar = () => {
                       <Separator className="my-2" />
                     </React.Fragment>
                   ))}
-                </div>
+                </>
               </ScrollArea>
             </DialogDescription>
           </DialogHeader>

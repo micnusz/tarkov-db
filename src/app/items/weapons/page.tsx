@@ -5,7 +5,14 @@ import { client } from "@/app/api/client";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import React from "react";
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
+import { Metadata } from "next";
 
+export const generateMetadata = async (): Promise<Metadata> => {
+  return {
+    title: "Weapons - Tarkov.db",
+    description: "Tarkov.db, Weapons",
+  };
+};
 export default async function WeaponsPage() {
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({

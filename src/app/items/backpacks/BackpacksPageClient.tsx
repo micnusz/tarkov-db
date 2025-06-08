@@ -16,9 +16,9 @@ const BackpacksPageClient = () => {
   const columnHelper = createColumnHelper<BackpackItem>();
   const columns: ColumnDef<BackpackItem, any>[] = useMemo(
     () => [
-      columnHelper.accessor((row) => row.name, {
-        id: "name",
-        header: (info) => <DefaultHeader info={info} name="Name" />,
+      columnHelper.accessor((row) => row.gridImageLink, {
+        id: "icon",
+        header: (info) => <DefaultHeader info={info} name="Icon" />,
         cell: (info) => {
           const name = info.getValue();
           const row = info.row.original;
@@ -31,6 +31,23 @@ const BackpacksPageClient = () => {
                   alt={name}
                   className="w-32 object-contain"
                 />
+              </div>
+            </Link>
+          );
+        },
+        enableSorting: false,
+        enableColumnFilter: false,
+      }),
+      columnHelper.accessor((row) => row.name, {
+        id: "name",
+        header: (info) => <DefaultHeader info={info} name="Name" />,
+        cell: (info) => {
+          const name = info.getValue();
+          const row = info.row.original;
+
+          return (
+            <Link href={`/item/${row.id}`}>
+              <div className="flex items-center gap-2">
                 <span>{name}</span>
               </div>
             </Link>

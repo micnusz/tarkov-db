@@ -3,6 +3,7 @@
 import Link from "next/link";
 import {
   NavigationMenu,
+  NavigationMenuIndicator,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
@@ -11,10 +12,13 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MenuIcon } from "lucide-react";
+import { EyeClosed, MenuIcon } from "lucide-react";
 import SearchBar from "../SearchBar";
+import { useState } from "react";
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "../ui/sheet";
 
 const navLinks: { href: string; title: string }[] = [
   { href: "/ammo", title: "Ammo" },
@@ -26,23 +30,17 @@ const navLinks: { href: string; title: string }[] = [
 ];
 
 export const Header = () => {
+  const [mobileOpen, setMobileOpen] = useState(false);
   return (
-    <header className="bg-chart-5 px-4 py-6">
-      <div className="w-full flex items-center justify-between relative">
-        {/* Logo po lewej */}
-        <div className="flex px-2 gap-6">
-          <Link href={"/"}>
-            <h1 className="text-2xl font-bold duration-200 ease-in-out hover:text-chart-1">
-              Tarkov.db
-            </h1>
-            <p className="text-sm text-muted-foreground  ">
-              Database for Tarkov
-            </p>
-          </Link>
-        </div>
+    <header className="bg-chart-5 border-b">
+      <div className="max-w-screen mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
+        {/* Logo */}
+        <Link href="/" className="text-2xl font-bold hover:text-chart-1 px-6">
+          Tarkov.db
+        </Link>
 
-        {/* Linki na środku (ukrywane na małych ekranach) */}
-        <div className="hidden md:flex absolute left-1/2 transform -translate-x-1/2">
+        {/* Desktop nav & Search */}
+        <div className="hidden md:flex items-center space-x-6 flex-1">
           <NavigationMenu>
             <NavigationMenuList className="flex space-x-4">
               {navLinks.map((link) => (
@@ -54,28 +52,46 @@ export const Header = () => {
               ))}
             </NavigationMenuList>
           </NavigationMenu>
+          <div className="ml-auto ">
+            <SearchBar />
+          </div>
         </div>
 
-        <div className="flex px-2 gap-6">
-          <SearchBar />
-        </div>
-        {/* Hamburger menu po prawej (tylko na małych ekranach) */}
-        <div className="md:hidden">
-          <DropdownMenu>
-            <DropdownMenuTrigger className="focus:outline-none">
-              <MenuIcon className="w-8 h-8" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-screen mt-3 flex flex-col justify-center gap-6 bg-chart-5">
-              {navLinks.map((link) => (
-                <DropdownMenuItem
-                  key={link.title}
-                  className="text-xl justify-center py-2"
-                >
-                  <Link href={link.href}>{link.title}</Link>
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+        {/* Mobile hamburger + sheet (SearchBar przeniesiony do środka) */}
+        <div className="flex md:hidden items-center">
+          <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+            <SheetTrigger asChild>
+              <button className="p-2 rounded-md focus:outline-none">
+                {mobileOpen ? (
+                  <MenuIcon className="w-6 h-6" />
+                ) : (
+                  <MenuIcon className="w-6 h-6" />
+                )}
+              </button>
+            </SheetTrigger>
+            <SheetContent
+              side="right"
+              className="bg-black/60 backdrop-blur-sm w-full max-w-sm"
+            >
+              <div className="px-4 py-6 space-y-6">
+                {/* SearchBar wewnątrz Sheet */}
+                <SearchBar />
+
+                {/* Linki */}
+                <SheetTitle className="text-muted">Menu</SheetTitle>
+                {navLinks.map((link) => (
+                  <Link
+                    key={link.title}
+                    href={link.href}
+                    className="block text-lg font-medium"
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    {link.title}
+                  </Link>
+                ))}
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
     </header>
