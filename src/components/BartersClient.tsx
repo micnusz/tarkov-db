@@ -3,7 +3,7 @@
 import { client } from "@/app/api/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
-import { Barter, Item } from "@/app/api/types";
+import { Barter } from "@/app/api/types";
 import { useMemo } from "react";
 import Link from "next/link";
 import DefaultHeader from "./ui/default-header";
@@ -19,13 +19,13 @@ const BartersClient = () => {
   const columnHelper = createColumnHelper<Barter>();
   const columns: ColumnDef<Barter, any>[] = useMemo(
     () => [
-      columnHelper.accessor((row) => row.trader ?? "", {
+      columnHelper.accessor((row) => row.trader?.name ?? "", {
         id: "trader",
         header: (info) => <DefaultHeader info={info} name="Trader" />,
         cell: (info) => {
-          const trader = info.getValue();
-          const rowData = info.row.original;
-          const level = rowData.level ?? rowData.barter?.level ?? null; // dopasuj, jeśli potrzebne
+          const trader = info.row.original.trader;
+          const level =
+            info.row.original.level ?? info.row.original.level ?? null;
 
           return trader ? (
             <div className="relative w-16 h-16">
@@ -44,15 +44,12 @@ const BartersClient = () => {
             <span className="text-gray-400 italic">N/A</span>
           );
         },
-        enableSorting: true,
-        enableHiding: true,
       }),
 
       columnHelper.accessor((row) => row.rewardItems?.[0]?.item.name ?? "", {
         id: "name",
         header: (info) => <DefaultHeader info={info} name="Reward" />,
         cell: (info) => {
-          const name = info.getValue();
           const rowData = info.row.original;
           const reward = rowData.rewardItems?.[0];
           const item = reward?.item;
@@ -148,9 +145,8 @@ const BartersClient = () => {
             return <span className="text-gray-400 italic">N/A</span>;
           }
 
-          // Sumujemy koszt = ilość (count lub quantity) * avg24hPrice dla każdego itemu
           const totalCost = requiredItems.reduce(
-            (sum, { item, count, quantity }) => {
+            (sum: number, { item, count, quantity }) => {
               const qty = quantity ?? count ?? 0;
               const price =
                 typeof item.avg24hPrice === "number" ? item.avg24hPrice : 0;

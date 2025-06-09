@@ -3,9 +3,22 @@ import { client } from "@/app/api/client";
 import { getQueryClient } from "@/lib/get-query-client";
 import ItemPageClient from "./ItemPageClient";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import { Metadata } from "next";
 
 type Props = {
-  params: { id: string };
+  params: { id: string; name: string };
+};
+
+export const generateMetadata = async ({
+  params,
+}: Props): Promise<Metadata> => {
+  const { id } = await params;
+  const items = await client.getItemIdName(id);
+  const name = items?.[0]?.name ?? "Default title";
+  return {
+    title: `${name} - Tarkov.db`,
+    description: `Tarkov.db, ${name}`,
+  };
 };
 
 const ItemPageServer = async ({ params }: Props) => {

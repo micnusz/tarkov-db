@@ -7,6 +7,7 @@ import {
   GET_BARTERS,
   GET_CONTAINERS_ITEMS,
   GET_ITEM_ID,
+  GET_ITEM_ID_NAME,
   GET_ITEMS,
   GET_ITEMS_SEARCH_BAR,
   GET_TASKS,
@@ -14,38 +15,43 @@ import {
   GET_WEAPON_ID,
 } from "@/lib/queries";
 import {
-  AmmoProperties,
-  BackpackItem,
-  Barter,
-  GetAmmoResponse,
-  GetBackpacksResponse,
-  GetBartersResponse,
-  GetItemsResponse,
-  GetTasksResponse,
-  GetTradersResponse,
-  GetWeaponResponse,
-  Item,
-  Task,
-  Trader,
-  WeaponItem,
+  GetItems,
+  GetItemById,
+  GetItemsSearchBar,
+  GetAmmoCaliber,
+  GetOnlyWeapons,
+  GetWeaponById,
+  GetTraders,
+  GetBackpacks,
+  GetBackpackById,
+  GetTasks,
+  GetBarterItems,
+  GetContainerItems,
+  GetBarters,
 } from "./types";
 import { graphqlClient } from "@/lib/graphql-client";
 
 export const client = {
-  async getItems(): Promise<Item[]> {
-    const data = await graphqlClient.request<GetItemsResponse>(GET_ITEMS);
+  async getItems(): Promise<GetItems["items"]> {
+    const data = await graphqlClient.request<GetItems>(GET_ITEMS);
     return data.items;
   },
 
-  async getItem(id: string): Promise<Item[]> {
-    const data = await graphqlClient.request<GetItemsResponse>(GET_ITEM_ID, {
+  async getItem(id: string): Promise<GetItemById["items"]> {
+    const data = await graphqlClient.request<GetItemById>(GET_ITEM_ID, {
+      ids: [id],
+    });
+    return data.items;
+  },
+  async getItemIdName(id: string): Promise<GetItemById["items"]> {
+    const data = await graphqlClient.request<GetItemById>(GET_ITEM_ID_NAME, {
       ids: [id],
     });
     return data.items;
   },
 
-  async getItemsSearchBar(name: string): Promise<Item[]> {
-    const data = await graphqlClient.request<GetItemsResponse>(
+  async getItemsSearchBar(name: string): Promise<GetItemsSearchBar["items"]> {
+    const data = await graphqlClient.request<GetItemsSearchBar>(
       GET_ITEMS_SEARCH_BAR,
       {
         name: name,
@@ -54,63 +60,59 @@ export const client = {
     return data.items;
   },
 
-  async getAmmo(): Promise<AmmoProperties[]> {
-    const data = await graphqlClient.request<GetAmmoResponse>(GET_AMMO);
+  async getAmmo(): Promise<GetAmmoCaliber["ammo"]> {
+    const data = await graphqlClient.request<GetAmmoCaliber>(GET_AMMO);
     return data.ammo;
   },
 
-  async getWeapons(): Promise<WeaponItem[]> {
-    const data = await graphqlClient.request<GetWeaponResponse>(
-      GET_ALL_WEAPONS
-    );
+  async getWeapons(): Promise<GetOnlyWeapons["items"]> {
+    const data = await graphqlClient.request<GetOnlyWeapons>(GET_ALL_WEAPONS);
     return data.items;
   },
 
-  async getWeapon(id: string): Promise<WeaponItem[]> {
-    const data = await graphqlClient.request<GetWeaponResponse>(GET_WEAPON_ID, {
+  async getWeapon(id: string): Promise<GetWeaponById["items"]> {
+    const data = await graphqlClient.request<GetWeaponById>(GET_WEAPON_ID, {
       ids: [id],
     });
     return data.items;
   },
 
-  async getTraders(): Promise<Trader[]> {
-    const data = await graphqlClient.request<GetTradersResponse>(GET_TRADERS);
+  async getTraders(): Promise<GetTraders["traders"]> {
+    const data = await graphqlClient.request<GetTraders>(GET_TRADERS);
     return data.traders;
   },
 
-  async getBackpacks(): Promise<BackpackItem[]> {
-    const data = await graphqlClient.request<GetBackpacksResponse>(
-      GET_BACKPACKS
-    );
+  async getBackpacks(): Promise<GetBackpacks["items"]> {
+    const data = await graphqlClient.request<GetBackpacks>(GET_BACKPACKS);
     return data.items;
   },
-  async getBackpack(id: string): Promise<BackpackItem[]> {
-    const data = await graphqlClient.request<GetBackpacksResponse>(
-      GET_BACKPACK_ID,
-      {
-        ids: [id],
-      }
-    );
+
+  async getBackpack(id: string): Promise<GetBackpackById["items"]> {
+    const data = await graphqlClient.request<GetBackpackById>(GET_BACKPACK_ID, {
+      ids: [id],
+    });
     return data.items;
   },
-  async getTasks(): Promise<Task[]> {
-    const data = await graphqlClient.request<GetTasksResponse>(GET_TASKS);
+
+  async getTasks(): Promise<GetTasks["tasks"]> {
+    const data = await graphqlClient.request<GetTasks>(GET_TASKS);
     return data.tasks;
   },
-  async getBarterItems(): Promise<Item[]> {
-    const data = await graphqlClient.request<GetItemsResponse>(
-      GET_BARTER_ITEMS
-    );
+
+  async getBarterItems(): Promise<GetBarterItems["items"]> {
+    const data = await graphqlClient.request<GetBarterItems>(GET_BARTER_ITEMS);
     return data.items;
   },
-  async getContainersItems(): Promise<Item[]> {
-    const data = await graphqlClient.request<GetItemsResponse>(
+
+  async getContainersItems(): Promise<GetContainerItems["items"]> {
+    const data = await graphqlClient.request<GetContainerItems>(
       GET_CONTAINERS_ITEMS
     );
     return data.items;
   },
-  async getBarters(): Promise<Barter[]> {
-    const data = await graphqlClient.request<GetBartersResponse>(GET_BARTERS);
+
+  async getBarters(): Promise<GetBarters["barters"]> {
+    const data = await graphqlClient.request<GetBarters>(GET_BARTERS);
     return data.barters;
   },
 };

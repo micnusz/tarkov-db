@@ -20,10 +20,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import React, { useState } from "react";
-import { Barter, Item } from "@/app/api/types";
+import { Barter } from "@/app/api/types";
 
 import { Input } from "../ui/input";
 import { DataTablePagination } from "./data-table-pagination";
+import { Button } from "../ui/button";
 
 interface DataTableBartersProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -37,6 +38,15 @@ export function DataTableBarters<TData extends Barter, TValue>({
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
+  const [selectedTrader, setSelectedTrader] = useState<string | null>(null);
+  const traders = Array.from(
+    new Set((data as Barter[]).map((trader) => trader.trader.name))
+  ).sort();
+  const clearFilters = () => {
+    setColumnFilters([]);
+    setSelectedTrader(null);
+  };
+
   const table = useReactTable({
     columns,
     data,
@@ -68,6 +78,29 @@ export function DataTableBarters<TData extends Barter, TValue>({
           }
           className="max-w-sm"
         />
+      </div>
+      <div className="flex flex-wrap gap-2">
+        {traders.map((trader) => (
+          <Button
+            aria-label={`Trader: ${trader}`}
+            key={trader}
+            variant={selectedTrader === trader ? "default" : "outline"}
+            size="sm"
+            onPointerDown={() => {
+              if (selectedTrader === trader) {
+                clearFilters();
+              } else {
+                setSelectedTrader(trader);
+                setColumnFilters((prev) => [
+                  ...prev.filter((f) => f.id !== "trader"),
+                  { id: "trader", value: trader },
+                ]);
+              }
+            }}
+          >
+            {trader}
+          </Button>
+        ))}
       </div>
       <Table>
         <TableHeader>

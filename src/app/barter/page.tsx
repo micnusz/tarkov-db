@@ -9,7 +9,7 @@ import BartersClient from "@/components/BartersClient";
 
 export const generateMetadata = async (): Promise<Metadata> => {
   return {
-    title: "Barters - Tarkov.db",
+    title: "Barter - Tarkov.db",
     description: "Tarkov.db, Barters",
   };
 };

@@ -1,33 +1,42 @@
 "use client";
 
 import { client } from "@/app/api/client";
-import { VendorBuy, VendorSell } from "@/app/api/types";
+import { Barter, BarterItem, VendorPrice } from "@/app/api/types";
+import { Badge } from "@/components/ui/badge";
 import DefaultHeader from "@/components/ui/default-header";
 import { SimpleDataTable } from "@/components/ui/simple-data-table";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import React, { useMemo } from "react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 type ItemPageClientProps = {
   id: string;
 };
 
 const ItemPageClient = ({ id }: ItemPageClientProps) => {
-  const { data: itemData = [] } = useSuspenseQuery({
+  const { data: itemData } = useSuspenseQuery({
     queryKey: ["item", id],
     queryFn: () => client.getItem(id),
   });
+
   const { data: tradersData } = useSuspenseQuery({
     queryKey: ["traders"],
     queryFn: () => client.getTraders(),
   });
 
-  const columnHelperSell = createColumnHelper<VendorSell>();
-  const columnsSell: ColumnDef<VendorSell, any>[] = useMemo(
+  const columnHelperSell = createColumnHelper<VendorPrice>();
+  const columnsSell: ColumnDef<VendorPrice, any>[] = useMemo(
     () => [
       columnHelperSell.accessor("vendor.name", {
-        id: "icon",
-        header: (info) => <DefaultHeader info={info} name="Icon:" />,
+        id: "name",
+        filterFn: "includesString",
+        header: (info) => <DefaultHeader info={info} name="Trader" />,
         cell: (info) => {
           const vendorName = info.getValue();
           const trader = tradersData.find((t) => t.name === vendorName);
@@ -38,23 +47,10 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
                 <img
                   src={trader.image4xLink}
                   alt={trader.name}
-                  className="rounded-sm w-16"
+                  className="rounded-sm w-16 h-16 object-contain"
                 />
               )}
-            </div>
-          );
-        },
-      }),
-      columnHelperSell.accessor("vendor.name", {
-        id: "name",
-        filterFn: "includesString",
-        header: (info) => <DefaultHeader info={info} name="Vendor:" />,
-        cell: (info) => {
-          const vendorName = info.getValue();
-
-          return (
-            <div className="flex items-center gap-2">
-              <span>{vendorName}</span>
+              <span className="text-md font-medium p-2">{vendorName}</span>
             </div>
           );
         },
@@ -69,8 +65,6 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
           const price = row.price;
           const priceRUB = row.priceRUB;
 
-          console.log(`Vendor: ${vendorName}, USD: ${price}, RUB: ${priceRUB}`);
-
           const value = isUSD ? price : priceRUB;
           const symbol = isUSD ? "$" : "₽";
 
@@ -82,12 +76,13 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
     ],
     [tradersData]
   );
-  const columnHelperBuy = createColumnHelper<VendorBuy>();
-  const columnsBuy: ColumnDef<VendorBuy, any>[] = useMemo(
+  const columnHelperBuy = createColumnHelper<VendorPrice>();
+  const columnsBuy: ColumnDef<VendorPrice, any>[] = useMemo(
     () => [
       columnHelperBuy.accessor("vendor.name", {
-        id: "icon",
-        header: (info) => <DefaultHeader info={info} name="Icon:" />,
+        id: "name",
+        filterFn: "includesString",
+        header: (info) => <DefaultHeader info={info} name="Trader" />,
         cell: (info) => {
           const vendorName = info.getValue();
           const trader = tradersData.find((t) => t.name === vendorName);
@@ -98,27 +93,15 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
                 <img
                   src={trader.image4xLink}
                   alt={trader.name}
-                  className="rounded-sm w-16"
+                  className="rounded-sm w-16 h-16 object-contain"
                 />
               )}
+              <span className="text-md font-medium p-2">{vendorName}</span>
             </div>
           );
         },
       }),
-      columnHelperBuy.accessor("vendor.name", {
-        id: "name",
-        filterFn: "includesString",
-        header: (info) => <DefaultHeader info={info} name="Vendor:" />,
-        cell: (info) => {
-          const vendorName = info.getValue();
 
-          return (
-            <div className="flex items-center gap-2">
-              <span>{vendorName}</span>
-            </div>
-          );
-        },
-      }),
       columnHelperBuy.accessor("price", {
         header: (info) => <DefaultHeader info={info} name="Price:" />,
         cell: (info) => {
@@ -137,6 +120,221 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
     ],
     [tradersData]
   );
+  const columnHelperBarter = createColumnHelper<Barter>();
+  const columnsBarter: ColumnDef<Barter, any>[] = useMemo(
+    () => [
+      columnHelperBarter.accessor((row) => row.trader?.imageLink ?? "", {
+        id: "trader",
+        header: (info) => <DefaultHeader info={info} name="Trader" />,
+        cell: (info) => {
+          const trader = info.row.original?.trader;
+          const level = info.row.original?.level;
+
+          if (!trader || !trader.imageLink || !trader.name) {
+            return <span className="text-gray-400 italic">Brak danych</span>;
+          }
+
+          return (
+            <div className="relative w-16 h-16">
+              <img
+                className="w-16 h-16 aspect-square object-contain"
+                src={trader.imageLink}
+                alt={trader.name}
+              />
+              {level != null && (
+                <Badge className="absolute -top-1 -right-1 text-xs px-1.5 py-0.5">
+                  Lv. {level}
+                </Badge>
+              )}
+            </div>
+          );
+        },
+      }),
+      columnHelperBarter.accessor(
+        (row) => row.rewardItems?.[0]?.item?.name ?? "",
+        {
+          id: "name",
+          header: (info) => <DefaultHeader info={info} name="Reward" />,
+          cell: (info) => {
+            const reward = info.row.original.rewardItems?.[0];
+            const item = reward?.item;
+            const amount = reward?.count ?? reward?.quantity;
+
+            if (!item || !item.id) {
+              return <span className="text-gray-400 italic">N/A</span>;
+            }
+
+            return (
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="relative shrink-0">
+                  {item.gridImageLink && (
+                    <img
+                      src={item.gridImageLink}
+                      alt={item.name}
+                      className="w-[5rem] aspect-square object-contain shrink-0"
+                    />
+                  )}
+                  {amount !== undefined && (
+                    <Badge className="bg-chart-3 absolute -top-1 -right-1 text-xs px-1.5 py-0.5">
+                      {amount}
+                    </Badge>
+                  )}
+                </div>
+                <span className="text-sm font-medium truncate">
+                  {item.name}
+                </span>
+              </div>
+            );
+          },
+          filterFn: "includesString",
+        }
+      ),
+      columnHelperBarter.accessor((row) => row.requiredItems ?? "", {
+        id: "required",
+        header: (info) => <DefaultHeader info={info} name="Required" />,
+        cell: (info) => {
+          const requiredItems = info.getValue();
+
+          if (!requiredItems.length) {
+            return <span className="text-gray-400 italic">N/A</span>;
+          }
+
+          return (
+            <div className="flex flex-col gap-2">
+              {requiredItems.map(({ item, count, quantity }: BarterItem) => {
+                const amount = quantity ?? count;
+
+                return (
+                  <div key={item.id} className="flex items-center gap-3">
+                    <div className="relative w-12 h-12">
+                      {item.gridImageLink && (
+                        <img
+                          src={item.gridImageLink}
+                          alt={item.name}
+                          className="w-12 h-12 aspect-square object-contain"
+                        />
+                      )}
+                      {amount !== undefined && (
+                        <Badge className="bg-chart-3 absolute -top-1 -right-1 text-xs px-1.5 py-0.5">
+                          {amount}
+                        </Badge>
+                      )}
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-sm font-medium">{item.name}</span>
+                      <span className="text-xs text-gray-500">
+                        {amount !== undefined ? `${amount} x ` : ""}
+                        {typeof item.avg24hPrice === "number"
+                          ? `${item.avg24hPrice.toLocaleString("de-DE")}₽`
+                          : "N/A"}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          );
+        },
+        enableSorting: false,
+        enableHiding: false,
+      }),
+      columnHelperBarter.accessor((row) => row.requiredItems ?? "", {
+        id: "cost",
+        header: (info) => <DefaultHeader info={info} name="Barter Cost" />,
+        cell: (info) => {
+          const requiredItems = info.getValue();
+
+          if (!requiredItems.length) {
+            return <span className="text-gray-400 italic">N/A</span>;
+          }
+
+          const totalCost = requiredItems.reduce(
+            (sum: number, { item, count, quantity }: BarterItem) => {
+              const qty = quantity ?? count ?? 0;
+              const price =
+                typeof item.avg24hPrice === "number" ? item.avg24hPrice : 0;
+              return sum + qty * price;
+            },
+            0
+          );
+
+          return (
+            <div className="text-sm font-medium">
+              {totalCost > 0 ? (
+                `${totalCost.toLocaleString("de-DE")}₽`
+              ) : (
+                <span className="text-gray-400 italic">N/A</span>
+              )}
+            </div>
+          );
+        },
+        enableSorting: true,
+        enableHiding: true,
+      }),
+      columnHelperBarter.accessor(
+        (row) => row.rewardItems?.[0]?.item.avg24hPrice ?? null,
+        {
+          id: "fleaCost",
+          header: (info) => (
+            <DefaultHeader info={info} name="Avg Flea Cost (24h)" />
+          ),
+          cell: (info) => {
+            const price = info.getValue();
+
+            return typeof price === "number" ? (
+              <span className="text-sm font-medium">
+                {price.toLocaleString("de-DE")}₽
+              </span>
+            ) : (
+              <span className="text-gray-400 italic">N/A</span>
+            );
+          },
+          enableSorting: true,
+          enableHiding: true,
+        }
+      ),
+      columnHelperBarter.accessor((row) => row, {
+        id: "profit",
+        header: (info) => <DefaultHeader info={info} name="Barter profit" />,
+        cell: (info) => {
+          const row = info.getValue();
+
+          const rewardItem = row.rewardItems?.[0]?.item;
+          const rewardPrice = rewardItem?.avg24hPrice ?? 0;
+
+          const requiredItems = row.requiredItems ?? [];
+          const barterCost = requiredItems.reduce(
+            (total: number, { item, count = 1, quantity = 1 }: BarterItem) => {
+              const itemPrice = item?.avg24hPrice ?? 0;
+              const qty = quantity ?? count;
+              return total + itemPrice * qty;
+            },
+            0
+          );
+
+          const profit = rewardPrice - barterCost;
+          const formattedProfit = profit.toLocaleString("de-DE") + "₽";
+
+          return (
+            <span
+              className={
+                profit > 0
+                  ? "text-green-600"
+                  : profit < 0
+                  ? "text-red-600"
+                  : "text-gray-600"
+              }
+            >
+              {formattedProfit}
+            </span>
+          );
+        },
+        enableSorting: true,
+        enableHiding: false,
+      }),
+    ],
+    []
+  );
 
   return (
     <div>
@@ -150,7 +348,12 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
               <h2 className="mt-4 border-b pb-2 text-2xl font-semibold tracking-tight">
                 Description:
               </h2>
-              <p className="leading-7 mt-2">{item.description}</p>
+              {item.description ? (
+                <p className="leading-7 mt-2">{item.description}</p>
+              ) : (
+                <p className="leading-7 mt-2">No Description...</p>
+              )}
+
               <a
                 href={item.wikiLink}
                 className="text-chart-1 hover:text-muted mt-2 inline-block"
@@ -169,30 +372,37 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
               />
             </div>
           </div>
-
-          <div className="mb-6">
-            <h2 className="border-b pb-2 text-3xl font-semibold tracking-tight">
-              Sell for:
-            </h2>
-            {tradersData && (
-              <SimpleDataTable data={item.sellFor} columns={columnsSell} />
-            )}
-          </div>
-
-          <div className="mb-6">
-            <h2 className="border-b pb-2 text-3xl font-semibold tracking-tight">
-              Buy for:
-            </h2>
-            {tradersData && (
-              <SimpleDataTable data={item.buyFor} columns={columnsBuy} />
-            )}
-          </div>
-
-          <div className="mb-6">
-            <h2 className="border-b pb-2 text-3xl font-semibold tracking-tight">
-              Statistics:
-            </h2>
-          </div>
+          <Accordion type="multiple" className="w-full">
+            <AccordionItem value="item-1">
+              <AccordionTrigger className="text-lg">Buy For:</AccordionTrigger>
+              <AccordionContent className="flex flex-col gap-4 text-balance">
+                {tradersData && (
+                  <SimpleDataTable data={item.buyFor} columns={columnsBuy} />
+                )}
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="item-2">
+              <AccordionTrigger className="text-lg">Sell for:</AccordionTrigger>
+              <AccordionContent className="flex flex-col gap-4 text-balance">
+                {tradersData && (
+                  <SimpleDataTable data={item.sellFor} columns={columnsSell} />
+                )}
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="item-3">
+              <AccordionTrigger className="text-lg">Barters:</AccordionTrigger>
+              <AccordionContent className="flex flex-col gap-4 text-balance">
+                {item.bartersFor && item.bartersFor.length > 0 ? (
+                  <SimpleDataTable
+                    data={item.bartersFor}
+                    columns={columnsBarter}
+                  />
+                ) : (
+                  <p className="text-muted-foreground italic">No Barters</p>
+                )}
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </div>
       ))}
     </div>

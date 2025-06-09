@@ -54,9 +54,51 @@ export const GET_ITEM_ID = gql`
       description
       basePrice
       image8xLink
-      iconLink
       wikiLink
       gridImageLink
+      bartersFor {
+        buyLimit
+        taskUnlock {
+          name
+        }
+        level
+        rewardItems {
+          item {
+            wikiLink
+            avg24hPrice
+            category {
+              name
+            }
+            image8xLink
+            gridImageLink
+            name
+            id
+            avg24hPrice
+          }
+          quantity
+          count
+        }
+        requiredItems {
+          item {
+            wikiLink
+            avg24hPrice
+            category {
+              name
+            }
+            image8xLink
+            gridImageLink
+            name
+            id
+            avg24hPrice
+          }
+          quantity
+          count
+        }
+        trader {
+          name
+          imageLink
+        }
+      }
       buyFor {
         vendor {
           name
@@ -71,19 +113,14 @@ export const GET_ITEM_ID = gql`
         price
         priceRUB
       }
-      properties {
-        __typename
-        ... on ItemPropertiesBackpack {
-          turnPenalty
-          ergoPenalty
-          speedPenalty
-          capacity
-          grids {
-            width
-            height
-          }
-        }
-      }
+    }
+  }
+`;
+export const GET_ITEM_ID_NAME = gql`
+  query GetItemIdName($ids: [ID]) {
+    items(ids: $ids) {
+      id
+      name
     }
   }
 `;

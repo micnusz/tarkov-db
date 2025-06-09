@@ -1,281 +1,296 @@
-export type Category = {
-  id: string;
-  name: string;
-  parent: {
+export type GetItems = {
+  items: {
     name: string;
     id: string;
-  };
-};
-
-export type Item = {
-  id: string;
-  name: string;
-  shortName: string;
-  description?: string;
-  basePrice: number;
-  avg24hPrice?: number;
-  low24hPrice?: number;
-  high24hPrice?: number;
-  image8xLink?: string;
-  iconLink?: string;
-  gridImageLink?: string;
-  wikiLink: string;
-  sellFor: VendorSell[];
-  buyFor: VendorBuy[];
-  category: Category | null;
-  properties: ItemProperties | null;
-};
-
-export type GetItemsResponse = {
-  items: Item[];
-};
-
-export type ItemProperties =
-  | AmmoProperties
-  | WeaponItemProperties
-  | BackpackItemProperties
-  | OtherProperties; // fallback for unknown types
-
-export type GetItemCategoriesResponse = {
-  items: Item[];
-};
-
-export type AmmoItem = {
-  id: string;
-  name: string;
-  basePrice: number;
-  iconLink: string;
-};
-
-export interface AmmoProperties {
-  __typename: "ItemPropertiesAmmo";
-  caliber: string;
-  penetrationPower: number;
-  damage: number;
-  armorDamage: number;
-  accuracyModifier: number;
-  recoilModifier: number;
-  fragmentationChance: number;
-  initialSpeed: number;
-  ricochetChance: number;
-  penetrationChance: number;
-  penetrationPowerDeviation: number;
-  item: AmmoItem;
-}
-
-export type GetAmmoResponse = {
-  ammo: AmmoProperties[];
-};
-
-export type Trader = {
-  image4xLink: string;
-  id: string;
-  name: string;
-  currency: string;
-};
-
-export type GetTradersResponse = {
-  traders: Trader[];
-};
-
-export interface WeaponItem {
-  id: string;
-  name: string;
-  shortName: string;
-  types: string[];
-  basePrice: number;
-  description: string;
-  category: {
-    name: string;
-    id: string;
-  };
-  wikiLink: string;
-  image8xLink: string;
-  sellFor: VendorSell[];
-  buyFor: VendorBuy[];
-  properties: WeaponItemProperties | null;
-}
-
-export interface WeaponItemProperties {
-  __typename: "ItemPropertiesWeapon";
-  caliber: string;
-  fireRate: number;
-  recoilVertical: number;
-  recoilHorizontal: number;
-  ergonomics: number;
-  effectiveDistance: number;
-}
-
-export interface VendorSell {
-  vendor: {
-    name: string;
-  };
-  price: number;
-  priceRUB: number;
-}
-export type VendorBuy = {
-  vendor: {
-    name: string;
-  };
-  price: number;
-  priceRUB: number;
-};
-
-export type WeaponProperties = WeaponItemProperties | OtherProperties;
-
-export type GetWeaponResponse = {
-  items: WeaponItem[];
-};
-
-export interface OtherProperties {
-  __typename: string;
-}
-
-export interface BackpackItem {
-  id: string;
-  name: string;
-  shortName: string;
-  types: string[];
-  basePrice: number;
-  weight: number;
-  description: string;
-  wikiLink: string;
-  image8xLink: string;
-  iconLink: string;
-  gridImageLink: string;
-  sellFor: VendorSell[];
-  buyFor: VendorBuy[];
-  properties: BackpackItemProperties | null;
-}
-
-export interface BackpackItemProperties {
-  __typename: "ItemPropertiesBackpack";
-  turnPenalty: number;
-  ergoPenalty: number;
-  speedPenalty: number;
-  capacity: number;
-  grids: BackpackGrid[];
-}
-
-export interface BackpackGrid {
-  width: number;
-  height: number;
-}
-
-export interface OtherProperties {
-  __typename: string;
-}
-
-export interface GetBackpacksResponse {
-  items: BackpackItem[];
-}
-
-export type GetTasksResponse = {
-  tasks: Task[];
-};
-
-export type Task = {
-  id: string;
-  name: string;
-  experience: number;
-  kappaRequired: boolean;
-  lightkeeperRequired: boolean;
-  minPlayerLevel: number;
-  taskImageLink: string;
-  wikiLink: string;
-  successMessageId?: string;
-  taskRequirements: TaskRequirement[];
-  startRewards: TaskRewards;
-  finishRewards: TaskRewardsWithSkills;
-  objectives: TaskObjective[];
-  map: TaskMap | null;
-  trader: TaskTrader;
-};
-
-export type TaskRequirement = {
-  task: {
-    id: string;
-    name: string;
-  };
-};
-
-export type TaskRewards = {
-  items: TaskRewardItem[];
-};
-
-export type TaskRewardsWithSkills = TaskRewards & {
-  skillLevelReward?: SkillLevelReward | null;
-};
-
-export type TaskRewardItem = {
-  quantity?: number | null;
-  count?: number | null;
-  item: {
-    id?: string;
-    name: string;
-  };
-};
-
-export type SkillLevelReward = {
-  name: string;
-  level: number;
-};
-
-export type TaskObjective = {
-  id: string;
-  description: string;
-  optional?: boolean;
-  maps?: TaskMap[];
-};
-
-export type TaskMap = {
-  id: string;
-  name: string;
-};
-
-export type TaskTrader = {
-  id: string;
-  name: string;
-  imageLink: string;
-  image4xLink: string;
-  reputationLevels: {
-    __typename: string;
+    gridImageLink: string;
+    wikiLink: string;
+    category: {
+      parent: {
+        name: string;
+        id: string;
+      } | null;
+      name: string;
+      id: string;
+    };
+    buyFor: {
+      vendor: {
+        name: string;
+      };
+      price: number;
+      priceRUB: number;
+    }[];
+    sellFor: {
+      vendor: {
+        name: string;
+      };
+      price: number;
+      priceRUB: number;
+    }[];
+    avg24hPrice: number;
+    low24hPrice: number;
+    high24hPrice: number;
   }[];
 };
 
-export type GetBartersResponse = {
-  barters: Barter[];
+export type GetItemsSearchBar = {
+  items: {
+    id: string;
+    name: string;
+  }[];
+};
+
+export type GetItemById = {
+  items: {
+    id: string;
+    name: string;
+    shortName: string;
+    description: string;
+    basePrice: number;
+    image8xLink: string;
+    wikiLink: string;
+    gridImageLink: string;
+    bartersFor: Barter[];
+    buyFor: VendorPrice[];
+    sellFor: VendorPrice[];
+  }[];
 };
 
 export type Barter = {
-  buyLimit?: number | null;
-  taskUnlock?: TaskUnlock | null;
+  buyLimit: number;
+  taskUnlock: {
+    name: string;
+  } | null;
   level: number;
-  requiredItems: BarterItem[];
   rewardItems: BarterItem[];
+  requiredItems: BarterItem[];
   trader: {
     name: string;
     imageLink: string;
   };
 };
 
-export type TaskUnlock = {
-  name: string;
-};
-
 export type BarterItem = {
   item: {
     wikiLink: string;
-    avg24hPrice: string;
-    id: string;
+    avg24hPrice: number;
+    category: {
+      name: string;
+    };
+    image8xLink: string;
+    gridImageLink: string;
     name: string;
-    gridImageLink?: string;
-    category?: CategoryBarter | null;
+    id: string;
   };
-  quantity?: number | null;
-  count?: number | null;
+  quantity: number;
+  count: number;
 };
 
-export type CategoryBarter = {
+export type VendorPrice = {
+  vendor: {
+    name: string;
+  };
+  price: number;
+  priceRUB: number;
+};
+
+export type GetAmmoCaliber = {
+  ammo: {
+    __typename: string;
+    caliber: string;
+    penetrationPower: number;
+    damage: number;
+    armorDamage: number;
+    accuracyModifier: number;
+    recoilModifier: number;
+    fragmentationChance: number;
+    initialSpeed: number;
+    ricochetChance: number;
+    penetrationChance: number;
+    penetrationPowerDeviation: number;
+    item: {
+      id: string;
+      name: string;
+      basePrice: number;
+      iconLink: string;
+    };
+  }[];
+};
+
+export type GetOnlyWeapons = {
+  items: (WeaponItem & {
+    properties: WeaponProperties;
+  })[];
+};
+
+export type WeaponItem = {
+  id: string;
   name: string;
+  shortName: string;
+  category: {
+    name: string;
+    id: string;
+  };
+  types: string[];
+  basePrice: number;
+  image8xLink: string;
+  gridImageLink: string;
+  buyFor: VendorPrice[];
+  sellFor: VendorPrice[];
+};
+
+export type WeaponProperties = {
+  __typename: string;
+  caliber: string;
+  fireRate: number;
+  recoilVertical: number;
+  recoilHorizontal: number;
+  ergonomics: number;
+  effectiveDistance: number;
+};
+
+export type GetWeaponById = {
+  items: (WeaponItem & {
+    shortName: string;
+    description: string;
+    wikiLink: string;
+    properties: WeaponProperties;
+  })[];
+};
+
+export type GetTraders = {
+  traders: {
+    image4xLink: string;
+    id: string;
+    name: string;
+  }[];
+};
+
+export type GetBackpacks = {
+  items: BackpackItem[];
+};
+
+export type GetBackpackById = {
+  items: BackpackItem[];
+};
+
+export type BackpackItem = {
+  id: string;
+  name: string;
+  shortName: string;
+  description: string;
+  wikiLink: string;
+  types: string[];
+  basePrice: number;
+  weight: number;
+  image8xLink: string;
+  iconLink: string;
+  gridImageLink: string;
+  buyFor: VendorPrice[];
+  sellFor: VendorPrice[];
+  properties: {
+    __typename: string;
+    turnPenalty: number;
+    ergoPenalty: number;
+    speedPenalty: number;
+    capacity: number;
+    grids: {
+      width: number;
+      height: number;
+    }[];
+  };
+};
+
+export type GetTasks = {
+  tasks: {
+    successMessageId: string;
+    id: string;
+    kappaRequired: boolean;
+    taskImageLink: string;
+    name: string;
+    experience: number;
+    minPlayerLevel: number;
+    lightkeeperRequired: boolean;
+    wikiLink: string;
+    taskRequirements: {
+      task: {
+        id: string;
+        name: string;
+      };
+    }[];
+    startRewards: {
+      items: RewardItem[];
+    };
+    finishRewards: {
+      items: RewardItem[];
+      skillLevelReward: {
+        name: string;
+        level: number;
+      } | null;
+    };
+    objectives: {
+      maps: {
+        name: string;
+        id: string;
+      }[];
+      description: string;
+      id: string;
+      optional: boolean;
+    }[];
+    map: {
+      name: string;
+      id: string;
+    } | null;
+    trader: {
+      id: string;
+      name: string;
+      imageLink: string;
+      image4xLink: string;
+      reputationLevels: {
+        __typename: string;
+      }[];
+    };
+  }[];
+};
+
+export type RewardItem = {
+  quantity: number;
+  count: number;
+  item: {
+    id?: string;
+    name: string;
+  };
+};
+
+export type GetBarterItems = {
+  items: BarterItemBase[];
+};
+
+export type GetContainerItems = {
+  items: BarterItemBase[];
+};
+
+export type BarterItemBase = {
+  id: string;
+  name: string;
+  shortName: string;
+  category: {
+    name: string;
+    id: string;
+    parent?: {
+      name: string;
+      id: string;
+    };
+  };
+  types: string[];
+  basePrice: number;
+  image8xLink: string;
+  gridImageLink: string;
+  wikiLink: string;
+  buyFor: VendorPrice[];
+  sellFor: VendorPrice[];
+  avg24hPrice: number;
+};
+
+export type GetBarters = {
+  barters: Barter[];
 };
