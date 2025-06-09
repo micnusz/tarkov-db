@@ -1,20 +1,19 @@
 "use client";
 
 import { client } from "@/app/api/client";
+import { Item } from "@/app/api/types";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
-import { Item } from "@/app/api/types";
 import { useMemo } from "react";
-import Link from "next/link";
 import DefaultHeader from "./ui/default-header";
-import { DataTableFleaMarket } from "./data-table/data-table-flea";
+import Link from "next/link";
+import { DataTableBarterItems } from "./data-table/data-table-barter-items";
 
-const FleaMarketClient = () => {
-  const { data: itemsFlea } = useSuspenseQuery({
-    queryKey: ["items"],
-    queryFn: () => client.getItems(),
+const BarterItemsClient = () => {
+  const { data } = useSuspenseQuery({
+    queryKey: ["barter-items"],
+    queryFn: () => client.getBarterItems(),
   });
-
   const columnHelper = createColumnHelper<Item>();
   const columns: ColumnDef<Item, any>[] = useMemo(
     () => [
@@ -56,25 +55,21 @@ const FleaMarketClient = () => {
           );
         },
       }),
-      columnHelper.accessor((row) => row.category?.parent.name ?? "", {
+      columnHelper.accessor((row) => row.category?.name ?? "", {
         id: "category",
         header: (info) => <DefaultHeader info={info} name="Category" />,
         cell: (info) => {
           const row = info.row.original;
           const name = row.category?.name;
-          const parentName = row.category?.parent.name;
 
           return name ? (
-            <div className="flex flex-col ">
-              <span className="text-sm text-muted">{parentName}</span>
-              <span className="text-base  font-medium">{name}</span>
-            </div>
+            <span className="text-base font-medium">{name}</span>
           ) : (
             <span className="text-muted italic">N/A</span>
           );
         },
         filterFn: (row, columnId, filterValue) => {
-          const value = row.original.category?.parent.name ?? "";
+          const value = row.original.category?.name ?? "";
           return value.toLowerCase().includes(filterValue.toLowerCase());
         },
       }),
@@ -103,7 +98,7 @@ const FleaMarketClient = () => {
         header: (info) => <DefaultHeader info={info} name="Avg Price (24h)" />,
         cell: (info) => {
           const value = info.getValue<number | null | undefined>();
-          return value != null ? (
+          return typeof value === "number" ? (
             <div className="flex flex-col">
               <span className="text-sm text-gray-700">Avg</span>
               <span className="text-base font-medium">
@@ -115,73 +110,6 @@ const FleaMarketClient = () => {
           );
         },
       }),
-
-      columnHelper.accessor("low24hPrice", {
-        header: (info) => <DefaultHeader info={info} name="Low Price (24h)" />,
-        cell: (info) => {
-          const value = info.getValue<number | null | undefined>();
-          return value != null ? (
-            <div className="flex flex-col">
-              <span className="text-sm text-gray-700">Low</span>
-              <span className="text-base font-medium">
-                {value.toLocaleString("de-DE")}₽
-              </span>
-            </div>
-          ) : (
-            <span className="text-gray-400 italic">N/A</span>
-          );
-        },
-      }),
-
-      columnHelper.accessor("high24hPrice", {
-        header: (info) => <DefaultHeader info={info} name="High Price (24h)" />,
-        cell: (info) => {
-          const value = info.getValue<number | null | undefined>();
-          return value != null ? (
-            <div className="flex flex-col">
-              <span className="text-sm text-gray-700">High</span>
-              <span className="text-base font-medium">
-                {value.toLocaleString("de-DE")}₽
-              </span>
-            </div>
-          ) : (
-            <span className="text-gray-400 italic">N/A</span>
-          );
-        },
-      }),
-
-      columnHelper.accessor(
-        (row) => {
-          const cheapest =
-            row.buyFor && row.buyFor.length > 0
-              ? row.buyFor.reduce((min, current) =>
-                  current.priceRUB < min.priceRUB ? current : min
-                )
-              : null;
-
-          return cheapest;
-        },
-        {
-          id: "lowestBuyPrice",
-          header: (info) => <DefaultHeader info={info} name="Best to Buy" />,
-          cell: (info) => {
-            const cheapest = info.getValue();
-            return cheapest ? (
-              <div className="flex flex-col">
-                <span className="text-sm text-gray-700">
-                  {cheapest.vendor.name}
-                </span>
-                <span className="text-base font-medium">
-                  {cheapest.priceRUB.toLocaleString("de-DE")}₽
-                </span>
-              </div>
-            ) : (
-              <span className="text-gray-400 italic">N/A</span>
-            );
-          },
-        }
-      ),
-
       columnHelper.accessor(
         (row) => {
           const cheapest =
@@ -198,13 +126,15 @@ const FleaMarketClient = () => {
           header: (info) => <DefaultHeader info={info} name="Best to Sell" />,
           cell: (info) => {
             const cheapest = info.getValue();
-            return cheapest ? (
+            const price = cheapest?.priceRUB;
+
+            return cheapest && typeof price === "number" ? (
               <div className="flex flex-col">
                 <span className="text-sm text-gray-700">
                   {cheapest.vendor.name}
                 </span>
                 <span className="text-base font-medium">
-                  {cheapest.priceRUB.toLocaleString("de-DE")}₽
+                  {price.toLocaleString("de-DE")}₽
                 </span>
               </div>
             ) : (
@@ -219,9 +149,9 @@ const FleaMarketClient = () => {
 
   return (
     <div className="w-full h-full flex-col justify-center items-center p-10">
-      <DataTableFleaMarket data={itemsFlea} columns={columns} />
+      <DataTableBarterItems columns={columns} data={data} />
     </div>
   );
 };
 
-export default FleaMarketClient;
+export default BarterItemsClient;

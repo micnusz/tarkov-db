@@ -71,23 +71,6 @@ export function DataTableSkeleton({
       </div>
       <div className="">
         <Table>
-          <TableHeader>
-            {Array.from({ length: 1 }).map((_, i) => (
-              <TableRow key={i} className="hover:bg-transparent">
-                {Array.from({ length: columnCount }).map((_, j) => (
-                  <TableHead
-                    key={j}
-                    style={{
-                      width: cozyCellWidths[j],
-                      minWidth: shrinkZero ? cozyCellWidths[j] : "auto",
-                    }}
-                  >
-                    <Skeleton className="h-16 mb-2 w-[12rem] md:w-screen" />
-                  </TableHead>
-                ))}
-              </TableRow>
-            ))}
-          </TableHeader>
           <TableBody>
             {Array.from({ length: rowCount }).map((_, i) => (
               <TableRow key={i} className="hover:bg-transparent">

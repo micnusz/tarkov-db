@@ -114,17 +114,6 @@ export const GET_AMMO = gql`
   }
 `;
 
-export const GET_ITEM_CATEGORIES = gql`
-  query GetItemCategories {
-    items {
-      category {
-        id
-        name
-      }
-    }
-  }
-`;
-
 export const GET_ALL_WEAPONS = gql`
   query GetOnlyWeapons {
     items(types: [gun]) {
@@ -371,6 +360,134 @@ export const GET_TASKS = gql`
         reputationLevels {
           __typename
         }
+      }
+    }
+  }
+`;
+
+export const GET_BARTER_ITEMS = gql`
+  query GetBarterItems {
+    items(types: [barter]) {
+      id
+      name
+      shortName
+      category {
+        name
+        id
+      }
+      types
+      basePrice
+      image8xLink
+      gridImageLink
+      wikiLink
+      category {
+        parent {
+          name
+          id
+        }
+        name
+        id
+      }
+      buyFor {
+        vendor {
+          name
+        }
+        price
+        priceRUB
+      }
+      sellFor {
+        vendor {
+          name
+        }
+        price
+        priceRUB
+      }
+      avg24hPrice
+    }
+  }
+`;
+
+export const GET_CONTAINERS_ITEMS = gql`
+  query GetContainerItems {
+    items(types: [container]) {
+      id
+      name
+      shortName
+      wikiLink
+      category {
+        name
+        id
+      }
+      types
+      basePrice
+      image8xLink
+      gridImageLink
+      category {
+        name
+        id
+      }
+      buyFor {
+        vendor {
+          name
+        }
+        price
+        priceRUB
+      }
+      sellFor {
+        vendor {
+          name
+        }
+        price
+        priceRUB
+      }
+      avg24hPrice
+    }
+  }
+`;
+
+export const GET_BARTERS = gql`
+  query GetBarters {
+    barters {
+      buyLimit
+      taskUnlock {
+        name
+      }
+      level
+      requiredItems {
+        item {
+          wikiLink
+          avg24hPrice
+          category {
+            name
+          }
+          image8xLink
+          gridImageLink
+          name
+          id
+          avg24hPrice
+        }
+        quantity
+        count
+      }
+      rewardItems {
+        item {
+          wikiLink
+          avg24hPrice
+          category {
+            name
+          }
+          image8xLink
+          gridImageLink
+          name
+          id
+          avg24hPrice
+        }
+        quantity
+        count
+      }
+      trader {
+        name
+        imageLink
       }
     }
   }

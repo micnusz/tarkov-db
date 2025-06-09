@@ -3,6 +3,9 @@ import {
   GET_AMMO,
   GET_BACKPACK_ID,
   GET_BACKPACKS,
+  GET_BARTER_ITEMS,
+  GET_BARTERS,
+  GET_CONTAINERS_ITEMS,
   GET_ITEM_ID,
   GET_ITEMS,
   GET_ITEMS_SEARCH_BAR,
@@ -13,8 +16,10 @@ import {
 import {
   AmmoProperties,
   BackpackItem,
+  Barter,
   GetAmmoResponse,
   GetBackpacksResponse,
+  GetBartersResponse,
   GetItemsResponse,
   GetTasksResponse,
   GetTradersResponse,
@@ -91,5 +96,21 @@ export const client = {
   async getTasks(): Promise<Task[]> {
     const data = await graphqlClient.request<GetTasksResponse>(GET_TASKS);
     return data.tasks;
+  },
+  async getBarterItems(): Promise<Item[]> {
+    const data = await graphqlClient.request<GetItemsResponse>(
+      GET_BARTER_ITEMS
+    );
+    return data.items;
+  },
+  async getContainersItems(): Promise<Item[]> {
+    const data = await graphqlClient.request<GetItemsResponse>(
+      GET_CONTAINERS_ITEMS
+    );
+    return data.items;
+  },
+  async getBarters(): Promise<Barter[]> {
+    const data = await graphqlClient.request<GetBartersResponse>(GET_BARTERS);
+    return data.barters;
   },
 };

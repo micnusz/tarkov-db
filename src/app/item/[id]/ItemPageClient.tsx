@@ -2,7 +2,6 @@
 
 import { client } from "@/app/api/client";
 import { VendorBuy, VendorSell } from "@/app/api/types";
-import DataTableBuyItem from "@/components/data-table/data-table-buy-item";
 import DefaultHeader from "@/components/ui/default-header";
 import { SimpleDataTable } from "@/components/ui/simple-data-table";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -142,7 +141,7 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
   return (
     <div>
       {itemData.map((item) => (
-        <div key={item.id} className="flex flex-col px-6 md:px-20 mt-15">
+        <div key={item.id} className="flex flex-col p-10">
           <div className="mb-6 flex flex-col md:flex-row gap-6">
             <div className="flex-1">
               <h1 className="text-left text-4xl font-extrabold tracking-tight">

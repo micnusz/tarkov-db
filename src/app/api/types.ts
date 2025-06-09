@@ -242,3 +242,40 @@ export type TaskTrader = {
     __typename: string;
   }[];
 };
+
+export type GetBartersResponse = {
+  barters: Barter[];
+};
+
+export type Barter = {
+  buyLimit?: number | null;
+  taskUnlock?: TaskUnlock | null;
+  level: number;
+  requiredItems: BarterItem[];
+  rewardItems: BarterItem[];
+  trader: {
+    name: string;
+    imageLink: string;
+  };
+};
+
+export type TaskUnlock = {
+  name: string;
+};
+
+export type BarterItem = {
+  item: {
+    wikiLink: string;
+    avg24hPrice: string;
+    id: string;
+    name: string;
+    gridImageLink?: string;
+    category?: CategoryBarter | null;
+  };
+  quantity?: number | null;
+  count?: number | null;
+};
+
+export type CategoryBarter = {
+  name: string;
+};

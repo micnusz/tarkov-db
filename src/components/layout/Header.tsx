@@ -35,12 +35,12 @@ export const Header = () => {
     <header className="bg-chart-5 border-b">
       <div className="max-w-screen mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
         {/* Logo */}
-        <Link href="/" className="text-2xl font-bold hover:text-chart-1 px-6">
+        <Link href="/" className="text-2xl font-bold px-6">
           Tarkov.db
         </Link>
 
         {/* Desktop nav & Search */}
-        <div className="hidden md:flex items-center space-x-6 flex-1">
+        <div className="hidden lg:flex items-center space-x-6 flex-1">
           <NavigationMenu>
             <NavigationMenuList className="flex space-x-4">
               {navLinks.map((link) => (
@@ -58,7 +58,7 @@ export const Header = () => {
         </div>
 
         {/* Mobile hamburger + sheet (SearchBar przeniesiony do środka) */}
-        <div className="flex md:hidden items-center">
+        <div className="flex lg:hidden items-center">
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
             <SheetTrigger asChild>
               <button className="p-2 rounded-md focus:outline-none">
