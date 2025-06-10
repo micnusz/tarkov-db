@@ -71,7 +71,14 @@ const BackpacksPageClient = () => {
       }),
       columnHelper.accessor("weight", {
         header: (info) => <DefaultHeader info={info} name="Weight" />,
-        cell: (info) => info.getValue(),
+        cell: (info) => {
+          const weight = info.getValue();
+          return (
+            <>
+              <span>{info.getValue()}kg</span>
+            </>
+          );
+        },
       }),
       columnHelper.accessor(
         (row) => {

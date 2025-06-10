@@ -8,9 +8,17 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Task } from "@/app/api/types";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
+import { ScrollArea } from "./ui/scroll-area";
+import Link from "next/link";
 
 type TaskDetailsDrawerProps = {
   data: Task | null;
@@ -83,52 +91,66 @@ export default function TaskDetailsDrawer({
             </div>
 
             <div className="flex flex-col gap-6">
-              <div>
-                <h3 className="font-semibold mb-2">Objectives</h3>
-                {task.objectives.length > 0 ? (
-                  <ul className="flex flex-col gap-1">
-                    {task.objectives.map((obj) => (
-                      <li
-                        key={obj.id}
-                        className={`text-sm md:text-base ${
-                          obj.optional ? "text-gray-400 italic" : ""
-                        }`}
-                      >
-                        • {obj.description}
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="italic text-gray-400">None</p>
-                )}
-              </div>
-
-              <div>
-                <h3 className="font-semibold mb-2">Rewards</h3>
-                {task.finishRewards.items.length > 0 ? (
-                  <div className="flex flex-col gap-2">
-                    {task.finishRewards.items.map((reward) => (
-                      <div
-                        key={reward.item.id}
-                        className="text-sm md:text-base"
-                      >
-                        • {reward.item.name}: {reward.count}
+              <Accordion type="single" collapsible>
+                <AccordionItem value="item-1">
+                  <AccordionTrigger className="text-lg">
+                    Objectives
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    {task.objectives.length > 0 ? (
+                      <ScrollArea className="h-[15rem] rounded-md border">
+                        <ul>
+                          {task.objectives.map((obj) => (
+                            <li
+                              key={obj.id}
+                              className={`text-sm md:text-base ${
+                                obj.optional ? "text-gray-400 italic" : ""
+                              }`}
+                            >
+                              • {obj.description}
+                            </li>
+                          ))}
+                        </ul>
+                      </ScrollArea>
+                    ) : (
+                      <p className="italic text-gray-400">None</p>
+                    )}
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="item-2">
+                  <AccordionTrigger className="text-lg">
+                    Rewards
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    {task.finishRewards.items.length > 0 ? (
+                      <ScrollArea className="h-[15rem] rounded-md border ">
+                        <ul className=" p-2">
+                          {task.finishRewards.items.map((reward) => (
+                            <Link
+                              href={`/item/${reward.item.id}`}
+                              prefetch={false}
+                              key={reward.item.id}
+                            >
+                              <li className="text-md md:text-base hover:underline">
+                                • {reward.item.name}: {reward.count}
+                              </li>
+                            </Link>
+                          ))}
+                        </ul>
+                      </ScrollArea>
+                    ) : (
+                      <p className="italic text-gray-400">No rewards</p>
+                    )}
+                    {skillReward?.name && skillReward?.level ? (
+                      <div className="text-sm md:text-base mt-4">
+                        • 🧠 {skillReward.name} level {skillReward.level}
                       </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="italic text-gray-400">No rewards</p>
-                )}
-
-                {skillReward?.name && skillReward?.level ? (
-                  <div className="text-sm md:text-base mt-4">
-                    • 🧠 {skillReward.name} level {skillReward.level}
-                  </div>
-                ) : null}
-              </div>
+                    ) : null}
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
             </div>
           </div>
-
           <DrawerFooter className="flex justify-center mb-6">
             <DrawerClose asChild>
               <Button variant="outline" className="w-32">

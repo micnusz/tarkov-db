@@ -21,10 +21,10 @@ export default function DefaultHeader<TData, TValue>({
   const { table } = info;
 
   return (
-    <div className="h-[4.5rem]">
+    <div className="h-[4.5rem] ">
       <ContextMenu>
         <ContextMenuTrigger
-          className="flex w-full h-full items-center gap-4 cursor-pointer "
+          className="flex w-full h-full items-center gap-4 cursor-pointer justify-center"
           onPointerDown={(e) => {
             e.preventDefault();
             if (e.button == 2) return;

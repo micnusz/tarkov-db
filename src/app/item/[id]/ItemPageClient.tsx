@@ -130,9 +130,6 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
               <h1 className="text-left text-4xl font-extrabold tracking-tight">
                 {item.name}
               </h1>
-              <h2 className="mt-4 border-b pb-2 text-2xl font-semibold tracking-tight">
-                Description:
-              </h2>
               {item.description ? (
                 <p className="leading-7 mt-2">{item.description}</p>
               ) : (
@@ -153,18 +150,12 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
               <img
                 src={item.image8xLink}
                 alt={item.name}
-                className="max-w-1/4 h-auto object-contain"
+                className="min-w-1/4 max-w-1/3 h-auto object-contain"
               />
             </div>
           </div>
           <Accordion type="multiple" className="w-full">
             <AccordionItem value="item-1">
-              <AccordionTrigger className="text-lg">Stats:</AccordionTrigger>
-              <AccordionContent className="flex flex-col gap-4 text-balance">
-                stats
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="item-2">
               <AccordionTrigger className="text-lg">Buy For:</AccordionTrigger>
               <AccordionContent className="flex flex-col gap-4 text-balance">
                 {tradersData && (
@@ -172,7 +163,7 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
                 )}
               </AccordionContent>
             </AccordionItem>
-            <AccordionItem value="item-3">
+            <AccordionItem value="item-2">
               <AccordionTrigger className="text-lg">Sell for:</AccordionTrigger>
               <AccordionContent className="flex flex-col gap-4 text-balance">
                 {tradersData && (
@@ -180,7 +171,7 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
                 )}
               </AccordionContent>
             </AccordionItem>
-            <AccordionItem value="item-4">
+            <AccordionItem value="item-3">
               <AccordionTrigger className="text-lg">Barters:</AccordionTrigger>
               <AccordionContent className="flex flex-col gap-4 text-balance">
                 {item.bartersFor && item.bartersFor.length > 0 ? (

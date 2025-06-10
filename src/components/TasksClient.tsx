@@ -7,7 +7,12 @@ import { useMemo } from "react";
 import { Briefcase, TowerControl } from "lucide-react";
 import DefaultHeader from "./ui/default-header";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
-import { Task, TaskRequirement } from "@/app/api/types";
+import { Task } from "@/app/api/types";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const TasksClient = () => {
   const { data } = useSuspenseQuery({
@@ -16,7 +21,7 @@ const TasksClient = () => {
   });
 
   const columnHelper = createColumnHelper<Task>();
-  const columns: ColumnDef<Task, any>[] = useMemo(
+  const columns: ColumnDef<Task>[] = useMemo(
     () => [
       columnHelper.accessor((row) => row.trader.name, {
         id: "trader",
@@ -60,8 +65,8 @@ const TasksClient = () => {
         cell: (info) => {
           const requirements = info.getValue();
           return requirements && requirements.length > 0 ? (
-            <div className="flex flex-col gap-1">
-              {requirements.map((req: TaskRequirement) => (
+            <div className="flex flex-col gap-1 justify-center">
+              {requirements.map((req) => (
                 <div key={req.task.id} className="text-sm">
                   {req.task.name}
                 </div>
@@ -77,14 +82,14 @@ const TasksClient = () => {
         header: (info) => <DefaultHeader info={info} name="Min. Level" />,
         cell: (info) => info.getValue(),
       }),
-      columnHelper.accessor("map.name", {
-        id: "map.name",
+      columnHelper.accessor("map", {
+        id: "map",
         filterFn: "equals",
         header: (info) => <DefaultHeader info={info} name="Map" />,
         cell: (info) => {
           const mapName = info.getValue();
           return mapName ? (
-            <span className="text-sm">{mapName}</span>
+            <span className="text-sm">{mapName.name}</span>
           ) : (
             <span className="text-gray-400 italic">Any</span>
           );
@@ -103,22 +108,38 @@ const TasksClient = () => {
             const hasAny = kappa || lightkeeper;
 
             return hasAny ? (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 justify-center">
                 {kappa && (
-                  <Briefcase
-                    className="w-5 h-5 object-contain"
-                    aria-label="Icon of kappa container"
-                  />
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <Briefcase
+                        className="w-5 h-5 object-contain"
+                        aria-label="Icon of kappa container"
+                      />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Required for kappa</p>
+                    </TooltipContent>
+                  </Tooltip>
                 )}
                 {lightkeeper && (
-                  <TowerControl
-                    className="w-5 h-5 object-contain"
-                    aria-label="Icon of lighthouse"
-                  />
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <TowerControl
+                        className="w-5 h-5 object-contain"
+                        aria-label="Icon of lighthouse"
+                      />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Required for lighthouse</p>
+                    </TooltipContent>
+                  </Tooltip>
                 )}
               </div>
             ) : (
-              <span className="text-gray-400 italic">Not Req</span>
+              <div className="flex justify-center">
+                <span className="text-gray-400 italic ">Not Required</span>
+              </div>
             );
           },
         }
