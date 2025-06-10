@@ -1,58 +1,101 @@
-export type GetItems = {
-  items: {
-    name: string;
+// ========== VENDOR ========== //
+export type Vendor = {
+  name: string;
+};
+
+export type VendorPrice = {
+  vendor: Vendor;
+  price: number;
+  priceRUB: number;
+};
+
+// ========== CATEGORY ========== //
+export type Category = {
+  id: string;
+  name: string;
+  parent?: {
     id: string;
-    gridImageLink: string;
-    wikiLink: string;
-    category: {
-      parent: {
-        name: string;
-        id: string;
-      } | null;
-      name: string;
-      id: string;
-    };
-    buyFor: {
-      vendor: {
-        name: string;
-      };
-      price: number;
-      priceRUB: number;
+    name: string;
+  } | null;
+};
+
+// ========== ITEM ========== //
+export type BaseItem = {
+  id: string;
+  name: string;
+  shortName?: string;
+  description?: string;
+  basePrice: number;
+  types?: string[];
+  weight?: number;
+  image8xLink: string;
+  gridImageLink: string;
+  iconLink?: string;
+  wikiLink: string;
+  category?: Category;
+  buyFor: VendorPrice[];
+  sellFor: VendorPrice[];
+  avg24hPrice?: number;
+  low24hPrice?: number;
+  high24hPrice?: number;
+};
+
+export type BackpackItem = BaseItem & {
+  properties: {
+    __typename: string;
+    turnPenalty: number;
+    ergoPenalty: number;
+    speedPenalty: number;
+    capacity: number;
+    grids: {
+      width: number;
+      height: number;
     }[];
-    sellFor: {
-      vendor: {
-        name: string;
-      };
-      price: number;
-      priceRUB: number;
-    }[];
-    avg24hPrice: number;
-    low24hPrice: number;
-    high24hPrice: number;
-  }[];
+  };
+};
+
+export type WeaponItem = BaseItem & {
+  category: Category;
+};
+
+export type WeaponProperties = {
+  __typename: string;
+  caliber: string;
+  fireRate: number;
+  recoilVertical: number;
+  recoilHorizontal: number;
+  ergonomics: number;
+  effectiveDistance: number;
+};
+
+// ========== ITEM COLLECTIONS ========== //
+export type Item = BaseItem & {
+  gridImageLink: string;
+};
+
+export type GetItems = {
+  items: Item[];
 };
 
 export type GetItemsSearchBar = {
-  items: {
-    id: string;
-    name: string;
-  }[];
+  items: Pick<Item, "id" | "name">[];
 };
 
 export type GetItemById = {
-  items: {
-    id: string;
-    name: string;
+  items: (Item & {
     shortName: string;
     description: string;
-    basePrice: number;
-    image8xLink: string;
-    wikiLink: string;
-    gridImageLink: string;
     bartersFor: Barter[];
-    buyFor: VendorPrice[];
-    sellFor: VendorPrice[];
-  }[];
+  })[];
+};
+
+// ========== BARTER ========== //
+export type BarterItem = {
+  item: Item & {
+    category: Category;
+  };
+  quantity: number;
+  count: number;
 };
 
 export type Barter = {
@@ -69,83 +112,49 @@ export type Barter = {
   };
 };
 
-export type BarterItem = {
-  item: {
-    wikiLink: string;
-    avg24hPrice: number;
-    category: {
-      name: string;
-    };
-    image8xLink: string;
-    gridImageLink: string;
-    name: string;
-    id: string;
-  };
-  quantity: number;
-  count: number;
+export type GetBarters = {
+  barters: Barter[];
 };
 
-export type VendorPrice = {
-  vendor: {
+export type GetBarterItems = {
+  items: BaseItem[];
+};
+
+export type GetContainerItems = {
+  items: BaseItem[];
+};
+
+// ========== AMMO ========== //
+export type Ammo = {
+  __typename: string;
+  caliber: string;
+  penetrationPower: number;
+  damage: number;
+  armorDamage: number;
+  accuracyModifier: number;
+  recoilModifier: number;
+  fragmentationChance: number;
+  initialSpeed: number;
+  ricochetChance: number;
+  penetrationChance: number;
+  penetrationPowerDeviation: number;
+  item: {
+    id: string;
     name: string;
+    basePrice: number;
+    iconLink: string;
   };
-  price: number;
-  priceRUB: number;
 };
 
 export type GetAmmoCaliber = {
-  ammo: {
-    __typename: string;
-    caliber: string;
-    penetrationPower: number;
-    damage: number;
-    armorDamage: number;
-    accuracyModifier: number;
-    recoilModifier: number;
-    fragmentationChance: number;
-    initialSpeed: number;
-    ricochetChance: number;
-    penetrationChance: number;
-    penetrationPowerDeviation: number;
-    item: {
-      id: string;
-      name: string;
-      basePrice: number;
-      iconLink: string;
-    };
-  }[];
+  ammo: Ammo[];
 };
 
+// ========== WEAPONS ========== //
 export type GetOnlyWeapons = {
   items: (WeaponItem & {
     properties: WeaponProperties;
   })[];
-};
-
-export type WeaponItem = {
-  id: string;
-  name: string;
-  shortName: string;
-  category: {
-    name: string;
-    id: string;
-  };
-  types: string[];
-  basePrice: number;
-  image8xLink: string;
-  gridImageLink: string;
-  buyFor: VendorPrice[];
-  sellFor: VendorPrice[];
-};
-
-export type WeaponProperties = {
-  __typename: string;
-  caliber: string;
-  fireRate: number;
-  recoilVertical: number;
-  recoilHorizontal: number;
-  ergonomics: number;
-  effectiveDistance: number;
 };
 
 export type GetWeaponById = {
@@ -157,14 +166,7 @@ export type GetWeaponById = {
   })[];
 };
 
-export type GetTraders = {
-  traders: {
-    image4xLink: string;
-    id: string;
-    name: string;
-  }[];
-};
-
+// ========== BACKPACKS ========== //
 export type GetBackpacks = {
   items: BackpackItem[];
 };
@@ -173,85 +175,16 @@ export type GetBackpackById = {
   items: BackpackItem[];
 };
 
-export type BackpackItem = {
-  id: string;
-  name: string;
-  shortName: string;
-  description: string;
-  wikiLink: string;
-  types: string[];
-  basePrice: number;
-  weight: number;
-  image8xLink: string;
-  iconLink: string;
-  gridImageLink: string;
-  buyFor: VendorPrice[];
-  sellFor: VendorPrice[];
-  properties: {
-    __typename: string;
-    turnPenalty: number;
-    ergoPenalty: number;
-    speedPenalty: number;
-    capacity: number;
-    grids: {
-      width: number;
-      height: number;
-    }[];
-  };
-};
-
-export type GetTasks = {
-  tasks: {
-    successMessageId: string;
+// ========== TRADERS ========== //
+export type GetTraders = {
+  traders: {
     id: string;
-    kappaRequired: boolean;
-    taskImageLink: string;
     name: string;
-    experience: number;
-    minPlayerLevel: number;
-    lightkeeperRequired: boolean;
-    wikiLink: string;
-    taskRequirements: {
-      task: {
-        id: string;
-        name: string;
-      };
-    }[];
-    startRewards: {
-      items: RewardItem[];
-    };
-    finishRewards: {
-      items: RewardItem[];
-      skillLevelReward: {
-        name: string;
-        level: number;
-      } | null;
-    };
-    objectives: {
-      maps: {
-        name: string;
-        id: string;
-      }[];
-      description: string;
-      id: string;
-      optional: boolean;
-    }[];
-    map: {
-      name: string;
-      id: string;
-    } | null;
-    trader: {
-      id: string;
-      name: string;
-      imageLink: string;
-      image4xLink: string;
-      reputationLevels: {
-        __typename: string;
-      }[];
-    };
+    image4xLink: string;
   }[];
 };
 
+// ========== TASKS ========== //
 export type RewardItem = {
   quantity: number;
   count: number;
@@ -261,36 +194,58 @@ export type RewardItem = {
   };
 };
 
-export type GetBarterItems = {
-  items: BarterItemBase[];
+export type TaskObjective = {
+  maps: {
+    id: string;
+    name: string;
+  }[];
+  description: string;
+  id: string;
+  optional: boolean;
 };
 
-export type GetContainerItems = {
-  items: BarterItemBase[];
-};
-
-export type BarterItemBase = {
+export type Task = {
   id: string;
   name: string;
-  shortName: string;
-  category: {
-    name: string;
-    id: string;
-    parent?: {
-      name: string;
-      id: string;
-    };
-  };
-  types: string[];
-  basePrice: number;
-  image8xLink: string;
-  gridImageLink: string;
+  taskImageLink: string;
+  successMessageId: string;
+  kappaRequired: boolean;
+  experience: number;
+  minPlayerLevel: number;
+  lightkeeperRequired: boolean;
   wikiLink: string;
-  buyFor: VendorPrice[];
-  sellFor: VendorPrice[];
-  avg24hPrice: number;
+  taskRequirements: {
+    task: {
+      id: string;
+      name: string;
+    };
+  }[];
+  startRewards: {
+    items: RewardItem[];
+  };
+  finishRewards: {
+    items: RewardItem[];
+    skillLevelReward: {
+      name: string;
+      level: number;
+    } | null;
+  };
+  objectives: TaskObjective[];
+  map: {
+    id: string;
+    name: string;
+  } | null;
+  trader: {
+    id: string;
+    name: string;
+    imageLink: string;
+    image4xLink: string;
+    reputationLevels: {
+      __typename: string;
+    }[];
+  };
 };
 
-export type GetBarters = {
-  barters: Barter[];
+export type GetTasks = {
+  tasks: Task[];
 };

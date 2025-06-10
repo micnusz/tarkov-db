@@ -1,21 +1,21 @@
 "use client";
 
 import { client } from "@/app/api/client";
-import { Item } from "@/app/api/types";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { useMemo } from "react";
 import DefaultHeader from "./ui/default-header";
 import Link from "next/link";
 import { DataTableContainers } from "./data-table/data-table-containers";
+import { BaseItem } from "@/app/api/types";
 
 const ContainersClient = () => {
   const { data } = useSuspenseQuery({
     queryKey: ["containers"],
     queryFn: () => client.getBarterItems(),
   });
-  const columnHelper = createColumnHelper<Item>();
-  const columns: ColumnDef<Item, any>[] = useMemo(
+  const columnHelper = createColumnHelper<BaseItem>();
+  const columns: ColumnDef<BaseItem, any>[] = useMemo(
     () => [
       columnHelper.accessor((row) => row.gridImageLink, {
         id: "icon",

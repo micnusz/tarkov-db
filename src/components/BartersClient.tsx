@@ -17,7 +17,7 @@ const BartersClient = () => {
   });
 
   const columnHelper = createColumnHelper<Barter>();
-  const columns: ColumnDef<Barter, any>[] = useMemo(
+  const columns: ColumnDef<Barter>[] = useMemo(
     () => [
       columnHelper.accessor((row) => row.trader?.name ?? "", {
         id: "trader",

@@ -19,17 +19,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import React, { useState } from "react";
-import { Item } from "@/app/api/types";
-import { Button } from "../ui/button";
+import React from "react";
 import { Input } from "../ui/input";
 import { DataTablePagination } from "./data-table-pagination";
+import { BaseItem } from "@/app/api/types";
 
 interface DataTableFleaMarketProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
-export function DataTableFleaMarket<TData extends Item, TValue>({
+export function DataTableFleaMarket<TData extends BaseItem, TValue>({
   columns,
   data,
 }: DataTableFleaMarketProps<TData, TValue>) {

@@ -21,9 +21,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import React, { useState } from "react";
-
 import { Button } from "../ui/button";
-import { AmmoProperties } from "@/app/api/types";
+import { Ammo } from "@/app/api/types";
 import { DataTablePagination } from "./data-table-pagination";
 import { Input } from "../ui/input";
 
@@ -31,7 +30,7 @@ interface DataTableAmmoProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
-export function DataTableAmmo<TData extends AmmoProperties, TValue>({
+export function DataTableAmmo<TData extends Ammo, TValue>({
   columns,
   data,
 }: DataTableAmmoProps<TData, TValue>) {
@@ -39,10 +38,9 @@ export function DataTableAmmo<TData extends AmmoProperties, TValue>({
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
-  const [selectedRow, setSelectedRow] = useState<TData | null>(null);
   const [selectedAmmo, setSelectedAmmo] = useState<string | null>(null);
   const ammo = Array.from(
-    new Set((data as AmmoProperties[]).map((ammo) => ammo.caliber))
+    new Set((data as Ammo[]).map((ammo) => ammo.caliber))
   ).sort();
 
   const clearFilters = () => {

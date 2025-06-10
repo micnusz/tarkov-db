@@ -21,6 +21,7 @@ const SearchBar = () => {
   const [search, setSearch] = useState("");
   const [queryText, setQueryText] = useState("");
   const [open, setOpen] = useState(false);
+
   const debouncedSetQueryText = useMemo(
     () =>
       debounce((text: string) => {

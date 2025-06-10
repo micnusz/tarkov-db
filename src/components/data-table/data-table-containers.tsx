@@ -20,7 +20,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import React from "react";
-import { Item } from "@/app/api/types";
+import { BaseItem } from "@/app/api/types";
 import { Input } from "../ui/input";
 import { DataTablePagination } from "./data-table-pagination";
 
@@ -28,7 +28,7 @@ interface DataTableContainersProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
-export function DataTableContainers<TData extends Item, TValue>({
+export function DataTableContainers<TData extends BaseItem, TValue>({
   columns,
   data,
 }: DataTableContainersProps<TData, TValue>) {

@@ -1,21 +1,20 @@
 "use client";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { client } from "../api/client";
-
 import { DataTableAmmo } from "@/components/data-table/data-table-ammo";
-import { AmmoProperties } from "../api/types";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { useMemo } from "react";
 import DefaultHeader from "@/components/ui/default-header";
 import Link from "next/link";
+import { Ammo } from "../api/types";
 
 const AmmoPageClient = () => {
   const { data } = useSuspenseQuery({
     queryKey: ["ammo"],
     queryFn: () => client.getAmmo(),
   });
-  const columnHelper = createColumnHelper<AmmoProperties>();
-  const columns: ColumnDef<AmmoProperties, any>[] = useMemo(
+  const columnHelper = createColumnHelper<Ammo>();
+  const columns: ColumnDef<Ammo, any>[] = useMemo(
     () => [
       columnHelper.accessor("item.iconLink", {
         id: "icon",

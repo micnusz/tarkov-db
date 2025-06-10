@@ -3,11 +3,11 @@
 import { client } from "@/app/api/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
-import { Item } from "@/app/api/types";
 import { useMemo } from "react";
 import Link from "next/link";
 import DefaultHeader from "./ui/default-header";
 import { DataTableFleaMarket } from "./data-table/data-table-flea";
+import { BaseItem } from "@/app/api/types";
 
 const FleaMarketClient = () => {
   const { data: itemsFlea } = useSuspenseQuery({
@@ -15,8 +15,8 @@ const FleaMarketClient = () => {
     queryFn: () => client.getItems(),
   });
 
-  const columnHelper = createColumnHelper<Item>();
-  const columns: ColumnDef<Item, any>[] = useMemo(
+  const columnHelper = createColumnHelper<BaseItem>();
+  const columns: ColumnDef<BaseItem, any>[] = useMemo(
     () => [
       columnHelper.accessor((row) => row.gridImageLink, {
         id: "icon",
@@ -42,6 +42,7 @@ const FleaMarketClient = () => {
       }),
       columnHelper.accessor((row) => row.name, {
         id: "name",
+        filterFn: "includesString",
         header: (info) => <DefaultHeader info={info} name="Name" />,
         cell: (info) => {
           const name = info.getValue();
@@ -56,13 +57,13 @@ const FleaMarketClient = () => {
           );
         },
       }),
-      columnHelper.accessor((row) => row.category?.parent.name ?? "", {
+      columnHelper.accessor((row) => row.category?.parent?.name ?? "", {
         id: "category",
         header: (info) => <DefaultHeader info={info} name="Category" />,
         cell: (info) => {
           const row = info.row.original;
           const name = row.category?.name;
-          const parentName = row.category?.parent.name;
+          const parentName = row.category?.parent?.name;
 
           return name ? (
             <div className="flex flex-col ">
@@ -74,7 +75,7 @@ const FleaMarketClient = () => {
           );
         },
         filterFn: (row, columnId, filterValue) => {
-          const value = row.original.category?.parent.name ?? "";
+          const value = row.original.category?.parent?.name ?? "";
           return value.toLowerCase().includes(filterValue.toLowerCase());
         },
       }),

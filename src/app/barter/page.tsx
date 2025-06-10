@@ -1,7 +1,6 @@
 "use server";
 import { getQueryClient } from "@/lib/get-query-client";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-import FleaMarketClient from "@/components/FleaMarketClient";
 import { Metadata } from "next";
 import React from "react";
 import { client } from "../api/client";
