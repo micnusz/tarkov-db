@@ -438,10 +438,46 @@ export const GET_TASK_ID = gql`
           count
           item {
             name
+            id
           }
         }
       }
       finishRewards {
+        craftUnlock {
+          level
+          station {
+            name
+            id
+          }
+        }
+        traderUnlock {
+          name
+          id
+        }
+        offerUnlock {
+          level
+          trader {
+            id
+            name
+          }
+          item {
+            bartersFor {
+              trader {
+                name
+              }
+            }
+            buyFor {
+              price
+              currency
+              vendor {
+                name
+              }
+            }
+            types
+            name
+            id
+          }
+        }
         items {
           quantity
           count
@@ -460,6 +496,7 @@ export const GET_TASK_ID = gql`
           name
           id
         }
+        optional
         description
         id
         optional
