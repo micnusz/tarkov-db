@@ -19,6 +19,7 @@ import {
 import { Briefcase, TowerControl } from "lucide-react";
 import formatCurrency from "@/components/modules/currency-format";
 import formatExperience from "@/components/modules/experience-format";
+import traderStandingFormat from "@/components/modules/trader-standing-format";
 
 type TaskPageClientProps = {
   id: string;
@@ -152,13 +153,13 @@ const TaskPageClient = ({ id }: TaskPageClientProps) => {
                   ) : null}
                   {taskData.taskRequirements.map((req) => (
                     <li key={req.task.id} className="text-sm md:text-base ">
-                      <Link href={`/task/${req.task.id}`}>
-                        • Must complete -{" "}
-                        <span className="text-chart-2 hover:text-foreground/80 ">
+                      • Must complete -{" "}
+                      <span className="text-chart-2 hover:text-foreground/80 ">
+                        <Link href={`/task/${req.task.id}`}>
                           {req.task.name}
-                        </span>
-                        .
-                      </Link>
+                        </Link>
+                      </span>
+                      .
                     </li>
                   ))}
                 </ul>
@@ -175,12 +176,7 @@ const TaskPageClient = ({ id }: TaskPageClientProps) => {
               <ScrollArea className=" rounded-md border">
                 <ul>
                   {taskData.objectives.map((obj) => (
-                    <li
-                      key={obj.id}
-                      className={`text-sm md:text-base} ${
-                        obj.optional ? "text-gray-400 italic" : ""
-                      }`}
-                    >
+                    <li key={obj.id} className={`text-sm md:text-base`}>
                       • {obj.description}
                     </li>
                   ))}
@@ -244,6 +240,21 @@ const TaskPageClient = ({ id }: TaskPageClientProps) => {
                       ))}
                     </>
                   )}
+                  {/* Trader standing Reward */}
+                  {taskData.finishRewards.traderStanding?.length > 0 && (
+                    <>
+                      {taskData.finishRewards.traderStanding.map((reward) => (
+                        <li
+                          key={reward.trader.id}
+                          className="text-sm md:text-base"
+                          aria-label={`Trader standing reward: ${reward.standing}`}
+                        >
+                          • {traderStandingFormat(reward.standing)}{" "}
+                          {reward.trader.name} Rep
+                        </li>
+                      ))}
+                    </>
+                  )}
                   {/* Items Rewards */}
                   {taskData.finishRewards.items.map((reward) => (
                     <li key={reward.item.id} className="text-md md:text-base ">
@@ -254,7 +265,7 @@ const TaskPageClient = ({ id }: TaskPageClientProps) => {
                       >
                         • {formatCurrency(reward.item.name, reward.count)} x{" "}
                         <span className="text-chart-2 hover:text-foreground/80">
-                          {reward.item.name}
+                          {reward.item.name}.
                         </span>
                       </Link>
                     </li>
@@ -280,6 +291,7 @@ const TaskPageClient = ({ id }: TaskPageClientProps) => {
                         return (
                           isBarter && (
                             <li
+                              className="text-sm md:text-base"
                               key={`barter-${offer.item.id}-${offer.trader.id}-${offer.level}`}
                               aria-label={`Unlocks barter for ${offer.item.name}`}
                             >
@@ -310,6 +322,7 @@ const TaskPageClient = ({ id }: TaskPageClientProps) => {
                         return (
                           isPurchase && (
                             <li
+                              className="text-sm md:text-base"
                               key={`purchase-${offer.item.id}-${offer.trader.id}-${offer.level}`}
                               aria-label={`Unlocks purchase of ${offer.item.name}`}
                             >
@@ -336,6 +349,29 @@ const TaskPageClient = ({ id }: TaskPageClientProps) => {
             )}
           </AccordionContent>
         </AccordionItem>
+        {taskData.failureOutcome.traderStanding.length > 0 ? (
+          <AccordionItem value="item-5">
+            <AccordionTrigger className="text-lg">
+              Failure Penalty:
+            </AccordionTrigger>
+            <AccordionContent className="flex flex-col gap-4 text-balance">
+              <ScrollArea className="rounded-md border">
+                <ul className="p-2">
+                  {taskData.failureOutcome.traderStanding.map((failure) => (
+                    <li
+                      key={failure.trader.id}
+                      className="text-sm md:text-base"
+                      aria-label={`Trader standing penalty: ${failure.standing}`}
+                    >
+                      • {traderStandingFormat(failure.standing)}{" "}
+                      {failure.trader.name} Rep
+                    </li>
+                  ))}
+                </ul>
+              </ScrollArea>
+            </AccordionContent>
+          </AccordionItem>
+        ) : null}
       </Accordion>
     </div>
   );

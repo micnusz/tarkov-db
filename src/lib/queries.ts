@@ -490,6 +490,22 @@ export const GET_TASK_ID = gql`
           name
           level
         }
+        traderStanding {
+          standing
+          trader {
+            name
+            id
+          }
+        }
+      }
+      failureOutcome {
+        traderStanding {
+          standing
+          trader {
+            name
+            id
+          }
+        }
       }
       objectives {
         maps {
