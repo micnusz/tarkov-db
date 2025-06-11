@@ -47,7 +47,6 @@ export function DataTableTasks<TData extends Task, TValue>({
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
-  const [selectedRow, setSelectedRow] = useState<TData | null>(null);
   const [selectedTrader, setSelectedTrader] = useState<string | null>(null);
   const [selectedMap, setSelectedMap] = useState<string | null>(null);
   const tasks = Array.from(
@@ -167,8 +166,6 @@ export function DataTableTasks<TData extends Task, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  onClick={() => setSelectedRow(row.original)}
-                  className="cursor-pointer"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -193,11 +190,6 @@ export function DataTableTasks<TData extends Task, TValue>({
           </TableBody>
         </Table>
         <DataTablePagination table={table} />
-        <TaskDetailsDrawer
-          data={selectedRow}
-          open={!!selectedRow}
-          onClose={() => setSelectedRow(null)}
-        />
       </div>
     </>
   );

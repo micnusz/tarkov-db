@@ -86,6 +86,7 @@ export type GetItemById = {
     shortName: string;
     description: string;
     bartersFor: Barter[];
+    usedInTasks: Barter[];
   })[];
 };
 
@@ -110,6 +111,8 @@ export type Barter = {
     name: string;
     imageLink: string;
   };
+  name: string;
+  id: string;
 };
 
 export type GetBarters = {
@@ -248,4 +251,5 @@ export type Task = {
 
 export type GetTasks = {
   tasks: Task[];
+  task: Task;
 };

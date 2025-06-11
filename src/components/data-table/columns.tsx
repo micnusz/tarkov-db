@@ -3,7 +3,7 @@ import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import DefaultHeader from "../ui/default-header";
 import { Badge } from "../ui/badge";
 
-//Column Brter
+//Column Barter
 const columnHelperBarter = createColumnHelper<Barter>();
 export const columnsBarter: ColumnDef<Barter, any>[] = [
   columnHelperBarter.accessor((row) => row.trader?.imageLink ?? "", {

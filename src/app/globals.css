@@ -77,10 +77,9 @@
   --input: oklch(0.25 0.01 270);
   --ring: oklch(0.4 0.05 120);
   --chart-1: oklch(0.4 0.05 120);      /* Oliwkowa zieleń */
-  --chart-2: oklch(0.4 0.05 60);       /* Beżowy */
-  --chart-3: oklch(0.4 0.05 30);       /* Rdzawy pomarańcz */
+  --chart-2: oklch(0.5574 0.05 120);       /* Beżowy */
+  --chart-3: oklch(0.65 0.15 30);       /* Rdzawy pomarańcz */
   --chart-4: oklch(0.4 0.05 270);      /* Stonowany szary */
-  --chart-5: oklch(0.12 0.005 270); 
 
   /* Pasek boczny */
   --sidebar: oklch(0.15 0.01 270);

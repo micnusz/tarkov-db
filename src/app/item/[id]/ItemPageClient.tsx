@@ -1,7 +1,7 @@
 "use client";
 
 import { client } from "@/app/api/client";
-import { Barter, BarterItem, VendorPrice } from "@/app/api/types";
+import { Barter, BarterItem, Task, VendorPrice } from "@/app/api/types";
 import { Badge } from "@/components/ui/badge";
 import DefaultHeader from "@/components/ui/default-header";
 import { SimpleDataTable } from "@/components/ui/simple-data-table";
@@ -15,7 +15,12 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { columnsBarter } from "@/components/data-table/columns";
-
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Briefcase, TowerControl } from "lucide-react";
 type ItemPageClientProps = {
   id: string;
 };
@@ -121,6 +126,116 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
     ],
     [tradersData]
   );
+  const columnHelperTask = createColumnHelper<Task>();
+  const columnsTask: ColumnDef<Task>[] = useMemo(
+    () => [
+      columnHelperTask.accessor((row) => row.trader, {
+        id: "trader",
+        header: (info) => <DefaultHeader info={info} name="Trader" />,
+        cell: (info) => {
+          const trader = info.getValue();
+          const row = info.row.original;
+
+          return (
+            <div className="flex items-center gap-2 flex-wrap max-w-full">
+              <img
+                aria-label={`Image of trader: ${trader.name}`}
+                src={row.trader.imageLink}
+                alt={`${trader.name}`}
+                className="w-16 object-contain"
+              />
+              {trader.name}
+            </div>
+          );
+        },
+      }),
+      columnHelperTask.accessor((row) => row.name, {
+        id: "name",
+        filterFn: "includesString",
+        header: (info) => <DefaultHeader info={info} name="Task" />,
+        cell: (info) => {
+          const name = info.getValue();
+
+          return (
+            <div className="flex items-center gap-2 flex-wrap max-w-full">
+              <span className="text-sm font-medium break-words whitespace-normal">
+                {name}
+              </span>
+            </div>
+          );
+        },
+      }),
+      columnHelperTask.accessor((row) => row.taskRequirements, {
+        id: "taskRequirements",
+        header: (info) => <DefaultHeader info={info} name="Required tasks" />,
+        cell: (info) => {
+          const requirements = info.getValue();
+          return requirements && requirements.length > 0 ? (
+            <div className="flex flex-col gap-1 justify-center">
+              {requirements.map((req) => (
+                <div key={req.task.id} className="text-sm">
+                  {req.task.name}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <span className="text-gray-400 italic">N/A</span>
+          );
+        },
+      }),
+
+      columnHelperTask.accessor(
+        (row) => ({
+          kappa: row.kappaRequired,
+          lightkeeper: row.lightkeeperRequired,
+        }),
+        {
+          id: "requirements",
+          header: (info) => <DefaultHeader info={info} name="Required for" />,
+          cell: (info) => {
+            const { kappa, lightkeeper } = info.getValue();
+            const hasAny = kappa || lightkeeper;
+
+            return hasAny ? (
+              <div className="flex items-center gap-2">
+                {kappa && (
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <Briefcase
+                        className="w-5 h-5 object-contain"
+                        aria-label="Icon of kappa container"
+                      />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Required for Kappa</p>
+                    </TooltipContent>
+                  </Tooltip>
+                )}
+                {lightkeeper && (
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <TowerControl
+                        className="w-5 h-5 object-contain"
+                        aria-label="Icon of lighthouse"
+                      />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Required for Lightkeeper</p>
+                    </TooltipContent>
+                  </Tooltip>
+                )}
+              </div>
+            ) : (
+              <div className="flex">
+                <span className="text-gray-400 italic ">Not Required</span>
+              </div>
+            );
+          },
+        }
+      ),
+    ],
+    []
+  );
   return (
     <div>
       {itemData.map((item) => (
@@ -154,7 +269,7 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
               />
             </div>
           </div>
-          <Accordion type="multiple" className="w-full">
+          <Accordion type="single" className="w-full">
             <AccordionItem value="item-1">
               <AccordionTrigger className="text-lg">Buy For:</AccordionTrigger>
               <AccordionContent className="flex flex-col gap-4 text-balance">
@@ -181,6 +296,19 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
                   />
                 ) : (
                   <p className="text-muted-foreground italic">No Barters</p>
+                )}
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="item-4">
+              <AccordionTrigger className="text-lg">Tasks:</AccordionTrigger>
+              <AccordionContent className="flex flex-col gap-4 text-balance">
+                {item.usedInTasks && item.usedInTasks.length > 0 ? (
+                  <SimpleDataTable
+                    data={item.usedInTasks}
+                    columns={columnsTask}
+                  />
+                ) : (
+                  <p className="text-muted-foreground italic">No Tasks</p>
                 )}
               </AccordionContent>
             </AccordionItem>

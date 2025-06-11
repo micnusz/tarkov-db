@@ -10,6 +10,7 @@ import {
   GET_ITEM_ID_NAME,
   GET_ITEMS,
   GET_ITEMS_SEARCH_BAR,
+  GET_TASK_ID,
   GET_TASKS,
   GET_TRADERS,
   GET_WEAPON_ID,
@@ -97,6 +98,12 @@ export const client = {
   async getTasks(): Promise<GetTasks["tasks"]> {
     const data = await graphqlClient.request<GetTasks>(GET_TASKS);
     return data.tasks;
+  },
+  async getTask(id: string): Promise<GetTasks["task"]> {
+    const data = await graphqlClient.request<GetTasks>(GET_TASK_ID, {
+      id: id,
+    });
+    return data.task;
   },
 
   async getBarterItems(): Promise<GetBarterItems["items"]> {

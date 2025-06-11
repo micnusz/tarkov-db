@@ -13,6 +13,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import Link from "next/link";
 
 const TasksClient = () => {
   const { data } = useSuspenseQuery({
@@ -49,12 +50,16 @@ const TasksClient = () => {
         header: (info) => <DefaultHeader info={info} name="Task" />,
         cell: (info) => {
           const name = info.getValue();
+          const row = info.row.original;
+          const taskId = row.id;
 
           return (
             <div className="flex items-center gap-2 flex-wrap max-w-full">
-              <span className="text-sm font-medium break-words whitespace-normal">
-                {name}
-              </span>
+              <Link href={`/task/${taskId}`}>
+                <span className="text-sm font-medium break-words whitespace-normal text-chart-2 hover:text-foreground/80  ">
+                  {name}
+                </span>
+              </Link>
             </div>
           );
         },
@@ -67,13 +72,16 @@ const TasksClient = () => {
           return requirements && requirements.length > 0 ? (
             <div className="flex flex-col gap-1 justify-center">
               {requirements.map((req) => (
-                <div key={req.task.id} className="text-sm">
-                  {req.task.name}
-                </div>
+                <span
+                  key={req.task.id}
+                  className="text-sm text-chart-2 hover:text-foreground/80"
+                >
+                  <Link href={`/task/${req.task.id}`}>{req.task.name}</Link>
+                </span>
               ))}
             </div>
           ) : (
-            <span className="text-gray-400 italic">N/A</span>
+            <span className="text-gray-400 italic">None</span>
           );
         },
       }),
@@ -82,14 +90,14 @@ const TasksClient = () => {
         header: (info) => <DefaultHeader info={info} name="Min. Level" />,
         cell: (info) => info.getValue(),
       }),
-      columnHelper.accessor("map", {
-        id: "map",
+      columnHelper.accessor("map.name", {
+        id: "map.name",
         filterFn: "equals",
         header: (info) => <DefaultHeader info={info} name="Map" />,
         cell: (info) => {
           const mapName = info.getValue();
           return mapName ? (
-            <span className="text-sm">{mapName.name}</span>
+            <span className="text-sm">{mapName}</span>
           ) : (
             <span className="text-gray-400 italic">Any</span>
           );
@@ -118,7 +126,7 @@ const TasksClient = () => {
                       />
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>Required for kappa</p>
+                      <p>Required for Kappa</p>
                     </TooltipContent>
                   </Tooltip>
                 )}
@@ -131,7 +139,7 @@ const TasksClient = () => {
                       />
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>Required for lighthouse</p>
+                      <p>Required for Lightkeeper</p>
                     </TooltipContent>
                   </Tooltip>
                 )}

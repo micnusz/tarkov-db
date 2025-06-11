@@ -24,7 +24,7 @@ export default function DefaultHeader<TData, TValue>({
     <div className="h-[4.5rem] ">
       <ContextMenu>
         <ContextMenuTrigger
-          className="flex w-full h-full items-center gap-4 cursor-pointer justify-center"
+          className="flex w-full h-full items-center gap-4 cursor-pointer"
           onPointerDown={(e) => {
             e.preventDefault();
             if (e.button == 2) return;

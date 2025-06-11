@@ -56,6 +56,16 @@ export const GET_ITEM_ID = gql`
       image8xLink
       wikiLink
       gridImageLink
+      usedInTasks {
+        kappaRequired
+        lightkeeperRequired
+        trader {
+          name
+          imageLink
+        }
+        name
+        id
+      }
       bartersFor {
         buyLimit
         taskUnlock {
@@ -335,6 +345,7 @@ export const GET_BACKPACK_ID = gql`
     }
   }
 `;
+
 export const GET_TASKS = gql`
   query GetTasks {
     tasks {
@@ -351,6 +362,74 @@ export const GET_TASKS = gql`
         task {
           id
           name
+        }
+      }
+      startRewards {
+        items {
+          quantity
+          count
+          item {
+            name
+          }
+        }
+      }
+      finishRewards {
+        items {
+          quantity
+          count
+          item {
+            id
+            name
+          }
+        }
+        skillLevelReward {
+          name
+          level
+        }
+      }
+      objectives {
+        maps {
+          name
+          id
+        }
+        description
+        id
+        optional
+      }
+      map {
+        name
+        id
+      }
+      trader {
+        id
+        name
+        imageLink
+        image4xLink
+        reputationLevels {
+          __typename
+        }
+      }
+    }
+  }
+`;
+
+export const GET_TASK_ID = gql`
+  query GetTaskById($id: ID!) {
+    task(id: $id) {
+      successMessageId
+      id
+      kappaRequired
+      taskImageLink
+      name
+      experience
+      minPlayerLevel
+      lightkeeperRequired
+      wikiLink
+      taskRequirements {
+        task {
+          id
+          name
+          minPlayerLevel
         }
       }
       startRewards {
