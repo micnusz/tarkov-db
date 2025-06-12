@@ -56,6 +56,71 @@ export const GET_ITEM_ID = gql`
       image8xLink
       wikiLink
       gridImageLink
+      craftsUsing {
+        duration
+        level
+        taskUnlock {
+          name
+          id
+        }
+        station {
+          id
+          name
+        }
+        requiredItems {
+          count
+          item {
+            name
+            id
+          }
+        }
+        rewardItems {
+          count
+          item {
+            name
+            id
+          }
+        }
+      }
+      craftsFor {
+        duration
+        level
+        taskUnlock {
+          name
+          id
+        }
+        station {
+          id
+          name
+        }
+        requiredItems {
+          count
+          item {
+            name
+            id
+          }
+        }
+        rewardItems {
+          count
+          item {
+            name
+            id
+          }
+        }
+      }
+      receivedFromTasks {
+        name
+        id
+        finishRewards {
+          items {
+            count
+            item {
+              name
+              id
+            }
+          }
+        }
+      }
       usedInTasks {
         kappaRequired
         lightkeeperRequired

@@ -13,8 +13,13 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { columnsBarter, columnsTask } from "@/components/data-table/columns";
+import {
+  columnsBarter,
+  columnsTaskSimple,
+} from "@/components/data-table/columns";
 import Loading from "./loading";
+import ReceivedFromTasks from "@/components/item-rewards/ReceivedFromTask";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 type ItemPageClientProps = {
   id: string;
@@ -160,7 +165,24 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
         </div>
       </div>
       <Accordion type="single" className="w-full" collapsible>
-        <AccordionItem value="item-1">
+        {itemData.receivedFromTasks && itemData.receivedFromTasks.length > 0 ? (
+          <AccordionItem value="item-1">
+            <AccordionTrigger className="text-lg">
+              Task rewards:
+            </AccordionTrigger>
+            <AccordionContent className="flex flex-col gap-4 text-balance">
+              <ScrollArea className="rounded-md border">
+                <ul>
+                  <ReceivedFromTasks
+                    receivedFromTasks={itemData.receivedFromTasks}
+                    itemId={itemData.id}
+                  />
+                </ul>
+              </ScrollArea>
+            </AccordionContent>
+          </AccordionItem>
+        ) : null}
+        <AccordionItem value="item-2">
           <AccordionTrigger className="text-lg">Buy For:</AccordionTrigger>
           <AccordionContent className="flex flex-col gap-4 text-balance">
             {tradersData && (
@@ -168,7 +190,7 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
             )}
           </AccordionContent>
         </AccordionItem>
-        <AccordionItem value="item-2">
+        <AccordionItem value="item-3">
           <AccordionTrigger className="text-lg">Sell for:</AccordionTrigger>
           <AccordionContent className="flex flex-col gap-4 text-balance">
             {tradersData && (
@@ -176,39 +198,44 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
             )}
           </AccordionContent>
         </AccordionItem>
-        {itemData.bartersFor && itemData.bartersFor.length > 0 ? (
-          <AccordionItem value="item-3">
-            <AccordionTrigger className="text-lg">
-              Barters For:
-            </AccordionTrigger>
-            <AccordionContent className="flex flex-col gap-4 text-balance">
-              <SimpleDataTable
-                data={itemData.bartersFor}
-                columns={columnsBarter}
-              />
-            </AccordionContent>
-          </AccordionItem>
-        ) : null}
-        {itemData.bartersUsing && itemData.bartersUsing.length > 0 ? (
+        {itemData.usedInTasks && itemData.usedInTasks.length > 0 ? (
           <AccordionItem value="item-4">
             <AccordionTrigger className="text-lg">
-              Barters Using:
+              Required for:
             </AccordionTrigger>
-            <AccordionContent className="flex flex-col gap-4 text-balance">
-              <SimpleDataTable
-                data={itemData.bartersUsing}
-                columns={columnsBarter}
-              />
-            </AccordionContent>
-          </AccordionItem>
-        ) : null}
-        {itemData.usedInTasks && itemData.usedInTasks.length > 0 ? (
-          <AccordionItem value="item-5">
-            <AccordionTrigger className="text-lg">Tasks:</AccordionTrigger>
             <AccordionContent className="flex flex-col gap-4 text-balance">
               <SimpleDataTable
                 data={itemData.usedInTasks}
-                columns={columnsTask}
+                columns={columnsTaskSimple}
+              />
+            </AccordionContent>
+          </AccordionItem>
+        ) : null}
+        {itemData.bartersFor?.length > 0 ||
+        itemData.bartersUsing?.length > 0 ? (
+          <AccordionItem value="item-5">
+            <AccordionTrigger className="text-lg">Barters:</AccordionTrigger>
+            <AccordionContent className="flex flex-col gap-4 text-balance">
+              <SimpleDataTable
+                data={[
+                  ...(itemData.bartersFor || []),
+                  ...(itemData.bartersUsing || []),
+                ]}
+                columns={columnsBarter}
+              />
+            </AccordionContent>
+          </AccordionItem>
+        ) : null}
+        {itemData.craftsFor?.length > 0 || itemData.craftsUsing?.length > 0 ? (
+          <AccordionItem value="item-6">
+            <AccordionTrigger className="text-lg">Crafting:</AccordionTrigger>
+            <AccordionContent className="flex flex-col gap-4 text-balance">
+              <SimpleDataTable
+                data={[
+                  ...(itemData.craftsFor || []),
+                  ...(itemData.craftsUsing || []),
+                ]}
+                columns={columnsBarter}
               />
             </AccordionContent>
           </AccordionItem>

@@ -47,11 +47,13 @@ const BarterItemsClient = () => {
           const row = info.row.original;
 
           return (
-            <Link href={`/item/${row.id}`}>
-              <div className="flex items-center  gap-3">
-                <span className="text-sm font-medium">{name}</span>
-              </div>
-            </Link>
+            <div className="flex items-center  gap-3">
+              <Link href={`/item/${row.id}`}>
+                <span className="text-sm font-medium hover:text-chart-2">
+                  {name}
+                </span>
+              </Link>
+            </div>
           );
         },
       }),
@@ -63,9 +65,9 @@ const BarterItemsClient = () => {
           const name = row.category?.name;
 
           return name ? (
-            <span className="text-base font-medium">{name}</span>
+            <span className="text-sm font-medium">{name}</span>
           ) : (
-            <span className="text-muted italic">N/A</span>
+            <span className="text-gray-400 italic">N/A</span>
           );
         },
         filterFn: (row, columnId, filterValue) => {
@@ -80,7 +82,7 @@ const BarterItemsClient = () => {
           return wikiLink ? (
             <div className="">
               <a
-                className="text-chart-1 hover:text-gray-700 underline text-sm flex items-center "
+                className="text-chart-3 hover:text-gray-400 underline text-sm flex items-center "
                 href={wikiLink}
                 target="_blank"
                 rel="noopener noreferrer"

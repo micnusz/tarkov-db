@@ -176,7 +176,7 @@ const TaskPageClient = ({ id }: TaskPageClientProps) => {
               <ScrollArea className=" rounded-md border">
                 <ul>
                   {taskData.objectives.map((obj) => (
-                    <li key={obj.id} className={`text-sm md:text-base`}>
+                    <li key={obj.id} className="text-sm md:text-base">
                       • {obj.description}
                     </li>
                   ))}

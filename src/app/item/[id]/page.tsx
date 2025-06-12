@@ -17,7 +17,6 @@ export const generateMetadata = async ({
   const name = item?.name ?? "Default title";
   return {
     title: `${name} - Tarkov.db`,
-    description: `Tarkov.db, ${name}`,
   };
 };
 

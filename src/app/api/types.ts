@@ -85,11 +85,37 @@ export type GetItemById = {
     bartersFor: Barter[];
     bartersUsing: Barter[];
     usedInTasks: Task[];
+    craftsFor: CraftingProperties[];
+    craftsUsing: CraftingProperties[];
+    receivedFromTasks: Barter[];
   };
+};
+
+export type CraftingProperties = {
+  duration: number;
+  level: number;
+  taskUnlock: {
+    name: string;
+    id: string;
+  };
+  station: CraftingStation;
+  requiredItems: CraftingItems;
+  rewardItems: CraftingItems;
+};
+
+export type CraftingItems = {
+  count: number;
+  item: Item;
+};
+
+export type CraftingStation = {
+  id: number;
+  name: string;
 };
 
 // Barters
 export type BarterItem = {
+  items: Item;
   item: Item & { category: Category };
   quantity: number;
   count: number;
@@ -99,6 +125,7 @@ export type Barter = {
   buyLimit: number;
   taskUnlock: { name: string } | null;
   level: number;
+  finishRewards: BarterItem[];
   rewardItems: BarterItem[];
   requiredItems: BarterItem[];
   trader: {

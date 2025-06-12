@@ -2,6 +2,7 @@ import {
   BackpackItem,
   Barter,
   BarterItem,
+  Crafting,
   Task,
   WeaponItem,
 } from "@/app/api/types";
@@ -34,7 +35,7 @@ export const columnsBarter = [
             alt={trader.name}
           />
           {level != null && (
-            <Badge className="bg-chart-4 absolute -top-1 -right-1 text-xs px-1.5 py-0.5">
+            <Badge className=" absolute -top-1 -right-1 text-xs px-1.5 py-0.5">
               Lv. {level}
             </Badge>
           )}
@@ -65,13 +66,13 @@ export const columnsBarter = [
               />
             )}
             {amount !== undefined && (
-              <Badge className="bg-chart-4 absolute -top-1 -right-1 text-xs px-1.5 py-0.5">
+              <Badge className="bg-chart-3 absolute -top-1 -right-1 text-xs px-1.5 py-0.5">
                 {amount}
               </Badge>
             )}
           </div>
           <Link href={`/item/${item.id}`}>
-            <span className="text-sm  truncate text-chart-2 hover:text-foreground/80 ">
+            <span className="text-sm  truncate hover:text-chart-2 ">
               {item.name}
             </span>
           </Link>
@@ -106,14 +107,14 @@ export const columnsBarter = [
                     />
                   )}
                   {amount !== undefined && (
-                    <Badge className="bg-chart-4 absolute -top-1 -right-1 text-xs px-1.5 py-0.5">
+                    <Badge className="bg-chart-3 absolute -top-1 -right-1 text-xs px-1.5 py-0.5">
                       {amount}
                     </Badge>
                   )}
                 </div>
                 <div className="flex flex-col">
                   <Link href={`/item/${item.id}`}>
-                    <span className="text-sm text-chart-2 hover:text-foreground/80 ">
+                    <span className="text-sm  hover:text-chart-2 ">
                       {item.name}
                     </span>
                   </Link>
@@ -228,6 +229,225 @@ export const columnsBarter = [
     enableHiding: false,
   }),
 ] as ColumnDef<Barter>[];
+
+const columnHelperCrafting = createColumnHelper<Barter>();
+export const columnsCrafting = [
+  columnHelperCrafting.accessor((row) => row.trader?.imageLink ?? "", {
+    id: "trader",
+    header: (info) => <DefaultHeader info={info} name="Trader" />,
+    cell: (info) => {
+      const trader = info.row.original?.trader;
+      const level = info.row.original?.level;
+
+      if (!trader || !trader.imageLink || !trader.name) {
+        return <span className="text-gray-400 italic">Brak danych</span>;
+      }
+
+      return (
+        <div className="relative w-16 h-16">
+          <img
+            className="w-16 h-16 aspect-square object-contain"
+            src={trader.imageLink}
+            alt={trader.name}
+          />
+          {level != null && (
+            <Badge className=" absolute -top-1 -right-1 text-xs px-1.5 py-0.5">
+              Lv. {level}
+            </Badge>
+          )}
+        </div>
+      );
+    },
+  }),
+  columnHelperCrafting.accessor(
+    (row) => row.rewardItems?.[0]?.item?.name ?? "",
+    {
+      id: "name",
+      header: (info) => <DefaultHeader info={info} name="Reward" />,
+      cell: (info) => {
+        const reward = info.row.original.rewardItems?.[0];
+        const item = reward?.item;
+        const amount = reward?.count ?? reward?.quantity;
+
+        if (!item || !item.id) {
+          return <span className="text-gray-400 italic">N/A</span>;
+        }
+
+        return (
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="relative shrink-0">
+              {item.gridImageLink && (
+                <img
+                  src={item.gridImageLink}
+                  alt={item.name}
+                  className="w-[5rem] aspect-square object-contain shrink-0"
+                />
+              )}
+              {amount !== undefined && (
+                <Badge className="bg-chart-3 absolute -top-1 -right-1 text-xs px-1.5 py-0.5">
+                  {amount}
+                </Badge>
+              )}
+            </div>
+            <Link href={`/item/${item.id}`}>
+              <span className="text-sm  truncate hover:text-chart-2 ">
+                {item.name}
+              </span>
+            </Link>
+          </div>
+        );
+      },
+      filterFn: "includesString",
+    }
+  ),
+  columnHelperCrafting.accessor((row) => row.requiredItems ?? "", {
+    id: "required",
+    header: (info) => <DefaultHeader info={info} name="Required" />,
+    cell: (info) => {
+      const requiredItems = info.getValue();
+
+      if (!requiredItems.length) {
+        return <span className="text-gray-400 italic">N/A</span>;
+      }
+
+      return (
+        <div className="flex flex-col gap-2">
+          {requiredItems.map(({ item, count, quantity }: BarterItem) => {
+            const amount = quantity ?? count;
+
+            return (
+              <div key={item.id} className="flex items-center gap-3">
+                <div className="relative w-12 h-12">
+                  {item.gridImageLink && (
+                    <img
+                      src={item.gridImageLink}
+                      alt={item.name}
+                      className="w-12 h-12 aspect-square object-contain"
+                    />
+                  )}
+                  {amount !== undefined && (
+                    <Badge className="bg-chart-3 absolute -top-1 -right-1 text-xs px-1.5 py-0.5">
+                      {amount}
+                    </Badge>
+                  )}
+                </div>
+                <div className="flex flex-col">
+                  <Link href={`/item/${item.id}`}>
+                    <span className="text-sm  hover:text-chart-2 ">
+                      {item.name}
+                    </span>
+                  </Link>
+                  <span className="text-xs text-gray-500">
+                    {amount !== undefined ? `${amount} x ` : ""}
+                    {typeof item.avg24hPrice === "number"
+                      ? `${item.avg24hPrice.toLocaleString("de-DE")}₽`
+                      : "N/A"}
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      );
+    },
+    enableSorting: false,
+    enableHiding: false,
+  }),
+  columnHelperCrafting.accessor((row) => row.requiredItems ?? "", {
+    id: "cost",
+    header: (info) => <DefaultHeader info={info} name="Barter Cost" />,
+    cell: (info) => {
+      const requiredItems = info.getValue();
+
+      if (!requiredItems.length) {
+        return <span className="text-gray-400 italic">N/A</span>;
+      }
+
+      const totalCost = requiredItems.reduce(
+        (sum: number, { item, count, quantity }: BarterItem) => {
+          const qty = quantity ?? count ?? 0;
+          const price =
+            typeof item.avg24hPrice === "number" ? item.avg24hPrice : 0;
+          return sum + qty * price;
+        },
+        0
+      );
+
+      return (
+        <div className="text-sm font-medium">
+          {totalCost > 0 ? (
+            `${totalCost.toLocaleString("de-DE")}₽`
+          ) : (
+            <span className="text-gray-400 italic">N/A</span>
+          )}
+        </div>
+      );
+    },
+    enableSorting: true,
+    enableHiding: true,
+  }),
+  columnHelperCrafting.accessor(
+    (row) => row.rewardItems?.[0]?.item.avg24hPrice ?? null,
+    {
+      id: "fleaCost",
+      header: (info) => (
+        <DefaultHeader info={info} name="Avg Flea Cost (24h)" />
+      ),
+      cell: (info) => {
+        const price = info.getValue();
+
+        return typeof price === "number" ? (
+          <span className="text-sm font-medium">
+            {price.toLocaleString("de-DE")}₽
+          </span>
+        ) : (
+          <span className="text-gray-400 italic">N/A</span>
+        );
+      },
+      enableSorting: true,
+      enableHiding: true,
+    }
+  ),
+  columnHelperCrafting.accessor((row) => row, {
+    id: "profit",
+    header: (info) => <DefaultHeader info={info} name="Barter profit" />,
+    cell: (info) => {
+      const row = info.getValue();
+
+      const rewardItem = row.rewardItems?.[0]?.item;
+      const rewardPrice = rewardItem?.avg24hPrice ?? 0;
+
+      const requiredItems = row.requiredItems ?? [];
+      const barterCost = requiredItems.reduce(
+        (total: number, { item, count = 1, quantity = 1 }: BarterItem) => {
+          const itemPrice = item?.avg24hPrice ?? 0;
+          const qty = quantity ?? count;
+          return total + itemPrice * qty;
+        },
+        0
+      );
+
+      const profit = rewardPrice - barterCost;
+      const formattedProfit = profit.toLocaleString("de-DE") + "₽";
+
+      return (
+        <span
+          className={
+            profit > 0
+              ? "text-green-600"
+              : profit < 0
+              ? "text-red-600"
+              : "text-gray-600"
+          }
+        >
+          {formattedProfit}
+        </span>
+      );
+    },
+    enableSorting: true,
+    enableHiding: false,
+  }),
+] as ColumnDef<Crafting>[];
 
 //Columns /weapon
 const columnHelperWeapon = createColumnHelper<WeaponItem>();
@@ -355,11 +575,11 @@ export const columnsBackpacks = [
       const row = info.row.original;
 
       return (
-        <Link href={`/item/${row.id}`}>
-          <div className="flex items-center gap-2">
-            <span>{name}</span>
-          </div>
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link href={`/item/${row.id}`}>
+            <span className="text-sm hover:text-chart-2">{name}</span>
+          </Link>
+        </div>
       );
     },
     filterFn: "includesString",
@@ -409,7 +629,7 @@ export const columnsBackpacks = [
       header: (info) => (
         <DefaultHeader
           info={info}
-          name="Cheapest Price
+          name="Best to buy from
 "
         />
       ),
@@ -462,7 +682,7 @@ export const columnsBackpacks = [
 
 //Columns Task, /item/[id]
 const columnHelperTask = createColumnHelper<Task>();
-export const columnsTask = [
+export const columnsTaskSimple = [
   columnHelperTask.accessor((row) => row.trader, {
     id: "trader",
     header: (info) => <DefaultHeader info={info} name="Trader" />,
@@ -483,37 +703,21 @@ export const columnsTask = [
       );
     },
   }),
-  columnHelperTask.accessor((row) => row.name, {
+  columnHelperTask.accessor((row) => ({ id: row.id, name: row.name }), {
     id: "name",
     filterFn: "includesString",
     header: (info) => <DefaultHeader info={info} name="Task" />,
     cell: (info) => {
-      const name = info.getValue();
+      const task = info.getValue();
 
       return (
         <div className="flex items-center gap-2 flex-wrap max-w-full">
-          <span className="text-sm font-medium break-words whitespace-normal">
-            {name}
-          </span>
+          <Link href={`/task/${task.id}`}>
+            <span className="text-sm font-medium break-words whitespace-normal text-chart-2 hover:text-foreground/80">
+              {task.name}
+            </span>
+          </Link>
         </div>
-      );
-    },
-  }),
-  columnHelperTask.accessor((row) => row.taskRequirements, {
-    id: "taskRequirements",
-    header: (info) => <DefaultHeader info={info} name="Required tasks" />,
-    cell: (info) => {
-      const requirements = info.getValue();
-      return requirements && requirements.length > 0 ? (
-        <div className="flex flex-col gap-1 justify-center">
-          {requirements.map((req) => (
-            <div key={req.task.id} className="text-sm">
-              {req.task.name}
-            </div>
-          ))}
-        </div>
-      ) : (
-        <span className="text-gray-400 italic">N/A</span>
       );
     },
   }),
@@ -562,6 +766,135 @@ export const columnsTask = [
         ) : (
           <div className="flex">
             <span className="text-gray-400 italic ">Not Required</span>
+          </div>
+        );
+      },
+    }
+  ),
+] as ColumnDef<Task>[];
+//Columns Tasks,
+const columnHelper = createColumnHelper<Task>();
+export const columnsTaskAdvanced = [
+  columnHelper.accessor((row) => row.trader.name, {
+    id: "trader",
+    filterFn: "equals",
+    header: (info) => <DefaultHeader info={info} name="Trader" />,
+    cell: (info) => {
+      const name = info.getValue();
+      const row = info.row.original;
+
+      return (
+        <div className="flex items-center gap-2 flex-wrap max-w-full">
+          <img
+            aria-label={`Image of trader: ${name}`}
+            src={row.trader.imageLink}
+            alt={name}
+            className="w-16 object-contain"
+          />
+        </div>
+      );
+    },
+  }),
+  columnHelper.accessor((row) => row.name, {
+    id: "name",
+    filterFn: "includesString",
+    header: (info) => <DefaultHeader info={info} name="Task" />,
+    cell: (info) => {
+      const name = info.getValue();
+      const row = info.row.original;
+      const taskId = row.id;
+
+      return (
+        <div className="flex items-center gap-2 flex-wrap max-w-full">
+          <Link href={`/task/${taskId}`}>
+            <span className="text-sm font-medium break-words whitespace-normal  hover:text-chart-2  ">
+              {name}
+            </span>
+          </Link>
+        </div>
+      );
+    },
+  }),
+  columnHelper.accessor((row) => row.taskRequirements, {
+    id: "taskRequirements",
+    header: (info) => <DefaultHeader info={info} name="Required tasks" />,
+    cell: (info) => {
+      const requirements = info.getValue();
+      return requirements && requirements.length > 0 ? (
+        <div className="flex flex-col gap-1 justify-center">
+          {requirements.map((req) => (
+            <span
+              key={req.task.id}
+              className="text-sm text-chart-2 hover:text-foreground/80"
+            >
+              <Link href={`/task/${req.task.id}`}>{req.task.name}</Link>
+            </span>
+          ))}
+        </div>
+      ) : (
+        <span className="text-gray-400 italic">None</span>
+      );
+    },
+  }),
+  columnHelper.accessor("minPlayerLevel", {
+    id: "minPlayerLevel",
+    header: (info) => <DefaultHeader info={info} name="Min. Level" />,
+    cell: (info) => info.getValue(),
+  }),
+  columnHelper.accessor((row) => row.map?.name ?? "", {
+    id: "map.name",
+    filterFn: "equals",
+    header: (info) => <DefaultHeader info={info} name="Map" />,
+    cell: (info) => {
+      const mapName = info.getValue();
+      return mapName ? (
+        <span className="text-sm">{mapName}</span>
+      ) : (
+        <span className="text-gray-400 italic">Any</span>
+      );
+    },
+  }),
+  columnHelper.accessor(
+    (row) => ({
+      kappa: row.kappaRequired,
+      lightkeeper: row.lightkeeperRequired,
+    }),
+    {
+      id: "requirements",
+      header: (info) => <DefaultHeader info={info} name="Required for" />,
+      cell: (info) => {
+        const { kappa, lightkeeper } = info.getValue();
+        const hasAny = kappa || lightkeeper;
+
+        return hasAny ? (
+          <div className="flex items-center gap-2 justify-center">
+            {kappa && (
+              <Tooltip>
+                <TooltipTrigger>
+                  <Briefcase className="w-5 h-5" aria-label="Kappa icon" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Required for Kappa</p>
+                </TooltipContent>
+              </Tooltip>
+            )}
+            {lightkeeper && (
+              <Tooltip>
+                <TooltipTrigger>
+                  <TowerControl
+                    className="w-5 h-5"
+                    aria-label="Lighthouse icon"
+                  />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Required for Lightkeeper</p>
+                </TooltipContent>
+              </Tooltip>
+            )}
+          </div>
+        ) : (
+          <div className="flex justify-center">
+            <span className="text-gray-400 italic">Not Required</span>
           </div>
         );
       },

@@ -42,6 +42,9 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --color-table-row: var(--table-row);
+  --color-table-row-alt: var(--table-row-alt);
+  --color-table-row-hover: var(--table-row-hover);
 }
 
 
@@ -50,7 +53,7 @@
   --radius: 0.625rem;
 
   /* Tło i tekst */
-  --background: oklch(0.12 0.005 270); /* Wyblakły czarny */
+  --background: oklch(0.1406 0.005 270); /* Wyblakły czarny */
   --foreground: oklch(0.95 0.00 0);    /* Jasny tekst */
 
   /* Karty i popovery */
@@ -81,6 +84,11 @@
   --chart-3: oklch(0.65 0.15 30);       /* Rdzawy pomarańcz */
   --chart-4: oklch(0.4 0.05 270);      /* Stonowany szary */
 
+  /* Table */
+  --table-row: oklch(0.1503 0.005 270);       /* Ciemniejszy fioletowy szary */
+  --table-row-alt: oklch(0.169 0.005 270);  /* Lekko jaśniejszy dla naprzemiennych wierszy */
+  --table-row-hover: oklch(0.25 0.015 270);
+
   /* Pasek boczny */
   --sidebar: oklch(0.15 0.01 270);
   --sidebar-foreground: oklch(0.95 0.00 0);
@@ -88,7 +96,7 @@
   --sidebar-primary-foreground: oklch(0.95 0.00 0);
   --sidebar-accent: oklch(0.5 0.1 30);
   --sidebar-accent-foreground: oklch(0.95 0.00 0);
-  --sidebar-border: oklch(0.25 0.01 270);
+  --sidebar-border: oklch(0.176 0.01 270);
   --sidebar-ring: oklch(0.4 0.05 120);
 }
 

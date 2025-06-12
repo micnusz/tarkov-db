@@ -48,11 +48,13 @@ const ContainersClient = () => {
             const row = info.row.original;
 
             return (
-              <Link href={`/item/${row.id}`}>
-                <div className="flex items-center  gap-3">
-                  <span className="text-sm font-medium">{name}</span>
-                </div>
-              </Link>
+              <div className="flex items-center  gap-3">
+                <Link href={`/item/${row.id}`}>
+                  <span className="text-sm font-medium hover:text-chart-2">
+                    {name}
+                  </span>
+                </Link>
+              </div>
             );
           },
         }),
@@ -64,7 +66,7 @@ const ContainersClient = () => {
             const name = row.category?.name;
 
             return name ? (
-              <span className="text-base font-medium">{name}</span>
+              <span className="text-sm font-medium">{name}</span>
             ) : (
               <span className="text-muted italic">N/A</span>
             );
@@ -81,7 +83,7 @@ const ContainersClient = () => {
             return wikiLink ? (
               <div className="">
                 <a
-                  className="text-chart-1 hover:text-gray-700 underline text-sm flex items-center "
+                  className="text-chart-3 hover:text-gray-600 underline text-sm flex items-center "
                   href={wikiLink}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -90,7 +92,7 @@ const ContainersClient = () => {
                 </a>
               </div>
             ) : (
-              <span className="text-gray-400 italic">N/A</span>
+              <span className="text-gray-600 italic">N/A</span>
             );
           },
         }),
@@ -103,13 +105,13 @@ const ContainersClient = () => {
             const value = info.getValue<number | null | undefined>();
             return typeof value === "number" ? (
               <div className="flex flex-col">
-                <span className="text-sm text-gray-700">Avg</span>
+                <span className="text-sm text-gray-600">Avg</span>
                 <span className="text-base font-medium">
                   {value.toLocaleString("de-DE")}₽
                 </span>
               </div>
             ) : (
-              <span className="text-gray-400 italic">N/A</span>
+              <span className="text-gray-600 italic">N/A</span>
             );
           },
         }),
@@ -133,7 +135,7 @@ const ContainersClient = () => {
 
               return cheapest && typeof price === "number" ? (
                 <div className="flex flex-col">
-                  <span className="text-sm text-gray-700">
+                  <span className="text-sm text-gray-600">
                     {cheapest.vendor.name}
                   </span>
                   <span className="text-base font-medium">
@@ -141,7 +143,7 @@ const ContainersClient = () => {
                   </span>
                 </div>
               ) : (
-                <span className="text-gray-400 italic">N/A</span>
+                <span className="text-gray-600 italic">N/A</span>
               );
             },
           }
