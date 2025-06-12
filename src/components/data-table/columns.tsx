@@ -1,11 +1,20 @@
-import { Barter, BarterItem } from "@/app/api/types";
+import {
+  BackpackItem,
+  Barter,
+  BarterItem,
+  Task,
+  WeaponItem,
+} from "@/app/api/types";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import DefaultHeader from "../ui/default-header";
 import { Badge } from "../ui/badge";
+import Link from "next/link";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import { Briefcase, TowerControl } from "lucide-react";
 
 //Column Barter
 const columnHelperBarter = createColumnHelper<Barter>();
-export const columnsBarter: ColumnDef<Barter, any>[] = [
+export const columnsBarter = [
   columnHelperBarter.accessor((row) => row.trader?.imageLink ?? "", {
     id: "trader",
     header: (info) => <DefaultHeader info={info} name="Trader" />,
@@ -25,7 +34,7 @@ export const columnsBarter: ColumnDef<Barter, any>[] = [
             alt={trader.name}
           />
           {level != null && (
-            <Badge className="absolute -top-1 -right-1 text-xs px-1.5 py-0.5">
+            <Badge className="bg-chart-4 absolute -top-1 -right-1 text-xs px-1.5 py-0.5">
               Lv. {level}
             </Badge>
           )}
@@ -56,12 +65,16 @@ export const columnsBarter: ColumnDef<Barter, any>[] = [
               />
             )}
             {amount !== undefined && (
-              <Badge className="bg-chart-3 absolute -top-1 -right-1 text-xs px-1.5 py-0.5">
+              <Badge className="bg-chart-4 absolute -top-1 -right-1 text-xs px-1.5 py-0.5">
                 {amount}
               </Badge>
             )}
           </div>
-          <span className="text-sm font-medium truncate">{item.name}</span>
+          <Link href={`/item/${item.id}`}>
+            <span className="text-sm  truncate text-chart-2 hover:text-foreground/80 ">
+              {item.name}
+            </span>
+          </Link>
         </div>
       );
     },
@@ -93,13 +106,17 @@ export const columnsBarter: ColumnDef<Barter, any>[] = [
                     />
                   )}
                   {amount !== undefined && (
-                    <Badge className="bg-chart-3 absolute -top-1 -right-1 text-xs px-1.5 py-0.5">
+                    <Badge className="bg-chart-4 absolute -top-1 -right-1 text-xs px-1.5 py-0.5">
                       {amount}
                     </Badge>
                   )}
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-sm font-medium">{item.name}</span>
+                  <Link href={`/item/${item.id}`}>
+                    <span className="text-sm text-chart-2 hover:text-foreground/80 ">
+                      {item.name}
+                    </span>
+                  </Link>
                   <span className="text-xs text-gray-500">
                     {amount !== undefined ? `${amount} x ` : ""}
                     {typeof item.avg24hPrice === "number"
@@ -210,4 +227,344 @@ export const columnsBarter: ColumnDef<Barter, any>[] = [
     enableSorting: true,
     enableHiding: false,
   }),
-];
+] as ColumnDef<Barter>[];
+
+//Columns /weapon
+const columnHelperWeapon = createColumnHelper<WeaponItem>();
+export const columnsWeapon = [
+  columnHelperWeapon.accessor((row) => row.gridImageLink, {
+    id: "icon",
+    header: (info) => <DefaultHeader info={info} name="Icon" />,
+    cell: (info) => {
+      const icon = info.getValue();
+      const row = info.row.original;
+
+      return (
+        <Link href={`/item/${row.id}`}>
+          <div className="flex items-center gap-3">
+            <img
+              src={icon}
+              alt={row.name}
+              className="w-18 h-18 object-contain"
+            />
+          </div>
+        </Link>
+      );
+    },
+    enableSorting: false,
+    enableHiding: false,
+  }),
+  columnHelperWeapon.accessor("name", {
+    id: "name",
+    header: (info) => <DefaultHeader info={info} name="Name" />,
+    cell: (info) => {
+      const row = info.row.original;
+      const caliberRaw = info.getValue<string>();
+      return (
+        <div className="flex flex-row gap-8">
+          <Link href={`/item/${row.id}`}>
+            <span>{caliberRaw}</span>
+          </Link>
+        </div>
+      );
+    },
+    filterFn: "includesString",
+  }),
+  columnHelperWeapon.accessor("category.name", {
+    id: "category",
+    header: (info) => <DefaultHeader info={info} name="Category" />,
+    cell: (info) => {
+      const row = info.row.original;
+      const category = info.getValue<string>();
+      return (
+        <div className="flex flex-row gap-8">
+          <Link href={`/item/${row.id}`}>
+            <span>{category}</span>
+          </Link>
+        </div>
+      );
+    },
+    filterFn: "includesString",
+  }),
+  columnHelperWeapon.accessor("properties.caliber", {
+    header: (info) => <DefaultHeader info={info} name="Caliber" />,
+    cell: (info) => {
+      const row = info.row.original;
+      const caliberRaw = info.getValue<string>();
+      const caliberStripped = caliberRaw.replace(/^Caliber/, "");
+      const caliberFormatted = caliberStripped.replace(
+        /^(\d)(\d{2}x\d+)/,
+        "$1.$2"
+      );
+
+      return <span>{caliberFormatted}</span>;
+    },
+  }),
+  columnHelperWeapon.accessor("properties.fireRate", {
+    header: (info) => <DefaultHeader info={info} name="Fire Rate" />,
+    cell: (info) => info.getValue(),
+  }),
+  columnHelperWeapon.accessor("properties.recoilVertical", {
+    header: (info) => <DefaultHeader info={info} name="Vertical Recoil" />,
+    cell: (info) => info.getValue(),
+  }),
+  columnHelperWeapon.accessor("properties.recoilHorizontal", {
+    header: (info) => <DefaultHeader info={info} name="Horizontal Recoil" />,
+    cell: (info) => info.getValue(),
+  }),
+  columnHelperWeapon.accessor("properties.ergonomics", {
+    header: (info) => <DefaultHeader info={info} name="Ergonomics" />,
+    cell: (info) => info.getValue(),
+  }),
+  columnHelperWeapon.accessor("properties.effectiveDistance", {
+    header: (info) => <DefaultHeader info={info} name="Effective Range" />,
+    cell: (info) => info.getValue(),
+  }),
+] as ColumnDef<WeaponItem>[];
+
+//Columns /backpacks
+const columnHelperBackpacks = createColumnHelper<BackpackItem>();
+export const columnsBackpacks = [
+  columnHelperBackpacks.accessor((row) => row.gridImageLink, {
+    id: "icon",
+    header: (info) => <DefaultHeader info={info} name="Icon" />,
+    cell: (info) => {
+      const name = info.getValue();
+      const row = info.row.original;
+
+      return (
+        <Link href={`/item/${row.id}`}>
+          <div className="flex items-center gap-2">
+            <img
+              src={row.gridImageLink}
+              alt={name}
+              className="w-32 object-contain"
+            />
+          </div>
+        </Link>
+      );
+    },
+    enableSorting: false,
+    enableColumnFilter: false,
+  }),
+  columnHelperBackpacks.accessor((row) => row.name, {
+    id: "name",
+    header: (info) => <DefaultHeader info={info} name="Name" />,
+    cell: (info) => {
+      const name = info.getValue();
+      const row = info.row.original;
+
+      return (
+        <Link href={`/item/${row.id}`}>
+          <div className="flex items-center gap-2">
+            <span>{name}</span>
+          </div>
+        </Link>
+      );
+    },
+    filterFn: "includesString",
+  }),
+  columnHelperBackpacks.accessor("properties.grids", {
+    header: (info) => <DefaultHeader info={info} name="Grid" />,
+    cell: (info) => {
+      const grids = info.getValue();
+      if (!grids || grids.length === 0) return "–";
+
+      const first = grids[0];
+      return `${first.width} × ${first.height}`;
+    },
+  }),
+  columnHelperBackpacks.accessor("properties.capacity", {
+    header: (info) => <DefaultHeader info={info} name="Slots inside" />,
+    cell: (info) => info.getValue(),
+  }),
+  columnHelperBackpacks.accessor("weight", {
+    header: (info) => <DefaultHeader info={info} name="Weight" />,
+    cell: (info) => {
+      const weight = info.getValue();
+      return (
+        <>
+          <span>{info.getValue()}kg</span>
+        </>
+      );
+    },
+  }),
+  columnHelperBackpacks.accessor(
+    (row) => {
+      const cheapest =
+        row.buyFor && row.buyFor.length > 0
+          ? row.buyFor.reduce((min, current) =>
+              current.priceRUB < min.priceRUB ? current : min
+            )
+          : null;
+
+      return cheapest
+        ? `${cheapest.vendor.name} – ${cheapest.priceRUB.toLocaleString(
+            "de-DE"
+          )} ₽`
+        : "N/A";
+    },
+    {
+      id: "lowestBuyPrice",
+      header: (info) => (
+        <DefaultHeader
+          info={info}
+          name="Cheapest Price
+"
+        />
+      ),
+      cell: (info) => `${info.getValue()}`,
+    }
+  ),
+  columnHelperBackpacks.accessor("properties.ergoPenalty", {
+    header: (info) => <DefaultHeader info={info} name="ErgoPen" />,
+    cell: (info) => {
+      const value = info.getValue<number>();
+      const percent = Math.round(value * 100);
+
+      const style = {
+        color: percent < 0 ? "red" : percent > 0 ? "green" : "inherit",
+        fontWeight: 500,
+      };
+
+      return <span style={style}>{percent}%</span>;
+    },
+  }),
+  columnHelperBackpacks.accessor("properties.speedPenalty", {
+    header: (info) => <DefaultHeader info={info} name="MoveSpeedPen" />,
+    cell: (info) => {
+      const value = info.getValue<number>();
+      const percent = Math.round(value * 100);
+
+      const style = {
+        color: percent < 0 ? "red" : percent > 0 ? "green" : "inherit",
+        fontWeight: 500,
+      };
+
+      return <span style={style}>{percent}%</span>;
+    },
+  }),
+  columnHelperBackpacks.accessor("properties.turnPenalty", {
+    header: (info) => <DefaultHeader info={info} name="TurnPen" />,
+    cell: (info) => {
+      const value = info.getValue<number>();
+      const percent = Math.round(value * 100);
+
+      const style = {
+        color: percent < 0 ? "red" : percent > 0 ? "green" : "inherit",
+        fontWeight: 500,
+      };
+
+      return <span style={style}>{percent}%</span>;
+    },
+  }),
+] as ColumnDef<BackpackItem>[];
+
+//Columns Task, /item/[id]
+const columnHelperTask = createColumnHelper<Task>();
+export const columnsTask = [
+  columnHelperTask.accessor((row) => row.trader, {
+    id: "trader",
+    header: (info) => <DefaultHeader info={info} name="Trader" />,
+    cell: (info) => {
+      const trader = info.getValue();
+      const row = info.row.original;
+
+      return (
+        <div className="flex items-center gap-2 flex-wrap max-w-full">
+          <img
+            aria-label={`Image of trader: ${trader.name}`}
+            src={row.trader.imageLink}
+            alt={`${trader.name}`}
+            className="w-16 object-contain"
+          />
+          {trader.name}
+        </div>
+      );
+    },
+  }),
+  columnHelperTask.accessor((row) => row.name, {
+    id: "name",
+    filterFn: "includesString",
+    header: (info) => <DefaultHeader info={info} name="Task" />,
+    cell: (info) => {
+      const name = info.getValue();
+
+      return (
+        <div className="flex items-center gap-2 flex-wrap max-w-full">
+          <span className="text-sm font-medium break-words whitespace-normal">
+            {name}
+          </span>
+        </div>
+      );
+    },
+  }),
+  columnHelperTask.accessor((row) => row.taskRequirements, {
+    id: "taskRequirements",
+    header: (info) => <DefaultHeader info={info} name="Required tasks" />,
+    cell: (info) => {
+      const requirements = info.getValue();
+      return requirements && requirements.length > 0 ? (
+        <div className="flex flex-col gap-1 justify-center">
+          {requirements.map((req) => (
+            <div key={req.task.id} className="text-sm">
+              {req.task.name}
+            </div>
+          ))}
+        </div>
+      ) : (
+        <span className="text-gray-400 italic">N/A</span>
+      );
+    },
+  }),
+
+  columnHelperTask.accessor(
+    (row) => ({
+      kappa: row.kappaRequired,
+      lightkeeper: row.lightkeeperRequired,
+    }),
+    {
+      id: "requirements",
+      header: (info) => <DefaultHeader info={info} name="Required for" />,
+      cell: (info) => {
+        const { kappa, lightkeeper } = info.getValue();
+        const hasAny = kappa || lightkeeper;
+
+        return hasAny ? (
+          <div className="flex items-center gap-2">
+            {kappa && (
+              <Tooltip>
+                <TooltipTrigger>
+                  <Briefcase
+                    className="w-5 h-5 object-contain"
+                    aria-label="Icon of kappa container"
+                  />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Required for Kappa</p>
+                </TooltipContent>
+              </Tooltip>
+            )}
+            {lightkeeper && (
+              <Tooltip>
+                <TooltipTrigger>
+                  <TowerControl
+                    className="w-5 h-5 object-contain"
+                    aria-label="Icon of lighthouse"
+                  />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Required for Lightkeeper</p>
+                </TooltipContent>
+              </Tooltip>
+            )}
+          </div>
+        ) : (
+          <div className="flex">
+            <span className="text-gray-400 italic ">Not Required</span>
+          </div>
+        );
+      },
+    }
+  ),
+] as ColumnDef<Task>[];

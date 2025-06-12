@@ -6,15 +6,15 @@ import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { Metadata } from "next";
 
 type Props = {
-  params: { id: string; name: string };
+  params: { id: string };
 };
 
 export const generateMetadata = async ({
   params,
 }: Props): Promise<Metadata> => {
   const { id } = await params;
-  const items = await client.getItemIdName(id);
-  const name = items?.[0]?.name ?? "Default title";
+  const item = await client.getItem(id);
+  const name = item?.name ?? "Default title";
   return {
     title: `${name} - Tarkov.db`,
     description: `Tarkov.db, ${name}`,

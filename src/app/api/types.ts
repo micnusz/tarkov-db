@@ -52,6 +52,7 @@ export type BackpackItem = BaseItem & {
 };
 
 export type WeaponItem = BaseItem & {
+  properties: WeaponProperties;
   category: Category;
 };
 
@@ -70,6 +71,7 @@ export type Item = BaseItem;
 
 export type GetItems = {
   items: Item[];
+  item: Item;
 };
 
 export type GetItemsSearchBar = {
@@ -77,12 +79,13 @@ export type GetItemsSearchBar = {
 };
 
 export type GetItemById = {
-  items: (Item & {
+  item: Item & {
     shortName: string;
     description: string;
     bartersFor: Barter[];
-    usedInTasks: Barter[];
-  })[];
+    bartersUsing: Barter[];
+    usedInTasks: Task[];
+  };
 };
 
 // Barters

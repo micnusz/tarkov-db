@@ -38,17 +38,17 @@ export const client = {
     return data.items;
   },
 
-  async getItem(id: string): Promise<GetItemById["items"]> {
+  async getItem(id: string): Promise<GetItemById["item"]> {
     const data = await graphqlClient.request<GetItemById>(GET_ITEM_ID, {
-      ids: [id],
+      id: id,
     });
-    return data.items;
+    return data.item;
   },
-  async getItemIdName(id: string): Promise<GetItemById["items"]> {
+  async getItemIdName(id: string): Promise<GetItemById["item"]> {
     const data = await graphqlClient.request<GetItemById>(GET_ITEM_ID_NAME, {
       ids: [id],
     });
-    return data.items;
+    return data.item;
   },
 
   async getItemsSearchBar(name: string): Promise<GetItemsSearchBar["items"]> {

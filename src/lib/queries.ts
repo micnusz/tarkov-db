@@ -46,8 +46,8 @@ export const GET_ITEMS_SEARCH_BAR = gql`
 `;
 
 export const GET_ITEM_ID = gql`
-  query GetItemById($ids: [ID]) {
-    items(ids: $ids) {
+  query GetItemById($id: ID!) {
+    item(id: $id) {
       id
       name
       shortName
@@ -65,6 +65,49 @@ export const GET_ITEM_ID = gql`
         }
         name
         id
+      }
+      bartersUsing {
+        buyLimit
+        taskUnlock {
+          name
+        }
+        level
+        rewardItems {
+          item {
+            wikiLink
+            avg24hPrice
+            category {
+              name
+            }
+            image8xLink
+            gridImageLink
+            name
+            id
+            avg24hPrice
+          }
+          quantity
+          count
+        }
+        requiredItems {
+          item {
+            wikiLink
+            avg24hPrice
+            category {
+              name
+            }
+            image8xLink
+            gridImageLink
+            name
+            id
+            avg24hPrice
+          }
+          quantity
+          count
+        }
+        trader {
+          name
+          imageLink
+        }
       }
       bartersFor {
         buyLimit
