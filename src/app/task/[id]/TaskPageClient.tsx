@@ -18,8 +18,14 @@ import {
 } from "@/components/ui/tooltip";
 import { Briefcase, TowerControl } from "lucide-react";
 import formatCurrency from "@/components/modules/currency-format";
-import formatExperience from "@/components/modules/experience-format";
 import traderStandingFormat from "@/components/modules/trader-standing-format";
+import ExperienceReward from "@/components/task-rewards/ExperienceReward";
+import { SkillLevelReward } from "@/components/task-rewards/SkillLevelReward";
+import TraderStandingReward from "@/components/task-rewards/TraderStandingReward";
+import ItemReward from "@/components/task-rewards/ItemReward";
+import TraderUnlockReward from "@/components/task-rewards/TraderUnlockReward";
+import BarterUnlockReward from "@/components/task-rewards/BarterUnlockReward";
+import PurchaseRewardUnlock from "@/components/task-rewards/PurchaseUnlockReward";
 
 type TaskPageClientProps = {
   id: string;
@@ -93,12 +99,6 @@ const TaskPageClient = ({ id }: TaskPageClientProps) => {
               </div>
             </div>
           </div>
-
-          {taskData.description ? (
-            <p className="leading-7 mt-2">{taskData.description}</p>
-          ) : (
-            <p className="leading-7 mt-2">No Description...</p>
-          )}
 
           <a
             href={taskData.wikiLink}
@@ -187,7 +187,8 @@ const TaskPageClient = ({ id }: TaskPageClientProps) => {
             )}
           </AccordionContent>
         </AccordionItem>
-        {taskData.startRewards.items.length > 0 ? (
+        {taskData.startRewards?.items &&
+        taskData.startRewards?.items.length > 0 ? (
           <AccordionItem value="item-3">
             <AccordionTrigger className="text-lg">
               Initial Equipment:
@@ -217,139 +218,36 @@ const TaskPageClient = ({ id }: TaskPageClientProps) => {
         <AccordionItem value="item-4">
           <AccordionTrigger className="text-lg">Rewards:</AccordionTrigger>
           <AccordionContent className="flex flex-col gap-4 text-balance">
-            {taskData.finishRewards.items.length > 0 ? (
-              <ScrollArea className="rounded-md border">
+            <ScrollArea className="rounded-md border">
+              {taskData.finishRewards.items &&
+              taskData.finishRewards.items.length > 0 ? (
                 <ul className="p-2">
-                  {/* EXP Reward */}
-                  {taskData.experience > 0 && (
-                    <li className="text-sm md:text-base">
-                      • +{formatExperience(taskData.experience)}.
-                    </li>
-                  )}
-                  {/* Skill level Reward */}
-                  {taskData.finishRewards.skillLevelReward?.length > 0 && (
-                    <>
-                      {taskData.finishRewards.skillLevelReward.map((skill) => (
-                        <li
-                          key={skill.name}
-                          className="text-sm md:text-base"
-                          aria-label={`Reward: ${skill.name} level ${skill.level}`}
-                        >
-                          • +{skill.level} {skill.name} skill level
-                        </li>
-                      ))}
-                    </>
-                  )}
-                  {/* Trader standing Reward */}
-                  {taskData.finishRewards.traderStanding?.length > 0 && (
-                    <>
-                      {taskData.finishRewards.traderStanding.map((reward) => (
-                        <li
-                          key={reward.trader.id}
-                          className="text-sm md:text-base"
-                          aria-label={`Trader standing reward: ${reward.standing}`}
-                        >
-                          • {traderStandingFormat(reward.standing)}{" "}
-                          {reward.trader.name} Rep
-                        </li>
-                      ))}
-                    </>
-                  )}
-                  {/* Items Rewards */}
-                  {taskData.finishRewards.items.map((reward) => (
-                    <li key={reward.item.id} className="text-md md:text-base ">
-                      <Link
-                        href={`/item/${reward.item.id}`}
-                        prefetch={false}
-                        aria-label={`Go to item page for ${reward.item.name}`}
-                      >
-                        • {formatCurrency(reward.item.name, reward.count)} x{" "}
-                        <span className="text-chart-2 hover:text-foreground/80">
-                          {reward.item.name}.
-                        </span>
-                      </Link>
-                    </li>
-                  ))}
-                  {/* Trader Unlocks */}
-                  {taskData.finishRewards.traderUnlock?.length > 0 && (
-                    <>
-                      {taskData.finishRewards.traderUnlock.map((trader) => (
-                        <li key={trader.id}>
-                          • Unlocks {trader.name} as a trader.
-                        </li>
-                      ))}
-                    </>
-                  )}
-                  {/* Barter Unlocks */}
-                  {taskData.finishRewards.offerUnlock?.length > 0 && (
-                    <>
-                      {taskData.finishRewards.offerUnlock.map((offer) => {
-                        const isBarter = offer.item.bartersFor?.some(
-                          (barter) => barter.trader?.name === offer.trader.name
-                        );
-
-                        return (
-                          isBarter && (
-                            <li
-                              className="text-sm md:text-base"
-                              key={`barter-${offer.item.id}-${offer.trader.id}-${offer.level}`}
-                              aria-label={`Unlocks barter for ${offer.item.name}`}
-                            >
-                              • Unlocks barter for{" "}
-                              <Link
-                                href={`/item/${offer.item.id}`}
-                                aria-label={`Go to item page for ${offer.item.name}`}
-                              >
-                                <span className="text-chart-2 hover:text-foreground/80">
-                                  {offer.item.name}
-                                </span>
-                              </Link>{" "}
-                              at {offer.trader.name} LL {offer.level}.
-                            </li>
-                          )
-                        );
-                      })}
-                    </>
-                  )}
-                  {/* Purchase Unlocks */}
-                  {taskData.finishRewards.offerUnlock?.length > 0 && (
-                    <>
-                      {taskData.finishRewards.offerUnlock.map((offer) => {
-                        const isPurchase = offer.item.buyFor?.some(
-                          (buy) => buy.vendor?.name === offer.trader.name
-                        );
-
-                        return (
-                          isPurchase && (
-                            <li
-                              className="text-sm md:text-base"
-                              key={`purchase-${offer.item.id}-${offer.trader.id}-${offer.level}`}
-                              aria-label={`Unlocks purchase of ${offer.item.name}`}
-                            >
-                              • Unlocks purchase of{" "}
-                              <Link
-                                href={`/item/${offer.item.id}`}
-                                aria-label={`Go to item page for ${offer.item.name}`}
-                              >
-                                <span className="text-chart-2 hover:text-foreground/80">
-                                  {offer.item.name}
-                                </span>
-                              </Link>{" "}
-                              at {offer.trader.name} LL {offer.level}.
-                            </li>
-                          )
-                        );
-                      })}
-                    </>
-                  )}
+                  <ExperienceReward experience={taskData.experience} />
+                  <SkillLevelReward
+                    skillLevelReward={taskData.finishRewards.skillLevelReward}
+                  />
+                  <TraderStandingReward
+                    traderStanding={taskData.finishRewards.traderStanding}
+                  />
+                  <ItemReward items={taskData.finishRewards.items} />
+                  <TraderUnlockReward
+                    traderUnlock={taskData.finishRewards.traderUnlock}
+                  />
+                  <BarterUnlockReward
+                    offerUnlock={taskData.finishRewards.offerUnlock}
+                  />
+                  <PurchaseRewardUnlock
+                    offerUnlock={taskData.finishRewards.offerUnlock}
+                  />
                 </ul>
-              </ScrollArea>
-            ) : (
-              <p className="italic text-gray-400">No rewards</p>
-            )}
+              ) : (
+                <p className="italic text-gray-400">No rewards</p>
+              )}
+            </ScrollArea>
           </AccordionContent>
         </AccordionItem>
-        {taskData.failureOutcome.traderStanding.length > 0 ? (
+        {taskData.failureOutcome?.traderStanding &&
+        taskData.failureOutcome?.traderStanding?.length > 0 ? (
           <AccordionItem value="item-5">
             <AccordionTrigger className="text-lg">
               Failure Penalty:
@@ -357,7 +255,7 @@ const TaskPageClient = ({ id }: TaskPageClientProps) => {
             <AccordionContent className="flex flex-col gap-4 text-balance">
               <ScrollArea className="rounded-md border">
                 <ul className="p-2">
-                  {taskData.failureOutcome.traderStanding.map((failure) => (
+                  {taskData.failureOutcome?.traderStanding?.map((failure) => (
                     <li
                       key={failure.trader.id}
                       className="text-sm md:text-base"

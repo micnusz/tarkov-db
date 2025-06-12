@@ -416,7 +416,6 @@ export const GET_TASKS = gql`
 export const GET_TASK_ID = gql`
   query GetTaskById($id: ID!) {
     task(id: $id) {
-      successMessageId
       id
       kappaRequired
       taskImageLink

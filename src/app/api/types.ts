@@ -1,4 +1,4 @@
-// ========== VENDOR ========== //
+// Vendors
 export type Vendor = {
   name: string;
 };
@@ -7,19 +7,16 @@ export type VendorPrice = {
   vendor: Vendor;
   price: number;
   priceRUB: number;
+  currency?: string; // from GraphQL buyFor
 };
-
-// ========== CATEGORY ========== //
+// Categories
 export type Category = {
   id: string;
   name: string;
-  parent?: {
-    id: string;
-    name: string;
-  } | null;
+  parent?: Category | null;
 };
 
-// ========== ITEM ========== //
+// Items
 export type BaseItem = {
   id: string;
   name: string;
@@ -68,10 +65,8 @@ export type WeaponProperties = {
   effectiveDistance: number;
 };
 
-// ========== ITEM COLLECTIONS ========== //
-export type Item = BaseItem & {
-  gridImageLink: string;
-};
+// Item Collections
+export type Item = BaseItem;
 
 export type GetItems = {
   items: Item[];
@@ -90,20 +85,16 @@ export type GetItemById = {
   })[];
 };
 
-// ========== BARTER ========== //
+// Barters
 export type BarterItem = {
-  item: Item & {
-    category: Category;
-  };
+  item: Item & { category: Category };
   quantity: number;
   count: number;
 };
 
 export type Barter = {
   buyLimit: number;
-  taskUnlock: {
-    name: string;
-  } | null;
+  taskUnlock: { name: string } | null;
   level: number;
   rewardItems: BarterItem[];
   requiredItems: BarterItem[];
@@ -127,7 +118,7 @@ export type GetContainerItems = {
   items: BaseItem[];
 };
 
-// ========== AMMO ========== //
+// Ammo
 export type Ammo = {
   __typename: string;
   caliber: string;
@@ -141,23 +132,16 @@ export type Ammo = {
   ricochetChance: number;
   penetrationChance: number;
   penetrationPowerDeviation: number;
-  item: {
-    id: string;
-    name: string;
-    basePrice: number;
-    iconLink: string;
-  };
+  item: Pick<Item, "id" | "name" | "basePrice" | "iconLink">;
 };
 
 export type GetAmmoCaliber = {
   ammo: Ammo[];
 };
 
-// ========== WEAPONS ========== //
+// Weapons
 export type GetOnlyWeapons = {
-  items: (WeaponItem & {
-    properties: WeaponProperties;
-  })[];
+  items: (WeaponItem & { properties: WeaponProperties })[];
 };
 
 export type GetWeaponById = {
@@ -169,7 +153,7 @@ export type GetWeaponById = {
   })[];
 };
 
-// ========== BACKPACKS ========== //
+// Backpacks
 export type GetBackpacks = {
   items: BackpackItem[];
 };
@@ -178,16 +162,18 @@ export type GetBackpackById = {
   items: BackpackItem[];
 };
 
-// ========== TRADERS ========== //
-export type GetTraders = {
-  traders: {
-    id: string;
-    name: string;
-    image4xLink: string;
-  }[];
+// Traders
+export type Trader = {
+  id: string;
+  name: string;
+  image4xLink: string;
 };
 
-// ========== TASKS ========== //
+export type GetTraders = {
+  traders: Trader[];
+};
+
+// Tasks
 export type RewardItem = {
   quantity: number;
   count: number;
@@ -207,42 +193,94 @@ export type TaskObjective = {
   optional: boolean;
 };
 
+export type TaskRequirement = {
+  task: {
+    id: string;
+    name: string;
+    minPlayerLevel: number;
+  };
+};
+
+export type CraftUnlock = {
+  level: number;
+  station: {
+    id: string;
+    name: string;
+  };
+};
+
+export type OfferUnlock = {
+  level: number;
+  trader: Pick<Trader, "id" | "name">;
+  item: {
+    id: string;
+    name: string;
+    types: string;
+    bartersFor: {
+      trader: {
+        name: string;
+      };
+    }[];
+    buyFor: {
+      price: number;
+      currency: string;
+      vendor: {
+        name: string;
+      };
+    }[];
+  };
+};
+
+export type FinishRewards = {
+  craftUnlock?: CraftUnlock[];
+  traderUnlock?: Pick<Trader, "id" | "name">[];
+  offerUnlock?: OfferUnlock[];
+  items?: RewardItem[];
+  skillLevelReward: {
+    name: string;
+    level: number;
+  }[];
+  traderStanding?: {
+    standing: number;
+    trader: {
+      name: string;
+      id: string;
+    };
+  }[];
+};
+
+export type StartRewards = {
+  items?: RewardItem[];
+};
+
 export type Task = {
   id: string;
   name: string;
   taskImageLink: string;
-  successMessageId: string;
   kappaRequired: boolean;
   experience: number;
   minPlayerLevel: number;
   lightkeeperRequired: boolean;
   wikiLink: string;
-  taskRequirements: {
-    task: {
-      id: string;
-      name: string;
-    };
-  }[];
-  startRewards: {
-    items: RewardItem[];
-  };
-  finishRewards: {
-    items: RewardItem[];
-    skillLevelReward: {
-      name: string;
-      level: number;
-    } | null;
+  taskRequirements: TaskRequirement[];
+  startRewards?: StartRewards;
+  finishRewards: FinishRewards;
+  failureOutcome?: {
+    traderStanding?: {
+      standing: number;
+      trader: {
+        name: string;
+        id: string;
+      };
+    }[];
   };
   objectives: TaskObjective[];
   map: {
     id: string;
     name: string;
   } | null;
-  trader: {
-    id: string;
-    name: string;
+  trader: Trader & {
     imageLink: string;
-    image4xLink: string;
     reputationLevels: {
       __typename: string;
     }[];
