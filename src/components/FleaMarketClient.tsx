@@ -226,7 +226,7 @@ const FleaMarketClient = () => {
   );
 
   return (
-    <div className="w-full h-full flex-col justify-center items-center p-10">
+    <div className="w-full h-full flex-col justify-center items-center p-4 md:p-10">
       <DataTableFleaMarket data={itemsFlea} columns={columns} />
     </div>
   );

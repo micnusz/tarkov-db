@@ -25,6 +25,7 @@ export type BaseItem = {
   basePrice: number;
   types?: string[];
   weight?: number;
+  image512pxLink: string;
   image8xLink: string;
   gridImageLink: string;
   iconLink?: string;

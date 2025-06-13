@@ -53,8 +53,8 @@ export const GET_ITEM_ID = gql`
       shortName
       description
       basePrice
-      image8xLink
       wikiLink
+      image512pxLink
       gridImageLink
       properties {
         __typename

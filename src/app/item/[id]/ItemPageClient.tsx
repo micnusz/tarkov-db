@@ -1,27 +1,18 @@
 "use client";
 
 import { client } from "@/app/api/client";
-import { Task, VendorPrice } from "@/app/api/types";
-import DefaultHeader from "@/components/ui/default-header";
-import { SimpleDataTable } from "@/components/ui/simple-data-table";
+import { Task } from "@/app/api/types";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
-import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
-import React, { useMemo } from "react";
+import React, { lazy, Suspense, useMemo } from "react";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import {
-  columnsBarter,
-  columnsCrafting,
-  columnsTaskSimple,
-} from "@/components/data-table/columns";
 import Loading from "./loading";
-import ReceivedFromTasks from "@/components/item-rewards/ReceivedFromTask";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import ItemVariants from "@/components/item-rewards/ItemVariants";
+import Image from "next/image";
 
 type ItemPageClientProps = {
   id: string;
@@ -36,110 +27,35 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
   if (!itemData) {
     return <Loading />;
   }
-
   const { data: tradersData } = useSuspenseQuery({
     queryKey: ["traders"],
     queryFn: () => client.getTraders(),
   });
-
-  const columnHelperSell = createColumnHelper<VendorPrice>();
-  const columnsSell = useMemo(
-    () =>
-      [
-        columnHelperSell.accessor("vendor.name", {
-          id: "name",
-          filterFn: "includesString",
-          header: (info) => <DefaultHeader info={info} name="Trader" />,
-          cell: (info) => {
-            const vendorName = info.getValue();
-            const trader = tradersData.find((t) => t.name === vendorName);
-
-            return (
-              <div className="flex items-center gap-2">
-                {trader && (
-                  <img
-                    src={trader.image4xLink}
-                    alt={trader.name}
-                    className="rounded-sm w-16 h-16 object-contain"
-                  />
-                )}
-                <span className="text-md font-medium p-2">{vendorName}</span>
-              </div>
-            );
-          },
-        }),
-        columnHelperSell.accessor("price", {
-          header: (info) => <DefaultHeader info={info} name="Price:" />,
-          cell: (info) => {
-            const row = info.row.original;
-            const vendorName = row.vendor.name;
-            const isUSD = vendorName === "Peacekeeper";
-
-            const price = row.price;
-            const priceRUB = row.priceRUB;
-
-            const value = isUSD ? price : priceRUB;
-            const symbol = isUSD ? "$" : "₽";
-
-            if (typeof value !== "number" || isNaN(value)) return "—";
-
-            return `${value.toLocaleString()} ${symbol}`;
-          },
-        }),
-      ] as ColumnDef<VendorPrice>[],
-    []
-  );
-  const columnHelperBuy = createColumnHelper<VendorPrice>();
-  const columnsBuy = useMemo(
-    () =>
-      [
-        columnHelperBuy.accessor("vendor.name", {
-          id: "name",
-          filterFn: "includesString",
-          header: (info) => <DefaultHeader info={info} name="Trader" />,
-          cell: (info) => {
-            const vendorName = info.getValue();
-            const trader = tradersData.find((t) => t.name === vendorName);
-
-            return (
-              <div className="flex items-center gap-2">
-                {trader && (
-                  <img
-                    src={trader.image4xLink}
-                    alt={trader.name}
-                    className="rounded-sm w-16 h-16 object-contain"
-                  />
-                )}
-                <span className="text-md font-medium p-2">{vendorName}</span>
-              </div>
-            );
-          },
-        }),
-
-        columnHelperBuy.accessor("price", {
-          header: (info) => <DefaultHeader info={info} name="Price:" />,
-          cell: (info) => {
-            const row = info.row.original;
-            const vendorName = row.vendor.name;
-            const isUSD = vendorName === "Peacekeeper";
-
-            const value = isUSD ? row.price : row.priceRUB;
-            const symbol = isUSD ? "$" : "₽";
-
-            if (typeof value !== "number") return "—";
-
-            return `${value.toLocaleString()} ${symbol}`;
-          },
-        }),
-      ] as ColumnDef<VendorPrice>[],
-    []
-  );
 
   const hasTaskReward = (tasks: Task[], itemId: string): boolean => {
     return tasks.some((task) =>
       task.finishRewards?.items?.some((reward) => reward.item.id === itemId)
     );
   };
+
+  const TaskRewards = lazy(
+    () => import("@/components/item-rewards/dynamic-import/TaskRewards")
+  );
+  const DataTableBuy = lazy(
+    () => import("@/components/item-rewards/dynamic-import/DataTableBuy")
+  );
+  const DataTableSell = lazy(
+    () => import("@/components/item-rewards/dynamic-import/DataTableSell")
+  );
+  const RequiredFor = lazy(
+    () => import("@/components/item-rewards/dynamic-import/RequiredFor")
+  );
+  const DataTableBarters = lazy(
+    () => import("@/components/item-rewards/dynamic-import/DataTableBarters")
+  );
+  const DataTableCraftings = lazy(
+    () => import("@/components/item-rewards/dynamic-import/DataTableCraftings")
+  );
 
   const fallbackDescription =
     itemData.description ?? itemData.properties?.baseItem?.description;
@@ -170,10 +86,12 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
         </div>
         {/* Item Image */}
         <div className="flex justify-center items-center md:w-1/2">
-          <img
-            src={itemData.image8xLink}
+          <Image
+            src={itemData.image512pxLink}
             alt={itemData.name}
-            className="min-w-1/4 max-w-1/3 h-auto object-contain"
+            width={250}
+            height={250}
+            className="object-contain"
           />
         </div>
       </div>
@@ -186,30 +104,41 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
                 Task rewards:
               </AccordionTrigger>
               <AccordionContent className="flex flex-col gap-4 text-balance">
-                <ScrollArea className="rounded-md border">
-                  <ul>
-                    <ReceivedFromTasks
-                      receivedFromTasks={itemData.receivedFromTasks}
-                      itemId={itemData.id}
-                    />
-                  </ul>
-                </ScrollArea>
+                {/* Task rewards, lazy-laod and suspense */}
+                <Suspense fallback={<div>Loading task rewards...</div>}>
+                  <TaskRewards
+                    receivedFromTasks={itemData.receivedFromTasks}
+                    itemId={itemData.id}
+                  />
+                </Suspense>
               </AccordionContent>
             </AccordionItem>
           ) : null)}
         <AccordionItem value="item-2">
           <AccordionTrigger className="text-lg">Buy For:</AccordionTrigger>
           <AccordionContent className="flex flex-col gap-4 text-balance">
+            {/* Trader Buy, lazy-laod and suspense */}
             {tradersData && (
-              <SimpleDataTable data={itemData.buyFor} columns={columnsBuy} />
+              <Suspense fallback={<div>Loading Traders Data...</div>}>
+                <DataTableBuy
+                  data={itemData.buyFor}
+                  tradersData={tradersData}
+                />
+              </Suspense>
             )}
           </AccordionContent>
         </AccordionItem>
         <AccordionItem value="item-3">
           <AccordionTrigger className="text-lg">Sell For:</AccordionTrigger>
           <AccordionContent className="flex flex-col gap-4 text-balance">
+            {/* Trader Sell, lazy-laod and suspense */}
             {tradersData && (
-              <SimpleDataTable data={itemData.sellFor} columns={columnsSell} />
+              <Suspense fallback={<div>Loading Traders Data...</div>}>
+                <DataTableSell
+                  data={itemData.sellFor}
+                  tradersData={tradersData}
+                />
+              </Suspense>
             )}
           </AccordionContent>
         </AccordionItem>
@@ -219,10 +148,10 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
               Required for:
             </AccordionTrigger>
             <AccordionContent className="flex flex-col gap-4 text-balance">
-              <SimpleDataTable
-                data={itemData.usedInTasks}
-                columns={columnsTaskSimple}
-              />
+              {/* Required For, lazy-laod and suspense */}
+              <Suspense fallback={<div>Loading Required For Data...</div>}>
+                <RequiredFor data={itemData.usedInTasks} />
+              </Suspense>
             </AccordionContent>
           </AccordionItem>
         ) : null}
@@ -231,13 +160,15 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
           <AccordionItem value="item-5">
             <AccordionTrigger className="text-lg">Barters:</AccordionTrigger>
             <AccordionContent className="flex flex-col gap-4 text-balance">
-              <SimpleDataTable
-                data={[
-                  ...(itemData.bartersFor || []),
-                  ...(itemData.bartersUsing || []),
-                ]}
-                columns={columnsBarter}
-              />
+              {/* Barters, lazy-laod and suspense */}
+              <Suspense fallback={<div>Loading Barters Data...</div>}>
+                <DataTableBarters
+                  data={[
+                    ...(itemData.bartersFor || []),
+                    ...(itemData.bartersUsing || []),
+                  ]}
+                />
+              </Suspense>
             </AccordionContent>
           </AccordionItem>
         ) : null}
@@ -245,13 +176,15 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
           <AccordionItem value="item-6">
             <AccordionTrigger className="text-lg">Crafting:</AccordionTrigger>
             <AccordionContent className="flex flex-col gap-4 text-balance">
-              <SimpleDataTable
-                data={[
-                  ...(itemData.craftsFor || []),
-                  ...(itemData.craftsUsing || []),
-                ]}
-                columns={columnsCrafting}
-              />
+              {/* Craftings, lazy-laod and suspense */}
+              <Suspense fallback={<div>Loading Crafting Data...</div>}>
+                <DataTableCraftings
+                  data={[
+                    ...(itemData.craftsFor || []),
+                    ...(itemData.craftsUsing || []),
+                  ]}
+                />
+              </Suspense>
             </AccordionContent>
           </AccordionItem>
         ) : null}

@@ -14,6 +14,7 @@ import Link from "next/link";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { Briefcase, TowerControl } from "lucide-react";
 import CraftingDurationFormat from "../modules/crafting-duration-format";
+import Image from "next/image";
 
 //Column Barter
 const columnHelperBarter = createColumnHelper<Barter>();
@@ -282,13 +283,16 @@ export const columnsCrafting = [
         }
 
         return (
-          <div className="flex items-center gap-3 min-w-0">
+          <div className="flex items-center gap-3 ">
             <div className="relative shrink-0">
               {item.gridImageLink && (
-                <img
+                <Image
                   src={item.gridImageLink}
                   alt={item.name}
-                  className="w-[3rem] aspect-square object-contain shrink-0"
+                  width={100}
+                  height={100}
+                  loading="lazy"
+                  className="aspect-square object-contain"
                 />
               )}
               {amount !== undefined && (
@@ -340,12 +344,15 @@ export const columnsCrafting = [
 
             return (
               <div key={item.id} className="flex items-center gap-3">
-                <div className="relative w-12 h-12">
+                <div className="relative">
                   {item.gridImageLink && (
-                    <img
+                    <Image
                       src={item.gridImageLink}
                       alt={item.name}
-                      className="w-12 h-12 aspect-square object-contain"
+                      width={50}
+                      height={50}
+                      loading="lazy"
+                      className="aspect-square object-contain"
                     />
                   )}
                   {amount !== undefined && (

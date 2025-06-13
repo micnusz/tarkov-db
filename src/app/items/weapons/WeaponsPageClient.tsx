@@ -11,7 +11,7 @@ const WeaponsPageClient = () => {
   });
 
   return (
-    <div className="w-full h-full flex-col justify-center items-center p-10">
+    <div className="w-full h-full flex-col justify-center items-center p-4 md:p-10">
       <h1>Weapons:</h1>
       <DataTableWeapons data={data} columns={columnsWeapon} />
     </div>
