@@ -1,7 +1,7 @@
 "use client";
 
 import { client } from "@/app/api/client";
-import { VendorPrice } from "@/app/api/types";
+import { Task, VendorPrice } from "@/app/api/types";
 import DefaultHeader from "@/components/ui/default-header";
 import { SimpleDataTable } from "@/components/ui/simple-data-table";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/accordion";
 import {
   columnsBarter,
+  columnsCrafting,
   columnsTaskSimple,
 } from "@/components/data-table/columns";
 import Loading from "./loading";
@@ -133,6 +134,12 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
     []
   );
 
+  const hasTaskReward = (tasks: Task[], itemId: string): boolean => {
+    return tasks.some((task) =>
+      task.finishRewards.items.some((reward) => reward.item.id === itemId)
+    );
+  };
+
   return (
     <div key={itemData.id} className="flex flex-col p-10">
       <div className="mb-6 flex flex-col md:flex-row gap-6">
@@ -165,23 +172,25 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
         </div>
       </div>
       <Accordion type="single" className="w-full" collapsible>
-        {itemData.receivedFromTasks && itemData.receivedFromTasks.length > 0 ? (
-          <AccordionItem value="item-1">
-            <AccordionTrigger className="text-lg">
-              Task rewards:
-            </AccordionTrigger>
-            <AccordionContent className="flex flex-col gap-4 text-balance">
-              <ScrollArea className="rounded-md border">
-                <ul>
-                  <ReceivedFromTasks
-                    receivedFromTasks={itemData.receivedFromTasks}
-                    itemId={itemData.id}
-                  />
-                </ul>
-              </ScrollArea>
-            </AccordionContent>
-          </AccordionItem>
-        ) : null}
+        {itemData.receivedFromTasks &&
+          itemData.receivedFromTasks.length > 0 &&
+          (hasTaskReward(itemData.receivedFromTasks, itemData.id) ? (
+            <AccordionItem value="item-1">
+              <AccordionTrigger className="text-lg">
+                Task rewards:
+              </AccordionTrigger>
+              <AccordionContent className="flex flex-col gap-4 text-balance">
+                <ScrollArea className="rounded-md border">
+                  <ul>
+                    <ReceivedFromTasks
+                      receivedFromTasks={itemData.receivedFromTasks}
+                      itemId={itemData.id}
+                    />
+                  </ul>
+                </ScrollArea>
+              </AccordionContent>
+            </AccordionItem>
+          ) : null)}
         <AccordionItem value="item-2">
           <AccordionTrigger className="text-lg">Buy For:</AccordionTrigger>
           <AccordionContent className="flex flex-col gap-4 text-balance">
@@ -235,7 +244,7 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
                   ...(itemData.craftsFor || []),
                   ...(itemData.craftsUsing || []),
                 ]}
-                columns={columnsBarter}
+                columns={columnsCrafting}
               />
             </AccordionContent>
           </AccordionItem>

@@ -23,7 +23,7 @@ import {
 import React, { useState } from "react";
 
 import { Button } from "../ui/button";
-import { AmmoProperties, WeaponItem } from "@/app/api/types";
+import { WeaponItem } from "@/app/api/types";
 import { DataTablePagination } from "./data-table-pagination";
 import { Input } from "../ui/input";
 
@@ -127,7 +127,6 @@ export function DataTableWeapons<TData extends WeaponItem, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className="cursor-pointer"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>

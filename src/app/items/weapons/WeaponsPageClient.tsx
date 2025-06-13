@@ -5,7 +5,7 @@ import { DataTableWeapons } from "@/components/data-table/data-table-weapons";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 const WeaponsPageClient = () => {
-  const { data = [] } = useSuspenseQuery({
+  const { data } = useSuspenseQuery({
     queryKey: ["weapons"],
     queryFn: () => client.getWeapons(),
   });

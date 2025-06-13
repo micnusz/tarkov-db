@@ -65,7 +65,7 @@ const SearchBar = () => {
             Search
           </div>
         </DialogTrigger>
-        <DialogContent>
+        <DialogContent className="border-foreground/20">
           <DialogHeader>
             <Input
               type="text"
@@ -76,8 +76,8 @@ const SearchBar = () => {
             />
 
             <DialogTitle hidden={true}>Search Items</DialogTitle>
-            <DialogDescription asChild>
-              <ScrollArea className="h-[25rem] w-full rounded-md border">
+            <DialogDescription asChild className="h-[20rem]">
+              <ScrollArea className="w-full rounded-md border">
                 <>
                   {isLoading && <SearchBarLoading />}
                   {data?.map((item) => (

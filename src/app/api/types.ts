@@ -64,6 +64,12 @@ export type WeaponProperties = {
   recoilHorizontal: number;
   ergonomics: number;
   effectiveDistance: number;
+  moa: number;
+  baseItem: {
+    name: string;
+    id: string;
+    properties: WeaponProperties;
+  };
 };
 
 // Item Collections
@@ -87,7 +93,7 @@ export type GetItemById = {
     usedInTasks: Task[];
     craftsFor: CraftingProperties[];
     craftsUsing: CraftingProperties[];
-    receivedFromTasks: Barter[];
+    receivedFromTasks: Task[];
   };
 };
 
@@ -97,13 +103,15 @@ export type CraftingProperties = {
   taskUnlock: {
     name: string;
     id: string;
+    trader: Trader;
   };
   station: CraftingStation;
-  requiredItems: CraftingItems;
-  rewardItems: CraftingItems;
+  requiredItems: CraftingItems[];
+  rewardItems: CraftingItems[];
 };
 
 export type CraftingItems = {
+  quantity: number;
   count: number;
   item: Item;
 };
@@ -123,7 +131,10 @@ export type BarterItem = {
 
 export type Barter = {
   buyLimit: number;
-  taskUnlock: { name: string } | null;
+  taskUnlock: {
+    name: string;
+    id: string;
+  };
   level: number;
   finishRewards: BarterItem[];
   rewardItems: BarterItem[];

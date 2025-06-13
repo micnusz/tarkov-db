@@ -3,6 +3,7 @@ import {
   Barter,
   BarterItem,
   Crafting,
+  CraftingProperties,
   Task,
   WeaponItem,
 } from "@/app/api/types";
@@ -12,6 +13,7 @@ import { Badge } from "../ui/badge";
 import Link from "next/link";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { Briefcase, TowerControl } from "lucide-react";
+import CraftingDurationFormat from "../modules/crafting-duration-format";
 
 //Column Barter
 const columnHelperBarter = createColumnHelper<Barter>();
@@ -230,30 +232,36 @@ export const columnsBarter = [
   }),
 ] as ColumnDef<Barter>[];
 
-const columnHelperCrafting = createColumnHelper<Barter>();
+//Crafting
+const columnHelperCrafting = createColumnHelper<CraftingProperties>();
 export const columnsCrafting = [
-  columnHelperCrafting.accessor((row) => row.trader?.imageLink ?? "", {
-    id: "trader",
-    header: (info) => <DefaultHeader info={info} name="Trader" />,
+  columnHelperCrafting.accessor((row) => row.station?.name ?? "", {
+    id: "station",
+    header: (info) => <DefaultHeader info={info} name="Station" />,
     cell: (info) => {
-      const trader = info.row.original?.trader;
+      const station = info.row.original?.station;
       const level = info.row.original?.level;
+      const task = info.row.original?.taskUnlock;
 
-      if (!trader || !trader.imageLink || !trader.name) {
-        return <span className="text-gray-400 italic">Brak danych</span>;
+      if (!station) {
+        return <span className="text-gray-400 italic">N/A</span>;
       }
 
       return (
-        <div className="relative w-16 h-16">
-          <img
-            className="w-16 h-16 aspect-square object-contain"
-            src={trader.imageLink}
-            alt={trader.name}
-          />
-          {level != null && (
-            <Badge className=" absolute -top-1 -right-1 text-xs px-1.5 py-0.5">
-              Lv. {level}
-            </Badge>
+        <div className="flex flex-col items-center gap-2">
+          <span className="text-sm font-medium">{station.name}</span>
+          {typeof level === "number" && (
+            <span className="text-sm">Lv. {level}</span>
+          )}
+          {task?.name && (
+            <>
+              <span className="flex">
+                After completing {task.trader.name}'s task -
+              </span>
+              <span className="flex text-chart-2 hover:text-foreground/80">
+                <Link href={`/task/${task.id}`}>{task.name}</Link>
+              </span>
+            </>
           )}
         </div>
       );
@@ -280,7 +288,7 @@ export const columnsCrafting = [
                 <img
                   src={item.gridImageLink}
                   alt={item.name}
-                  className="w-[5rem] aspect-square object-contain shrink-0"
+                  className="w-[3rem] aspect-square object-contain shrink-0"
                 />
               )}
               {amount !== undefined && (
@@ -300,6 +308,21 @@ export const columnsCrafting = [
       filterFn: "includesString",
     }
   ),
+  columnHelperCrafting.accessor((row) => row.duration, {
+    id: "duration",
+    header: (info) => <DefaultHeader info={info} name="Duration" />,
+    cell: (info) => {
+      const duration = info.getValue();
+
+      return typeof duration === "number" ? (
+        <span className="text-sm font-medium">
+          {CraftingDurationFormat(duration)}
+        </span>
+      ) : (
+        <span className="text-gray-400 italic">N/A</span>
+      );
+    },
+  }),
   columnHelperCrafting.accessor((row) => row.requiredItems ?? "", {
     id: "required",
     header: (info) => <DefaultHeader info={info} name="Required" />,
@@ -312,7 +335,7 @@ export const columnsCrafting = [
 
       return (
         <div className="flex flex-col gap-2">
-          {requiredItems.map(({ item, count, quantity }: BarterItem) => {
+          {requiredItems.map(({ item, count, quantity }) => {
             const amount = quantity ?? count;
 
             return (
@@ -353,101 +376,7 @@ export const columnsCrafting = [
     enableSorting: false,
     enableHiding: false,
   }),
-  columnHelperCrafting.accessor((row) => row.requiredItems ?? "", {
-    id: "cost",
-    header: (info) => <DefaultHeader info={info} name="Barter Cost" />,
-    cell: (info) => {
-      const requiredItems = info.getValue();
-
-      if (!requiredItems.length) {
-        return <span className="text-gray-400 italic">N/A</span>;
-      }
-
-      const totalCost = requiredItems.reduce(
-        (sum: number, { item, count, quantity }: BarterItem) => {
-          const qty = quantity ?? count ?? 0;
-          const price =
-            typeof item.avg24hPrice === "number" ? item.avg24hPrice : 0;
-          return sum + qty * price;
-        },
-        0
-      );
-
-      return (
-        <div className="text-sm font-medium">
-          {totalCost > 0 ? (
-            `${totalCost.toLocaleString("de-DE")}₽`
-          ) : (
-            <span className="text-gray-400 italic">N/A</span>
-          )}
-        </div>
-      );
-    },
-    enableSorting: true,
-    enableHiding: true,
-  }),
-  columnHelperCrafting.accessor(
-    (row) => row.rewardItems?.[0]?.item.avg24hPrice ?? null,
-    {
-      id: "fleaCost",
-      header: (info) => (
-        <DefaultHeader info={info} name="Avg Flea Cost (24h)" />
-      ),
-      cell: (info) => {
-        const price = info.getValue();
-
-        return typeof price === "number" ? (
-          <span className="text-sm font-medium">
-            {price.toLocaleString("de-DE")}₽
-          </span>
-        ) : (
-          <span className="text-gray-400 italic">N/A</span>
-        );
-      },
-      enableSorting: true,
-      enableHiding: true,
-    }
-  ),
-  columnHelperCrafting.accessor((row) => row, {
-    id: "profit",
-    header: (info) => <DefaultHeader info={info} name="Barter profit" />,
-    cell: (info) => {
-      const row = info.getValue();
-
-      const rewardItem = row.rewardItems?.[0]?.item;
-      const rewardPrice = rewardItem?.avg24hPrice ?? 0;
-
-      const requiredItems = row.requiredItems ?? [];
-      const barterCost = requiredItems.reduce(
-        (total: number, { item, count = 1, quantity = 1 }: BarterItem) => {
-          const itemPrice = item?.avg24hPrice ?? 0;
-          const qty = quantity ?? count;
-          return total + itemPrice * qty;
-        },
-        0
-      );
-
-      const profit = rewardPrice - barterCost;
-      const formattedProfit = profit.toLocaleString("de-DE") + "₽";
-
-      return (
-        <span
-          className={
-            profit > 0
-              ? "text-green-600"
-              : profit < 0
-              ? "text-red-600"
-              : "text-gray-600"
-          }
-        >
-          {formattedProfit}
-        </span>
-      );
-    },
-    enableSorting: true,
-    enableHiding: false,
-  }),
-] as ColumnDef<Crafting>[];
+] as ColumnDef<CraftingProperties>[];
 
 //Columns /weapon
 const columnHelperWeapon = createColumnHelper<WeaponItem>();
@@ -483,7 +412,7 @@ export const columnsWeapon = [
       return (
         <div className="flex flex-row gap-8">
           <Link href={`/item/${row.id}`}>
-            <span>{caliberRaw}</span>
+            <span className="hover:text-chart-2">{caliberRaw}</span>
           </Link>
         </div>
       );
@@ -498,32 +427,50 @@ export const columnsWeapon = [
       const category = info.getValue<string>();
       return (
         <div className="flex flex-row gap-8">
-          <Link href={`/item/${row.id}`}>
-            <span>{category}</span>
-          </Link>
+          <span>{category}</span>
         </div>
       );
     },
     filterFn: "includesString",
   }),
-  columnHelperWeapon.accessor("properties.caliber", {
-    header: (info) => <DefaultHeader info={info} name="Caliber" />,
-    cell: (info) => {
-      const row = info.row.original;
-      const caliberRaw = info.getValue<string>();
-      const caliberStripped = caliberRaw.replace(/^Caliber/, "");
-      const caliberFormatted = caliberStripped.replace(
-        /^(\d)(\d{2}x\d+)/,
-        "$1.$2"
-      );
-
-      return <span>{caliberFormatted}</span>;
+  columnHelperWeapon.accessor(
+    (row) => {
+      return row.properties.baseItem?.properties?.caliber ?? null;
     },
-  }),
-  columnHelperWeapon.accessor("properties.fireRate", {
-    header: (info) => <DefaultHeader info={info} name="Fire Rate" />,
-    cell: (info) => info.getValue(),
-  }),
+    {
+      id: "caliber",
+      header: (info) => <DefaultHeader info={info} name="Caliber" />,
+      cell: (info) => {
+        const caliberRaw = info.getValue<string | null>();
+        if (!caliberRaw)
+          return <span className="text-gray-400 italic">N/A</span>;
+
+        const caliberStripped = caliberRaw.replace(/^Caliber\s*/, "");
+        const caliberFormatted = caliberStripped.replace(
+          /^(\d)(\d{2}x\d+)/,
+          "$1.$2"
+        );
+
+        return <span>{caliberFormatted}</span>;
+      },
+    }
+  ),
+
+  columnHelperWeapon.accessor(
+    (row) => row.properties.baseItem?.properties?.fireRate ?? null,
+    {
+      id: "fireRate",
+      header: (info) => <DefaultHeader info={info} name="Fire Rate (RPM)" />,
+      cell: (info) => {
+        const value = info.getValue<number | null>();
+        return value !== null ? (
+          <span>{value}</span>
+        ) : (
+          <span className="text-gray-400 italic">N/A</span>
+        );
+      },
+    }
+  ),
   columnHelperWeapon.accessor("properties.recoilVertical", {
     header: (info) => <DefaultHeader info={info} name="Vertical Recoil" />,
     cell: (info) => info.getValue(),
@@ -536,10 +483,21 @@ export const columnsWeapon = [
     header: (info) => <DefaultHeader info={info} name="Ergonomics" />,
     cell: (info) => info.getValue(),
   }),
-  columnHelperWeapon.accessor("properties.effectiveDistance", {
-    header: (info) => <DefaultHeader info={info} name="Effective Range" />,
-    cell: (info) => info.getValue(),
-  }),
+  columnHelperWeapon.accessor(
+    (row) => row.properties.baseItem?.properties?.effectiveDistance ?? null,
+    {
+      id: "effectiveDistance",
+      header: (info) => <DefaultHeader info={info} name="Effective distance" />,
+      cell: (info) => {
+        const value = info.getValue<number | null>();
+        return value !== null ? (
+          <span>{value}m</span>
+        ) : (
+          <span className="text-gray-400 italic">N/A</span>
+        );
+      },
+    }
+  ),
 ] as ColumnDef<WeaponItem>[];
 
 //Columns /backpacks
@@ -772,6 +730,7 @@ export const columnsTaskSimple = [
     }
   ),
 ] as ColumnDef<Task>[];
+
 //Columns Tasks,
 const columnHelper = createColumnHelper<Task>();
 export const columnsTaskAdvanced = [
@@ -817,7 +776,7 @@ export const columnsTaskAdvanced = [
   }),
   columnHelper.accessor((row) => row.taskRequirements, {
     id: "taskRequirements",
-    header: (info) => <DefaultHeader info={info} name="Required tasks" />,
+    header: (info) => <DefaultHeader info={info} name="Required Tasks" />,
     cell: (info) => {
       const requirements = info.getValue();
       return requirements && requirements.length > 0 ? (
@@ -861,7 +820,7 @@ export const columnsTaskAdvanced = [
     }),
     {
       id: "requirements",
-      header: (info) => <DefaultHeader info={info} name="Required for" />,
+      header: (info) => <DefaultHeader info={info} name="Required for K/L" />,
       cell: (info) => {
         const { kappa, lightkeeper } = info.getValue();
         const hasAny = kappa || lightkeeper;

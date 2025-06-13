@@ -60,6 +60,9 @@ export const GET_ITEM_ID = gql`
         duration
         level
         taskUnlock {
+          trader {
+            name
+          }
           name
           id
         }
@@ -70,6 +73,7 @@ export const GET_ITEM_ID = gql`
         requiredItems {
           count
           item {
+            gridImageLink
             name
             id
           }
@@ -77,6 +81,7 @@ export const GET_ITEM_ID = gql`
         rewardItems {
           count
           item {
+            gridImageLink
             name
             id
           }
@@ -86,6 +91,9 @@ export const GET_ITEM_ID = gql`
         duration
         level
         taskUnlock {
+          trader {
+            name
+          }
           name
           id
         }
@@ -96,6 +104,7 @@ export const GET_ITEM_ID = gql`
         requiredItems {
           count
           item {
+            gridImageLink
             name
             id
           }
@@ -103,6 +112,7 @@ export const GET_ITEM_ID = gql`
         rewardItems {
           count
           item {
+            gridImageLink
             name
             id
           }
@@ -270,40 +280,34 @@ export const GET_AMMO = gql`
 `;
 
 export const GET_ALL_WEAPONS = gql`
-  query GetOnlyWeapons {
-    items(types: [gun]) {
+  query GetWeapons {
+    items(type: preset, categoryNames: Weapon) {
       id
       name
-      shortName
       category {
         name
         id
       }
       types
-      basePrice
-      image8xLink
       gridImageLink
-      buyFor {
-        vendor {
-          name
-        }
-        price
-      }
-      sellFor {
-        vendor {
-          name
-        }
-        price
-      }
       properties {
         __typename
-        ... on ItemPropertiesWeapon {
-          caliber
-          fireRate
+        ... on ItemPropertiesPreset {
           recoilVertical
           recoilHorizontal
           ergonomics
-          effectiveDistance
+          moa
+          baseItem {
+            name
+            id
+            properties {
+              ... on ItemPropertiesWeapon {
+                caliber
+                fireRate
+                effectiveDistance
+              }
+            }
+          }
         }
       }
     }

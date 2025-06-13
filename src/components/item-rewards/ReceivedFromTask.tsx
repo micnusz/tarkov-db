@@ -8,14 +8,24 @@ type Props = {
 };
 
 const ReceivedFromTasks = ({ receivedFromTasks, itemId }: Props) => {
+  // Filtrujemy zadania, które mają nagrodę z danym itemId
+  const tasksWithReward = receivedFromTasks.filter((task) =>
+    task.finishRewards.items.some((reward) => reward.item.id === itemId)
+  );
+
+  if (tasksWithReward.length === 0) {
+    // Możesz tu zwrócić null lub komunikat, np.:
+    return <span className="text-gray-400 italic">No rewards found</span>;
+  }
+
   return (
     <>
-      {receivedFromTasks.map((task) => {
+      {tasksWithReward.map((task) => {
         const rewardItem = task.finishRewards.items.find(
           (reward) => reward.item.id === itemId
         );
 
-        if (!rewardItem) return null;
+        if (!rewardItem) return null; // bezpieczeństwo
 
         return (
           <li key={task.id} className="text-sm md:text-base">
