@@ -35,6 +35,10 @@ export type BaseItem = {
   avg24hPrice?: number;
   low24hPrice?: number;
   high24hPrice?: number;
+  properties: {
+    __typename: string;
+    baseItem: BaseItem;
+  };
 };
 
 export type BackpackItem = BaseItem & {

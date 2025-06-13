@@ -42,7 +42,7 @@ const TaskPageClient = ({ id }: TaskPageClientProps) => {
   }
 
   return (
-    <div key={taskData.id} className="flex flex-col p-10">
+    <div key={taskData.id} className="flex flex-col p-4 md:p-10">
       <div className="mb-6 flex flex-col md:flex-row gap-6">
         <div className="flex-1">
           <div>

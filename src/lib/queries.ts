@@ -56,6 +56,31 @@ export const GET_ITEM_ID = gql`
       image8xLink
       wikiLink
       gridImageLink
+      properties {
+        __typename
+        ... on ItemPropertiesPreset {
+          baseItem {
+            properties {
+              ... on ItemPropertiesWeapon {
+                presets {
+                  name
+                  id
+                }
+              }
+            }
+            description
+            name
+            id
+            inspectImageLink
+          }
+        }
+        ... on ItemPropertiesWeapon {
+          presets {
+            id
+            name
+          }
+        }
+      }
       craftsUsing {
         duration
         level

@@ -21,6 +21,7 @@ import {
 import Loading from "./loading";
 import ReceivedFromTasks from "@/components/item-rewards/ReceivedFromTask";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import ItemVariants from "@/components/item-rewards/ItemVariants";
 
 type ItemPageClientProps = {
   id: string;
@@ -136,23 +137,26 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
 
   const hasTaskReward = (tasks: Task[], itemId: string): boolean => {
     return tasks.some((task) =>
-      task.finishRewards.items.some((reward) => reward.item.id === itemId)
+      task.finishRewards?.items?.some((reward) => reward.item.id === itemId)
     );
   };
 
+  const fallbackDescription =
+    itemData.description ?? itemData.properties?.baseItem?.description;
+
   return (
-    <div key={itemData.id} className="flex flex-col p-10">
+    <div key={itemData.id} className="flex flex-col p-4 md:p-10">
       <div className="mb-6 flex flex-col md:flex-row gap-6">
         <div className="flex-1">
+          {/* Item Title */}
           <h1 className="text-left text-4xl font-extrabold tracking-tight">
             {itemData.name}
           </h1>
-          {itemData.description ? (
-            <p className="leading-7 mt-2">{itemData.description}</p>
-          ) : (
-            <p className="leading-7 mt-2">No Description...</p>
+          {/* Item Description */}
+          {fallbackDescription && (
+            <p className="leading-7 mt-2">{fallbackDescription}</p>
           )}
-
+          {/* Item WikiLink */}
           <a
             href={itemData.wikiLink}
             className="text-chart-1 hover:text-muted mt-2 inline-block"
@@ -161,8 +165,10 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
           >
             Wiki
           </a>
+          {/* Item Variants   */}
+          <ItemVariants itemData={itemData} />
         </div>
-
+        {/* Item Image */}
         <div className="flex justify-center items-center md:w-1/2">
           <img
             src={itemData.image8xLink}
@@ -200,7 +206,7 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
           </AccordionContent>
         </AccordionItem>
         <AccordionItem value="item-3">
-          <AccordionTrigger className="text-lg">Sell for:</AccordionTrigger>
+          <AccordionTrigger className="text-lg">Sell For:</AccordionTrigger>
           <AccordionContent className="flex flex-col gap-4 text-balance">
             {tradersData && (
               <SimpleDataTable data={itemData.sellFor} columns={columnsSell} />
