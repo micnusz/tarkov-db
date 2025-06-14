@@ -41,7 +41,7 @@ const SearchBar = () => {
     queryKey: ["items", queryText],
     queryFn: () => client.getItemsSearchBar(queryText),
     enabled: queryText.trim().length > 0,
-    staleTime: 0,
+    staleTime: 2 * 60 * 1000,
     gcTime: 60 * 1000,
   });
 

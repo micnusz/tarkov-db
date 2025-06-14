@@ -13,7 +13,7 @@ export const generateMetadata = async ({
   params,
 }: Props): Promise<Metadata> => {
   const { id } = await params;
-  const task = await client.getTask(id);
+  const task = await client.getTaskIdTitle(id);
   const name = task?.name ?? "Default title";
   return {
     title: `${name} - Tarkov.db`,
@@ -28,7 +28,7 @@ const TaskPageServer = async ({ params }: Props) => {
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({
     queryKey: ["task", id],
-    queryFn: () => client.getTask(id),
+    queryFn: () => client.getTaskIdBase(id),
   });
 
   return (

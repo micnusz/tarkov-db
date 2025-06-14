@@ -1,5 +1,4 @@
 import { client } from "@/app/api/client";
-import { CraftingProperties } from "@/app/api/types";
 import { columnsCrafting } from "@/components/data-table/columns";
 import { SimpleDataTable } from "@/components/ui/simple-data-table";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -11,7 +10,7 @@ type DataTableCraftingsProps = {
 const DataTableCraftings = ({ itemId }: DataTableCraftingsProps) => {
   const { data: itemCrafting } = useSuspenseQuery({
     queryKey: ["item-crafting", itemId],
-    queryFn: () => client.getItemIdBarters(itemId),
+    queryFn: () => client.getItemIdCrafting(itemId),
   });
 
   return (

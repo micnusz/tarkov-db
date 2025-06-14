@@ -68,8 +68,8 @@ export const columnsBarter = [
               <Image
                 src={item.gridImageLink}
                 alt={item.name}
-                width={100}
-                height={100}
+                width={50}
+                height={50}
                 loading="lazy"
                 className="aspect-square object-contain"
               />
@@ -676,7 +676,7 @@ export const columnsTaskSimple = [
             aria-label={`Image of trader: ${trader.name}`}
             src={row.trader.imageLink}
             alt={`${trader.name}`}
-            width={50}
+            width={ta}
             height={50}
             loading="lazy"
             className="aspect-square object-contain"
@@ -773,8 +773,8 @@ export const columnsTaskAdvanced = [
             aria-label={`Image of trader: ${name}`}
             src={row.trader.imageLink}
             alt={name}
-            width={50}
-            height={50}
+            width={75}
+            height={75}
             className="object-contain h-25"
           />
         </div>

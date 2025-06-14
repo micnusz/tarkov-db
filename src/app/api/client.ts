@@ -7,7 +7,6 @@ import {
   GET_BARTERS,
   GET_CONTAINERS_ITEMS,
   GET_ITEM_BASE_ID,
-  GET_ITEM_ID,
   GET_ITEM_ID_BARTERS,
   GET_ITEM_ID_CRAFTING,
   GET_ITEM_ID_NAME,
@@ -17,7 +16,13 @@ import {
   GET_ITEM_ID_VARIANTS,
   GET_ITEMS,
   GET_ITEMS_SEARCH_BAR,
-  GET_TASK_ID,
+  GET_TASK_ID_BASE,
+  GET_TASK_ID_FAILURE,
+  GET_TASK_ID_OBJECTIVES,
+  GET_TASK_ID_REQUIREMENTS,
+  GET_TASK_ID_REWARD,
+  GET_TASK_ID_TITLE,
+  GET_TASK_ID_TRADERS,
   GET_TASKS,
   GET_TRADERS,
   GET_WEAPON_ID,
@@ -53,12 +58,19 @@ export const client = {
     return data.item;
   },
 
-  //added for dynamic item/[id] page title
+  //added for dynamic title: item/[id]
   async getItemIdTitle(id: string): Promise<GetItemById["item"]> {
     const data = await graphqlClient.request<GetItemById>(GET_ITEM_ID_TITLE, {
       id: id,
     });
     return data.item;
+  },
+  //Aadded for dynamic title: task/[id]
+  async getTaskIdTitle(id: string): Promise<GetTasks["task"]> {
+    const data = await graphqlClient.request<GetTasks>(GET_TASK_ID_TITLE, {
+      id: id,
+    });
+    return data.task;
   },
 
   //item/[id], ItemBase
@@ -168,6 +180,51 @@ export const client = {
   },
   async getTask(id: string): Promise<GetTasks["task"]> {
     const data = await graphqlClient.request<GetTasks>(GET_TASK_ID, {
+      id: id,
+    });
+    return data.task;
+  },
+  //task/[id], Task Base
+  async getTaskIdBase(id: string): Promise<GetTasks["task"]> {
+    const data = await graphqlClient.request<GetTasks>(GET_TASK_ID_BASE, {
+      id: id,
+    });
+    return data.task;
+  },
+  //task/[id], Task Failure
+  async getTaskIdFailure(id: string): Promise<GetTasks["task"]> {
+    const data = await graphqlClient.request<GetTasks>(GET_TASK_ID_FAILURE, {
+      id: id,
+    });
+    return data.task;
+  },
+  //task/[id], Task Objectives
+  async getTaskIdObjectives(id: string): Promise<GetTasks["task"]> {
+    const data = await graphqlClient.request<GetTasks>(GET_TASK_ID_OBJECTIVES, {
+      id: id,
+    });
+    return data.task;
+  },
+  //task/[id], Task Requirements
+  async getTaskIdRequirements(id: string): Promise<GetTasks["task"]> {
+    const data = await graphqlClient.request<GetTasks>(
+      GET_TASK_ID_REQUIREMENTS,
+      {
+        id: id,
+      }
+    );
+    return data.task;
+  },
+  //task/[id], Task Reward
+  async getTaskIdReward(id: string): Promise<GetTasks["task"]> {
+    const data = await graphqlClient.request<GetTasks>(GET_TASK_ID_REWARD, {
+      id: id,
+    });
+    return data.task;
+  },
+  //task/[id], Task Traders
+  async getTaskIdTraders(id: string): Promise<GetTasks["task"]> {
+    const data = await graphqlClient.request<GetTasks>(GET_TASK_ID_TRADERS, {
       id: id,
     });
     return data.task;

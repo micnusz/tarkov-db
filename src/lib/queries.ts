@@ -283,230 +283,6 @@ export const GET_ITEM_ID_CRAFTING = gql`
   }
 `;
 
-export const GET_ITEM_ID = gql`
-  query GetItemById($id: ID!) {
-    item(id: $id) {
-      id
-      name
-      shortName
-      description
-      basePrice
-      wikiLink
-      image512pxLink
-      properties {
-        __typename
-        ... on ItemPropertiesPreset {
-          baseItem {
-            properties {
-              ... on ItemPropertiesWeapon {
-                presets {
-                  name
-                  id
-                }
-              }
-            }
-            description
-            name
-            id
-            inspectImageLink
-          }
-        }
-        ... on ItemPropertiesWeapon {
-          presets {
-            id
-            name
-          }
-        }
-      }
-      craftsUsing {
-        duration
-        level
-        taskUnlock {
-          trader {
-            name
-          }
-          name
-          id
-        }
-        station {
-          id
-          name
-        }
-        requiredItems {
-          count
-          item {
-            gridImageLink
-            name
-            id
-          }
-        }
-        rewardItems {
-          count
-          item {
-            gridImageLink
-            name
-            id
-          }
-        }
-      }
-      craftsFor {
-        duration
-        level
-        taskUnlock {
-          trader {
-            name
-          }
-          name
-          id
-        }
-        station {
-          id
-          name
-        }
-        requiredItems {
-          count
-          item {
-            gridImageLink
-            name
-            id
-          }
-        }
-        rewardItems {
-          count
-          item {
-            gridImageLink
-            name
-            id
-          }
-        }
-      }
-      receivedFromTasks {
-        name
-        id
-        finishRewards {
-          items {
-            count
-            item {
-              name
-              id
-            }
-          }
-        }
-      }
-      usedInTasks {
-        kappaRequired
-        lightkeeperRequired
-        trader {
-          name
-          imageLink
-        }
-        name
-        id
-      }
-      bartersUsing {
-        buyLimit
-        taskUnlock {
-          name
-        }
-        level
-        rewardItems {
-          item {
-            wikiLink
-            avg24hPrice
-            category {
-              name
-            }
-            image8xLink
-            gridImageLink
-            name
-            id
-            avg24hPrice
-          }
-          quantity
-          count
-        }
-        requiredItems {
-          item {
-            wikiLink
-            avg24hPrice
-            category {
-              name
-            }
-            image8xLink
-            gridImageLink
-            name
-            id
-            avg24hPrice
-          }
-          quantity
-          count
-        }
-        trader {
-          name
-          imageLink
-        }
-      }
-      bartersFor {
-        buyLimit
-        taskUnlock {
-          name
-        }
-        level
-        rewardItems {
-          item {
-            wikiLink
-            avg24hPrice
-            category {
-              name
-            }
-            image8xLink
-            gridImageLink
-            name
-            id
-            avg24hPrice
-          }
-          quantity
-          count
-        }
-        requiredItems {
-          item {
-            wikiLink
-            avg24hPrice
-            category {
-              name
-            }
-            image8xLink
-            gridImageLink
-            name
-            id
-            avg24hPrice
-          }
-          quantity
-          count
-        }
-        trader {
-          name
-          imageLink
-        }
-      }
-      buyFor {
-        vendor {
-          name
-        }
-        price
-        priceRUB
-      }
-      sellFor {
-        vendor {
-          name
-        }
-        price
-        priceRUB
-      }
-    }
-  }
-`;
-
 export const GET_ITEM_ID_NAME = gql`
   query GetItemIdName($ids: [ID]) {
     items(ids: $ids) {
@@ -720,7 +496,7 @@ export const GET_BACKPACK_ID = gql`
     }
   }
 `;
-
+//Tasks, table
 export const GET_TASKS = gql`
   query GetTasks {
     tasks {
@@ -787,9 +563,18 @@ export const GET_TASKS = gql`
     }
   }
 `;
-
-export const GET_TASK_ID = gql`
-  query GetTaskById($id: ID!) {
+//Task, dynamic title
+export const GET_TASK_ID_TITLE = gql`
+  query GetTaskIdBase($id: ID!) {
+    task(id: $id) {
+      id
+      name
+    }
+  }
+`;
+//Task base, task/[id]
+export const GET_TASK_ID_BASE = gql`
+  query GetTaskIdBase($id: ID!) {
     task(id: $id) {
       id
       kappaRequired
@@ -799,6 +584,22 @@ export const GET_TASK_ID = gql`
       minPlayerLevel
       lightkeeperRequired
       wikiLink
+      map {
+        name
+        id
+      }
+      trader {
+        id
+        name
+        imageLink
+      }
+    }
+  }
+`;
+//Task requirements, task/[id]
+export const GET_TASK_ID_REQUIREMENTS = gql`
+  query GetTaskIdRequirements($id: ID!) {
+    task(id: $id) {
       taskRequirements {
         task {
           id
@@ -806,6 +607,29 @@ export const GET_TASK_ID = gql`
           minPlayerLevel
         }
       }
+    }
+  }
+`;
+//Task, failure/[id]
+export const GET_TASK_ID_FAILURE = gql`
+  query GetTaskIdFailure($id: ID!) {
+    task(id: $id) {
+      failureOutcome {
+        traderStanding {
+          standing
+          trader {
+            name
+            id
+          }
+        }
+      }
+    }
+  }
+`;
+//Task, reward/[id]
+export const GET_TASK_ID_REWARD = gql`
+  query GetTaskIdReward($id: ID!) {
+    task(id: $id) {
       startRewards {
         items {
           quantity
@@ -872,15 +696,13 @@ export const GET_TASK_ID = gql`
           }
         }
       }
-      failureOutcome {
-        traderStanding {
-          standing
-          trader {
-            name
-            id
-          }
-        }
-      }
+    }
+  }
+`;
+//Task, obejctives/[id]
+export const GET_TASK_ID_OBJECTIVES = gql`
+  query GetTaskIdObjectves($id: ID!) {
+    task(id: $id) {
       objectives {
         maps {
           name
@@ -891,18 +713,17 @@ export const GET_TASK_ID = gql`
         id
         optional
       }
-      map {
-        name
-        id
-      }
+    }
+  }
+`;
+//Task, traders/[id]
+export const GET_TASK_ID_TRADERS = gql`
+  query GetTaskIdObjectves($id: ID!) {
+    task(id: $id) {
       trader {
         id
         name
         imageLink
-        image4xLink
-        reputationLevels {
-          __typename
-        }
       }
     }
   }

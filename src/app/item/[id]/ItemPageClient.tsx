@@ -51,9 +51,6 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
     () => import("@/components/item-rewards/dynamic-import/Variants")
   );
 
-  const fallbackDescription =
-    itemData.description ?? itemData.properties?.baseItem?.description;
-
   return (
     <div key={itemData.id} className="flex flex-col p-4 md:p-10">
       <div className="mb-6 flex flex-col md:flex-row gap-6">
@@ -63,9 +60,9 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
             {itemData.name}
           </h1>
           {/* Item Description */}
-          {fallbackDescription && (
-            <p className="leading-7 mt-2">{fallbackDescription}</p>
-          )}
+          {itemData.description && itemData.description.length > 0 ? (
+            <p className="leading-7 mt-2">{itemData.description}</p>
+          ) : null}
           {/* Item WikiLink */}
           <a
             href={itemData.wikiLink}
