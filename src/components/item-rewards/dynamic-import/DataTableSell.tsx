@@ -1,9 +1,10 @@
 import { client } from "@/app/api/client";
-import { Trader, VendorPrice } from "@/app/api/types";
+import { VendorPrice } from "@/app/api/types";
 import DefaultHeader from "@/components/ui/default-header";
 import { SimpleDataTable } from "@/components/ui/simple-data-table";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
+import Image from "next/image";
 import React, { useMemo } from "react";
 
 type DataTableSellProps = {
@@ -20,7 +21,7 @@ const DataTableSell = ({ itemId }: DataTableSellProps) => {
     queryFn: () => client.getTraders(),
   });
 
-  const columnHelperSell = createColumnHelper<VendorPrice>();
+  const columnHelperSell = useMemo(() => createColumnHelper<VendorPrice>(), []);
   const columnsSell = useMemo(
     () =>
       [
@@ -35,10 +36,13 @@ const DataTableSell = ({ itemId }: DataTableSellProps) => {
             return (
               <div className="flex items-center gap-2">
                 {trader && (
-                  <img
+                  <Image
+                    aria-label={`Image of trader: ${trader.name}`}
                     src={trader.image4xLink}
-                    alt={trader.name}
-                    className="rounded-sm w-16 h-16 object-contain"
+                    alt={`${trader.name}`}
+                    width={50}
+                    height={50}
+                    className="aspect-square object-contain"
                   />
                 )}
                 <span className="text-md font-medium p-2">{vendorName}</span>
@@ -65,7 +69,7 @@ const DataTableSell = ({ itemId }: DataTableSellProps) => {
           },
         }),
       ] as ColumnDef<VendorPrice>[],
-    [tradersData]
+    [tradersData, columnHelperSell]
   );
   return (
     <>

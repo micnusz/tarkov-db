@@ -10,7 +10,6 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import Loading from "./loading";
-import ItemVariants from "@/components/item-rewards/ItemVariants";
 import Image from "next/image";
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
 import Spinner from "@/lib/Spinner";
@@ -80,15 +79,17 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
           </div>
         </div>
         {/* Item Image */}
-        <div className="flex justify-center items-center md:w-1/2">
-          <Image
-            src={itemData.image512pxLink}
-            alt={itemData.name}
-            width={250}
-            height={250}
-            priority
-            className="object-contain"
-          />
+        <div className="flex justify-center items-center md:w-1/2 mx-auto">
+          <div className="relative w-[15.625rem] h-[15.625rem]">
+            <Image
+              src={itemData.image512pxLink}
+              alt={itemData.name}
+              fill
+              priority
+              className="object-contain"
+              style={{ objectPosition: "center" }}
+            />
+          </div>
         </div>
       </div>
       <Accordion type="single" className="w-full" collapsible>

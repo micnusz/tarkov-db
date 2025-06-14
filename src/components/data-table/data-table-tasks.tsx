@@ -11,13 +11,6 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 import {
   Table,
@@ -28,8 +21,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import React, { useState } from "react";
-import Filters from "../ui/filters";
-import TaskDetailsDrawer from "../TaskDetailsDrawer";
 import { Button } from "../ui/button";
 import { Task } from "@/app/api/types";
 import { DataTablePagination } from "./data-table-pagination";

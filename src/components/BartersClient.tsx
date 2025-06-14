@@ -2,13 +2,7 @@
 
 import { client } from "@/app/api/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
-import { Barter } from "@/app/api/types";
-import { useMemo } from "react";
-import Link from "next/link";
-import DefaultHeader from "./ui/default-header";
 import { DataTableBarters } from "./data-table/data-table-barters";
-import { Badge } from "./ui/badge";
 import { columnsBarter } from "./data-table/columns";
 
 const BartersClient = () => {

@@ -5,14 +5,12 @@ import ItemPageClient from "./ItemPageClient";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { Metadata } from "next";
 
-type Props = {
-  params: { id: string };
-};
-
 export const generateMetadata = async ({
   params,
-}: Props): Promise<Metadata> => {
-  const { id } = await params;
+}: {
+  params: { id: string };
+}): Promise<Metadata> => {
+  const { id } = params;
   const item = await client.getItemIdTitle(id);
   const name = item?.name ?? "Default title";
   return {
@@ -21,8 +19,8 @@ export const generateMetadata = async ({
   };
 };
 
-const ItemPageServer = async ({ params }: Props) => {
-  const resolvedParams = await params;
+const ItemPageServer = async ({ params }: { params: { id: string } }) => {
+  const resolvedParams = params;
   const { id } = resolvedParams;
 
   const queryClient = getQueryClient();

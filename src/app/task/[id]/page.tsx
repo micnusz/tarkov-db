@@ -6,13 +6,13 @@ import TaskPageClient from "./TaskPageClient";
 import { Metadata } from "next";
 
 type Props = {
-  params: { id: string; name: string };
+  params: { id: string };
 };
 
 export const generateMetadata = async ({
   params,
 }: Props): Promise<Metadata> => {
-  const { id } = await params;
+  const { id } = params;
   const task = await client.getTaskIdTitle(id);
   const name = task?.name ?? "Default title";
   return {
@@ -22,7 +22,7 @@ export const generateMetadata = async ({
 };
 
 const TaskPageServer = async ({ params }: Props) => {
-  const resolvedParams = await params;
+  const resolvedParams = params;
   const { id } = resolvedParams;
 
   const queryClient = getQueryClient();

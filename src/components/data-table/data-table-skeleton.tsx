@@ -1,12 +1,5 @@
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 
 interface DataTableSkeletonProps extends React.ComponentProps<"div"> {
@@ -14,7 +7,6 @@ interface DataTableSkeletonProps extends React.ComponentProps<"div"> {
   rowCount?: number;
   filterCount?: number;
   cellWidths?: string[];
-  withViewOptions?: boolean;
   withPagination?: boolean;
   shrinkZero?: boolean;
   searchCount?: number;
@@ -26,7 +18,6 @@ export function DataTableSkeleton({
   searchCount = 1,
   filterCount = 0,
   cellWidths = ["auto"],
-  withViewOptions = true,
   withPagination = true,
   shrinkZero = false,
   className,

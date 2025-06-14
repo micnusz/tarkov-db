@@ -45,9 +45,6 @@ const SearchBar = () => {
     gcTime: 60 * 1000,
   });
 
-  useEffect(() => {
-    debouncedSetQueryText(search);
-  }, [search]);
   return (
     <>
       <Dialog

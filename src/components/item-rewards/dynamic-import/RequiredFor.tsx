@@ -1,5 +1,4 @@
 import { client } from "@/app/api/client";
-import { BaseItem, Task } from "@/app/api/types";
 import { columnsTaskSimple } from "@/components/data-table/columns";
 import { SimpleDataTable } from "@/components/ui/simple-data-table";
 import { useSuspenseQuery } from "@tanstack/react-query";
