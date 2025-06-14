@@ -45,6 +45,244 @@ export const GET_ITEMS_SEARCH_BAR = gql`
   }
 `;
 
+//Used in item/[id] dynamic title
+export const GET_ITEM_ID_TITLE = gql`
+  query GetItemId($id: ID!) {
+    item(id: $id) {
+      id
+      name
+    }
+  }
+`;
+
+export const GET_ITEM_BASE_ID = gql`
+  query GetItemBaseId($id: ID!) {
+    item(id: $id) {
+      id
+      name
+      shortName
+      description
+      basePrice
+      wikiLink
+      image512pxLink
+    }
+  }
+`;
+
+export const GET_ITEM_ID_VARIANTS = gql`
+  query GetItemIdVariants($id: ID!) {
+    item(id: $id) {
+      id
+      properties {
+        __typename
+        ... on ItemPropertiesPreset {
+          baseItem {
+            id
+            name
+            description
+            inspectImageLink
+            properties {
+              ... on ItemPropertiesWeapon {
+                presets {
+                  id
+                  name
+                }
+              }
+            }
+          }
+        }
+        ... on ItemPropertiesWeapon {
+          presets {
+            id
+            name
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const GET_ITEM_ID_TASK = gql`
+  query GetItemIdTask($id: ID!) {
+    item(id: $id) {
+      id
+      receivedFromTasks {
+        id
+        name
+        finishRewards {
+          items {
+            count
+            item {
+              id
+              name
+            }
+          }
+        }
+      }
+      usedInTasks {
+        id
+        name
+        kappaRequired
+        lightkeeperRequired
+        trader {
+          name
+          imageLink
+        }
+      }
+    }
+  }
+`;
+
+export const GET_ITEM_ID_PRICES = gql`
+  query GetItemIdPrices($id: ID!) {
+    item(id: $id) {
+      id
+      buyFor {
+        vendor {
+          name
+        }
+        price
+        priceRUB
+      }
+      sellFor {
+        vendor {
+          name
+        }
+        price
+        priceRUB
+      }
+    }
+  }
+`;
+
+export const GET_ITEM_ID_BARTERS = gql`
+  query GetItemIdBarters($id: ID!) {
+    item(id: $id) {
+      id
+      bartersFor {
+        level
+        trader {
+          name
+          imageLink
+        }
+        requiredItems {
+          count
+          quantity
+          item {
+            id
+            name
+            gridImageLink
+          }
+        }
+        rewardItems {
+          quantity
+          count
+          item {
+            id
+            name
+            gridImageLink
+          }
+        }
+      }
+      bartersUsing {
+        level
+        trader {
+          name
+          imageLink
+        }
+        requiredItems {
+          quantity
+          count
+          item {
+            id
+            name
+            gridImageLink
+          }
+        }
+        rewardItems {
+          quantity
+          count
+          item {
+            id
+            name
+            gridImageLink
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const GET_ITEM_ID_CRAFTING = gql`
+  query GetItemIdCrafts($id: ID!) {
+    item(id: $id) {
+      id
+      craftsUsing {
+        duration
+        level
+        station {
+          id
+          name
+        }
+        taskUnlock {
+          id
+          name
+          trader {
+            name
+          }
+        }
+        requiredItems {
+          count
+          item {
+            id
+            name
+            gridImageLink
+          }
+        }
+        rewardItems {
+          count
+          item {
+            id
+            name
+            gridImageLink
+          }
+        }
+      }
+      craftsFor {
+        duration
+        level
+        station {
+          id
+          name
+        }
+        taskUnlock {
+          id
+          name
+          trader {
+            name
+          }
+        }
+        requiredItems {
+          count
+          item {
+            id
+            name
+            gridImageLink
+          }
+        }
+        rewardItems {
+          count
+          item {
+            id
+            name
+            gridImageLink
+          }
+        }
+      }
+    }
+  }
+`;
+
 export const GET_ITEM_ID = gql`
   query GetItemById($id: ID!) {
     item(id: $id) {
@@ -55,7 +293,6 @@ export const GET_ITEM_ID = gql`
       basePrice
       wikiLink
       image512pxLink
-      gridImageLink
       properties {
         __typename
         ... on ItemPropertiesPreset {
@@ -269,6 +506,7 @@ export const GET_ITEM_ID = gql`
     }
   }
 `;
+
 export const GET_ITEM_ID_NAME = gql`
   query GetItemIdName($ids: [ID]) {
     items(ids: $ids) {

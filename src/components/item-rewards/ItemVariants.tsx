@@ -9,12 +9,10 @@ import {
 } from "../ui/accordion";
 import { ScrollArea } from "../ui/scroll-area";
 import { BaseItem } from "@/app/api/types";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { client } from "@/app/api/client";
 
-type Props = {
-  itemData: BaseItem;
-};
-
-const ItemVariants = ({ itemData }: Props) => {
+const ItemVariants = ({ itemData }) => {
   const isPreset = itemData.properties?.__typename === "ItemPropertiesPreset";
 
   const presetVariants =

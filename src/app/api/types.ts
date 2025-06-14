@@ -101,6 +101,13 @@ export type GetItemById = {
     receivedFromTasks: Task[];
   };
 };
+export type GetItemTask = {
+  item: {
+    id: string;
+    receivedFromTasks: Task[];
+    usedInTasks: Task[];
+  };
+};
 
 export type CraftingProperties = {
   duration: number;

@@ -13,10 +13,11 @@ export const generateMetadata = async ({
   params,
 }: Props): Promise<Metadata> => {
   const { id } = await params;
-  const item = await client.getItem(id);
+  const item = await client.getItemIdTitle(id);
   const name = item?.name ?? "Default title";
   return {
     title: `${name} - Tarkov.db`,
+    description: `Item Page: ${name} - Tarkov.db`,
   };
 };
 
@@ -27,13 +28,8 @@ const ItemPageServer = async ({ params }: Props) => {
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({
     queryKey: ["item", id],
-    queryFn: () => client.getItem(id),
+    queryFn: () => client.getItemBaseId(id),
   });
-  await queryClient.prefetchQuery({
-    queryKey: ["traders"],
-    queryFn: () => client.getTraders(),
-  });
-
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <ItemPageClient id={id} />

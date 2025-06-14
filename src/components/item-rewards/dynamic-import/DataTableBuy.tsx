@@ -1,15 +1,25 @@
-import { Trader, VendorPrice } from "@/app/api/types";
+import { client } from "@/app/api/client";
+import { BaseItem, Trader, VendorPrice } from "@/app/api/types";
 import DefaultHeader from "@/components/ui/default-header";
 import { SimpleDataTable } from "@/components/ui/simple-data-table";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import React, { useMemo } from "react";
 
 type DataTableBuyProps = {
-  tradersData: Trader[];
-  data: VendorPrice[];
+  itemId: string;
 };
 
-const DataTableBuy = ({ tradersData, data }: DataTableBuyProps) => {
+const DataTableBuy = ({ itemId }: DataTableBuyProps) => {
+  const { data: itemVendor } = useSuspenseQuery({
+    queryKey: ["item-price-buy", itemId],
+    queryFn: () => client.getItemIdPrices(itemId),
+  });
+  const { data: tradersData } = useSuspenseQuery({
+    queryKey: ["item-trader-buy"],
+    queryFn: () => client.getTraders(),
+  });
+
   const columnHelperBuy = createColumnHelper<VendorPrice>();
   const columnsBuy = useMemo(
     () =>
@@ -57,7 +67,7 @@ const DataTableBuy = ({ tradersData, data }: DataTableBuyProps) => {
   );
   return (
     <>
-      <SimpleDataTable data={data} columns={columnsBuy} />
+      <SimpleDataTable data={itemVendor.buyFor} columns={columnsBuy} />
     </>
   );
 };

@@ -13,7 +13,11 @@ const ReceivedFromTasks = ({ receivedFromTasks, itemId }: Props) => {
   );
 
   if (tasksWithReward.length === 0) {
-    return null;
+    return (
+      <p className="text-sm italic text-gray-400">
+        This item cannot be acquired as a quest reward.
+      </p>
+    );
   }
 
   return (

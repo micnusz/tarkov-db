@@ -40,7 +40,7 @@ export function DataTableSkeleton({
   return (
     <div
       className={cn(
-        "w-full h-full flex-col justify-center items-center p-2 md:p-10",
+        "w-full h-full flex-col justify-center items-center p-4 md:p-10",
         className
       )}
       {...props}

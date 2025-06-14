@@ -1,9 +1,8 @@
 "use client";
 
 import { client } from "@/app/api/client";
-import { Task } from "@/app/api/types";
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
-import React, { lazy, Suspense, useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
+import React, { lazy, Suspense } from "react";
 import {
   Accordion,
   AccordionContent,
@@ -13,6 +12,8 @@ import {
 import Loading from "./loading";
 import ItemVariants from "@/components/item-rewards/ItemVariants";
 import Image from "next/image";
+import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
+import Spinner from "@/lib/Spinner";
 
 type ItemPageClientProps = {
   id: string;
@@ -21,22 +22,12 @@ type ItemPageClientProps = {
 const ItemPageClient = ({ id }: ItemPageClientProps) => {
   const { data: itemData } = useQuery({
     queryKey: ["item", id],
-    queryFn: () => client.getItem(id),
+    queryFn: () => client.getItemBaseId(id),
     enabled: !!id,
   });
   if (!itemData) {
     return <Loading />;
   }
-  const { data: tradersData } = useSuspenseQuery({
-    queryKey: ["traders"],
-    queryFn: () => client.getTraders(),
-  });
-
-  const hasTaskReward = (tasks: Task[], itemId: string): boolean => {
-    return tasks.some((task) =>
-      task.finishRewards?.items?.some((reward) => reward.item.id === itemId)
-    );
-  };
 
   const TaskRewards = lazy(
     () => import("@/components/item-rewards/dynamic-import/TaskRewards")
@@ -55,6 +46,9 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
   );
   const DataTableCraftings = lazy(
     () => import("@/components/item-rewards/dynamic-import/DataTableCraftings")
+  );
+  const Variants = lazy(
+    () => import("@/components/item-rewards/dynamic-import/Variants")
   );
 
   const fallbackDescription =
@@ -82,7 +76,11 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
             Wiki
           </a>
           {/* Item Variants   */}
-          <ItemVariants itemData={itemData} />
+          <div>
+            <Suspense fallback={<Spinner />}>
+              <Variants itemId={itemData.id} />
+            </Suspense>
+          </div>
         </div>
         {/* Item Image */}
         <div className="flex justify-center items-center md:w-1/2">
@@ -91,103 +89,142 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
             alt={itemData.name}
             width={250}
             height={250}
+            priority
             className="object-contain"
           />
         </div>
       </div>
       <Accordion type="single" className="w-full" collapsible>
-        {itemData.receivedFromTasks &&
-          itemData.receivedFromTasks.length > 0 &&
-          (hasTaskReward(itemData.receivedFromTasks, itemData.id) ? (
-            <AccordionItem value="item-1">
-              <AccordionTrigger className="text-lg">
-                Task rewards:
-              </AccordionTrigger>
-              <AccordionContent className="flex flex-col gap-4 text-balance">
-                {/* Task rewards, lazy-laod and suspense */}
-                <Suspense fallback={<div>Loading task rewards...</div>}>
-                  <TaskRewards
-                    receivedFromTasks={itemData.receivedFromTasks}
-                    itemId={itemData.id}
-                  />
-                </Suspense>
-              </AccordionContent>
-            </AccordionItem>
-          ) : null)}
+        <AccordionItem value="item-1">
+          <AccordionTrigger className="text-lg">
+            Obtained From:
+          </AccordionTrigger>
+          <AccordionContent className="flex flex-col gap-4 text-balance">
+            {/* Task rewards, lazy-laod and suspense */}
+            <Suspense
+              fallback={
+                <DataTableSkeleton
+                  rowCount={1}
+                  withPagination={false}
+                  columnCount={1}
+                  filterCount={0}
+                  searchCount={0}
+                  shrinkZero
+                  className="p-0 md:p-0"
+                />
+              }
+            >
+              <TaskRewards itemId={itemData.id} />
+            </Suspense>
+          </AccordionContent>
+        </AccordionItem>
         <AccordionItem value="item-2">
-          <AccordionTrigger className="text-lg">Buy For:</AccordionTrigger>
+          <AccordionTrigger className="text-lg">Required For:</AccordionTrigger>
+          <AccordionContent className="flex flex-col gap-4 text-balance">
+            {/* Required For, lazy-laod and suspense */}
+            <Suspense
+              fallback={
+                <DataTableSkeleton
+                  rowCount={1}
+                  withPagination={false}
+                  columnCount={1}
+                  filterCount={0}
+                  searchCount={0}
+                  shrinkZero
+                  className="p-0 md:p-0"
+                />
+              }
+            >
+              <RequiredFor itemId={itemData.id} />
+            </Suspense>
+          </AccordionContent>
+        </AccordionItem>
+
+        <AccordionItem value="item-3">
+          <AccordionTrigger className="text-lg">Buy Price:</AccordionTrigger>
           <AccordionContent className="flex flex-col gap-4 text-balance">
             {/* Trader Buy, lazy-laod and suspense */}
-            {tradersData && (
-              <Suspense fallback={<div>Loading Traders Data...</div>}>
-                <DataTableBuy
-                  data={itemData.buyFor}
-                  tradersData={tradersData}
+            <Suspense
+              fallback={
+                <DataTableSkeleton
+                  rowCount={1}
+                  withPagination={false}
+                  columnCount={1}
+                  filterCount={0}
+                  searchCount={0}
+                  shrinkZero
+                  className="p-0 md:p-0"
                 />
-              </Suspense>
-            )}
+              }
+            >
+              <DataTableBuy itemId={itemData.id} />
+            </Suspense>
           </AccordionContent>
         </AccordionItem>
-        <AccordionItem value="item-3">
-          <AccordionTrigger className="text-lg">Sell For:</AccordionTrigger>
+        <AccordionItem value="item-4">
+          <AccordionTrigger className="text-lg">Sell Price:</AccordionTrigger>
           <AccordionContent className="flex flex-col gap-4 text-balance">
             {/* Trader Sell, lazy-laod and suspense */}
-            {tradersData && (
-              <Suspense fallback={<div>Loading Traders Data...</div>}>
-                <DataTableSell
-                  data={itemData.sellFor}
-                  tradersData={tradersData}
+            <Suspense
+              fallback={
+                <DataTableSkeleton
+                  rowCount={1}
+                  withPagination={false}
+                  columnCount={1}
+                  filterCount={0}
+                  searchCount={0}
+                  shrinkZero
+                  className="p-0 md:p-0"
                 />
-              </Suspense>
-            )}
+              }
+            >
+              <DataTableSell itemId={itemData.id} />
+            </Suspense>
           </AccordionContent>
         </AccordionItem>
-        {itemData.usedInTasks && itemData.usedInTasks.length > 0 ? (
-          <AccordionItem value="item-4">
-            <AccordionTrigger className="text-lg">
-              Required for:
-            </AccordionTrigger>
-            <AccordionContent className="flex flex-col gap-4 text-balance">
-              {/* Required For, lazy-laod and suspense */}
-              <Suspense fallback={<div>Loading Required For Data...</div>}>
-                <RequiredFor data={itemData.usedInTasks} />
-              </Suspense>
-            </AccordionContent>
-          </AccordionItem>
-        ) : null}
-        {itemData.bartersFor?.length > 0 ||
-        itemData.bartersUsing?.length > 0 ? (
-          <AccordionItem value="item-5">
-            <AccordionTrigger className="text-lg">Barters:</AccordionTrigger>
-            <AccordionContent className="flex flex-col gap-4 text-balance">
-              {/* Barters, lazy-laod and suspense */}
-              <Suspense fallback={<div>Loading Barters Data...</div>}>
-                <DataTableBarters
-                  data={[
-                    ...(itemData.bartersFor || []),
-                    ...(itemData.bartersUsing || []),
-                  ]}
+
+        <AccordionItem value="item-5">
+          <AccordionTrigger className="text-lg">Barters:</AccordionTrigger>
+          <AccordionContent className="flex flex-col gap-4 text-balance">
+            {/* Barters, lazy-laod and suspense */}
+            <Suspense
+              fallback={
+                <DataTableSkeleton
+                  rowCount={1}
+                  withPagination={false}
+                  columnCount={1}
+                  filterCount={0}
+                  searchCount={0}
+                  shrinkZero
+                  className="p-0 md:p-0"
                 />
-              </Suspense>
-            </AccordionContent>
-          </AccordionItem>
-        ) : null}
-        {itemData.craftsFor?.length > 0 || itemData.craftsUsing?.length > 0 ? (
-          <AccordionItem value="item-6">
-            <AccordionTrigger className="text-lg">Crafting:</AccordionTrigger>
-            <AccordionContent className="flex flex-col gap-4 text-balance">
-              {/* Craftings, lazy-laod and suspense */}
-              <Suspense fallback={<div>Loading Crafting Data...</div>}>
-                <DataTableCraftings
-                  data={[
-                    ...(itemData.craftsFor || []),
-                    ...(itemData.craftsUsing || []),
-                  ]}
+              }
+            >
+              <DataTableBarters itemId={itemData.id} />
+            </Suspense>
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="item-6">
+          <AccordionTrigger className="text-lg">Crafted With:</AccordionTrigger>
+          <AccordionContent className="flex flex-col gap-4 text-balance">
+            {/* Craftings, lazy-laod and suspense */}
+            <Suspense
+              fallback={
+                <DataTableSkeleton
+                  rowCount={1}
+                  withPagination={false}
+                  columnCount={1}
+                  filterCount={0}
+                  searchCount={0}
+                  shrinkZero
+                  className="p-0 md:p-0"
                 />
-              </Suspense>
-            </AccordionContent>
-          </AccordionItem>
-        ) : null}
+              }
+            >
+              <DataTableCraftings itemId={itemData.id} />
+            </Suspense>
+          </AccordionContent>
+        </AccordionItem>
       </Accordion>
     </div>
   );

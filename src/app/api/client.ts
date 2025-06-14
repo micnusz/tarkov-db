@@ -6,8 +6,15 @@ import {
   GET_BARTER_ITEMS,
   GET_BARTERS,
   GET_CONTAINERS_ITEMS,
+  GET_ITEM_BASE_ID,
   GET_ITEM_ID,
+  GET_ITEM_ID_BARTERS,
+  GET_ITEM_ID_CRAFTING,
   GET_ITEM_ID_NAME,
+  GET_ITEM_ID_PRICES,
+  GET_ITEM_ID_TASK,
+  GET_ITEM_ID_TITLE,
+  GET_ITEM_ID_VARIANTS,
   GET_ITEMS,
   GET_ITEMS_SEARCH_BAR,
   GET_TASK_ID,
@@ -25,6 +32,7 @@ import {
   GetItemById,
   GetItems,
   GetItemsSearchBar,
+  GetItemTask,
   GetOnlyWeapons,
   GetTasks,
   GetTraders,
@@ -44,6 +52,65 @@ export const client = {
     });
     return data.item;
   },
+
+  //added for dynamic item/[id] page title
+  async getItemIdTitle(id: string): Promise<GetItemById["item"]> {
+    const data = await graphqlClient.request<GetItemById>(GET_ITEM_ID_TITLE, {
+      id: id,
+    });
+    return data.item;
+  },
+
+  //item/[id], ItemBase
+  async getItemBaseId(id: string): Promise<GetItemById["item"]> {
+    const data = await graphqlClient.request<GetItemById>(GET_ITEM_BASE_ID, {
+      id: id,
+    });
+    return data.item;
+  },
+  //item/[id], ItemVariants
+  async getItemIdVariants(id: string): Promise<GetItemById["item"]> {
+    const data = await graphqlClient.request<GetItemById>(
+      GET_ITEM_ID_VARIANTS,
+      {
+        id: id,
+      }
+    );
+    return data.item;
+  },
+
+  //item/[id], ItemTask
+  async getItemIdTask(id: string): Promise<GetItemTask["item"]> {
+    const data = await graphqlClient.request<GetItemTask>(GET_ITEM_ID_TASK, {
+      id: id,
+    });
+    return data.item;
+  },
+  //item/[id], ItemPrices
+  async getItemIdPrices(id: string): Promise<GetItemById["item"]> {
+    const data = await graphqlClient.request<GetItemById>(GET_ITEM_ID_PRICES, {
+      id: id,
+    });
+    return data.item;
+  },
+  //item/[id], ItemBarters
+  async getItemIdBarters(id: string): Promise<GetItemById["item"]> {
+    const data = await graphqlClient.request<GetItemById>(GET_ITEM_ID_BARTERS, {
+      id: id,
+    });
+    return data.item;
+  },
+  //item/[id], ItemCrafting
+  async getItemIdCrafting(id: string): Promise<GetItemById["item"]> {
+    const data = await graphqlClient.request<GetItemById>(
+      GET_ITEM_ID_CRAFTING,
+      {
+        id: id,
+      }
+    );
+    return data.item;
+  },
+
   async getItemIdName(id: string): Promise<GetItemById["item"]> {
     const data = await graphqlClient.request<GetItemById>(GET_ITEM_ID_NAME, {
       ids: [id],

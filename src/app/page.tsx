@@ -18,10 +18,6 @@ export default async function Home() {
     queryKey: ["items"],
     queryFn: () => client.getItems(),
   });
-  await queryClient.prefetchQuery({
-    queryKey: ["traders"],
-    queryFn: () => client.getTraders(),
-  });
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
