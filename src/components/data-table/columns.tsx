@@ -36,10 +36,10 @@ export const columnsBarter = [
           <Image
             src={trader.imageLink}
             alt={trader.name}
-            width={75}
-            height={75}
+            width={50}
+            height={50}
             loading="lazy"
-            className="aspect-square object-contain"
+            className="object-contain h-25"
           />
           {level != null && (
             <Badge className=" absolute left-10 -top-2 -right-1 text-xs px-1.5 py-0.5">
@@ -72,7 +72,7 @@ export const columnsBarter = [
                 width={50}
                 height={50}
                 loading="lazy"
-                className="aspect-square object-contain"
+                className="object-contain h-25"
               />
             )}
             {amount !== undefined && (
@@ -294,19 +294,19 @@ export const columnsCrafting = [
 
         return (
           <div className="flex items-center gap-3 ">
-            <div className="relative shrink-0">
+            <div className="relative">
               {item.gridImageLink && (
                 <Image
                   src={item.gridImageLink}
                   alt={item.name}
-                  width={100}
-                  height={100}
+                  width={50}
+                  height={50}
                   loading="lazy"
-                  className="aspect-square object-contain"
+                  className="object-contain h-25"
                 />
               )}
               {amount !== undefined && (
-                <Badge className="bg-chart-3 absolute -top-1 -right-1 text-xs px-1.5 py-0.5">
+                <Badge className="bg-chart-3 absolute top-4 -right-1 text-xs px-1.5 py-0.5">
                   {amount}
                 </Badge>
               )}

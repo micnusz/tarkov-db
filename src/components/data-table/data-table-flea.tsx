@@ -2,13 +2,8 @@
 
 import {
   ColumnDef,
-  SortingState,
   flexRender,
   getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  ColumnFiltersState,
   useReactTable,
 } from "@tanstack/react-table";
 import {
@@ -19,11 +14,21 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import React from "react";
+import React, { Suspense } from "react";
 import { Input } from "../ui/input";
 import { DataTablePagination } from "./data-table-pagination";
 import { BaseItem } from "@/app/api/types";
 import { DataTableSkeleton } from "./data-table-skeleton";
+import { Button } from "../ui/button";
+import CategoryNameFormat from "../modules/category-name-format";
+
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "../ui/accordion";
+import Spinner from "@/lib/Spinner";
 
 interface DataTableFleaMarketProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -37,12 +42,16 @@ export function DataTableFleaMarket<TData extends BaseItem, TValue>({
   name,
   setName,
   isLoading,
+  categories,
+  selectedCategory,
+  setSelectedCategory,
+  isLoadingCat,
 }: DataTableFleaMarketProps<TData, TValue>) {
   const table = useReactTable({
     data,
     columns,
     manualPagination: true,
-    pageCount: -1, // lub liczba stron jeśli znana
+    pageCount: -1,
     state: {
       pagination,
     },
@@ -50,17 +59,86 @@ export function DataTableFleaMarket<TData extends BaseItem, TValue>({
     getCoreRowModel: getCoreRowModel(),
   });
 
+  const parentMap = new Map<
+    string,
+    { id: string; name: string; children: { id: string; name: string }[] }
+  >();
+
+  categories.forEach((category) => {
+    if (category.parent && !parentMap.has(category.parent.id)) {
+      parentMap.set(category.parent.id, category.parent);
+    }
+  });
+
+  const parents = Array.from(parentMap.values());
+
   return (
     <div>
       <div className="flex items-center py-4">
+        {/* Input search */}
         <Input
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="Search by name..."
-          className="mb-4 p-2 border rounded w-full md:w-[20rem] duration-200 ease-in-out rounded-md border-3 border-input transition-colors hover:border-chart-1 "
+          className=" border w-full md:w-[20rem] duration-200 ease-in-out rounded-md border-3 border-input transition-colors hover:border-chart-1 "
         />
+        {/* Clear fillter button */}
+        <Button
+          variant="secondary"
+          className="mx-2"
+          size="sm"
+          onClick={() => {
+            setSelectedCategory(null);
+            setName("");
+          }}
+        >
+          Clear
+        </Button>
       </div>
+      {/* Category buttons */}
+
+      <div className="flex gap-2 mb-6 w-full overflow-x-auto">
+        {isLoadingCat ? (
+          <div className="flex justify-center p-4">
+            <Spinner />
+          </div>
+        ) : (
+          <Suspense fallback={<Spinner />}>
+            <Accordion type="single" className="w-full" collapsible>
+              <AccordionItem value="item-1">
+                <AccordionTrigger className="text-md">
+                  Category:
+                </AccordionTrigger>
+                <AccordionContent className="flex flex-wrap gap-2 w-full max-w-full">
+                  {parents
+                    .slice()
+                    .sort((a, b) => a.name.localeCompare(b.name))
+                    .map((parent) => {
+                      const formatted = CategoryNameFormat(parent.name);
+                      const isSelected = selectedCategory === formatted;
+
+                      return (
+                        <Button
+                          key={parent.id}
+                          variant={isSelected ? "default" : "outline"}
+                          onClick={() =>
+                            setSelectedCategory((prev) =>
+                              prev === formatted ? null : formatted
+                            )
+                          }
+                        >
+                          {parent.name}
+                        </Button>
+                      );
+                    })}
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </Suspense>
+        )}
+      </div>
+
       {isLoading ? (
         <Table>
           <TableHeader>

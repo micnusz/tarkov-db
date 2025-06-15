@@ -15,6 +15,7 @@ import {
   GET_ITEM_ID_TITLE,
   GET_ITEM_ID_VARIANTS,
   GET_ITEMS,
+  GET_ITEMS_CATEGORIES,
   GET_ITEMS_SEARCH_BAR,
   GET_TASK_ID_BASE,
   GET_TASK_ID_FAILURE,
@@ -35,6 +36,7 @@ import {
   GetBarters,
   GetContainerItems,
   GetItemById,
+  GetItemCategories,
   GetItems,
   GetItemsSearchBar,
   GetItemTask,
@@ -49,9 +51,15 @@ export const client = {
   async getItems(
     limit: number,
     offset: number,
-    name?: string
+    name?: string,
+    categoryNames?: string[]
   ): Promise<GetItems["items"]> {
-    const variables: { limit: number; offset: number; name?: string } = {
+    const variables: {
+      limit: number;
+      offset: number;
+      name?: string;
+      categoryNames?: string[];
+    } = {
       limit,
       offset,
     };
@@ -60,8 +68,20 @@ export const client = {
       variables.name = name;
     }
 
+    if (categoryNames && categoryNames.length > 0) {
+      variables.categoryNames = categoryNames;
+    }
+
     const data = await graphqlClient.request<GetItems>(GET_ITEMS, variables);
     return data.items;
+  },
+
+  async getItemCategories(): Promise<GetItemCategories["itemCategories"]> {
+    const data = await graphqlClient.request<GetItemCategories>(
+      GET_ITEMS_CATEGORIES
+    );
+
+    return data.itemCategories;
   },
 
   async getItem(id: string): Promise<GetItemById["item"]> {

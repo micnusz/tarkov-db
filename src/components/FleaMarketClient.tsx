@@ -11,6 +11,12 @@ const FleaMarketClient = () => {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 20 });
   const [name, setName] = useState("");
   const [debouncedName, setDebouncedName] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
+  const { data: categories = [], isLoading: isLoadingCat } = useQuery({
+    queryKey: ["items-categories"],
+    queryFn: () => client.getItemCategories(),
+  });
 
   const offset = pagination.pageIndex * pagination.pageSize;
   const limit = pagination.pageSize;
@@ -34,9 +40,15 @@ const FleaMarketClient = () => {
   }, [name, debouncedSetName]);
 
   // react-query with debouncedName
-  const { data, isLoading } = useQuery({
-    queryKey: ["items", offset, limit, debouncedName],
-    queryFn: () => client.getItems(limit, offset, debouncedName || undefined),
+  const { data = [], isLoading } = useQuery({
+    queryKey: ["items", offset, limit, debouncedName, selectedCategory],
+    queryFn: () =>
+      client.getItems(
+        limit,
+        offset,
+        debouncedName || undefined,
+        selectedCategory ? [selectedCategory] : undefined
+      ),
   });
   //Filtering items to only displaying flea available ones
   const fleaItems = data?.filter((item) =>
@@ -53,6 +65,10 @@ const FleaMarketClient = () => {
         name={name}
         setName={setName}
         isLoading={isLoading}
+        categories={categories ?? []}
+        selectedCategory={selectedCategory}
+        setSelectedCategory={setSelectedCategory}
+        isLoadingCat={isLoadingCat}
       />
     </div>
   );

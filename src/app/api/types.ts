@@ -85,6 +85,10 @@ export type GetItems = {
   item: Item;
 };
 
+export type GetItemCategories = {
+  itemCategories: Item[];
+};
+
 export type GetItemsSearchBar = {
   items: Pick<Item, "id" | "name">[];
 };

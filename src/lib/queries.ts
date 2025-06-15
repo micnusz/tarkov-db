@@ -1,8 +1,18 @@
 import { gql } from "graphql-request";
 
 export const GET_ITEMS = gql`
-  query GetItems($limit: Int, $offset: Int, $name: String) {
-    items(limit: $limit, offset: $offset, name: $name) {
+  query GetItems(
+    $limit: Int
+    $offset: Int
+    $name: String
+    $categoryNames: [ItemCategoryName!]
+  ) {
+    items(
+      limit: $limit
+      offset: $offset
+      name: $name
+      categoryNames: $categoryNames
+    ) {
       name
       id
       gridImageLink
@@ -32,6 +42,23 @@ export const GET_ITEMS = gql`
       avg24hPrice
       low24hPrice
       high24hPrice
+    }
+  }
+`;
+
+export const GET_ITEMS_CATEGORIES = gql`
+  query GetCaregories {
+    itemCategories {
+      name
+      id
+      parent {
+        name
+        id
+        children {
+          name
+          id
+        }
+      }
     }
   }
 `;
@@ -519,6 +546,7 @@ export const GET_TASKS = gql`
       wikiLink
       taskRequirements {
         task {
+          minPlayerLevel
           id
           name
         }

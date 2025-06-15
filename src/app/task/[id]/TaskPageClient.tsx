@@ -19,6 +19,7 @@ import { lazy, Suspense } from "react";
 import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
+import Spinner from "@/lib/Spinner";
 
 type TaskPageClientProps = {
   id: string;
@@ -153,19 +154,7 @@ const TaskPageClient = ({ id }: TaskPageClientProps) => {
           <AccordionTrigger className="text-lg">Requirements:</AccordionTrigger>
           <AccordionContent className="flex flex-col gap-4 text-balance">
             {/* Task requirements */}
-            <Suspense
-              fallback={
-                <DataTableSkeleton
-                  rowCount={1}
-                  withPagination={false}
-                  columnCount={1}
-                  filterCount={0}
-                  searchCount={0}
-                  shrinkZero
-                  className="p-0 md:p-0"
-                />
-              }
-            >
+            <Suspense fallback={<Spinner />}>
               <TaskRequirements taskId={taskData.id} />
             </Suspense>
           </AccordionContent>
@@ -174,19 +163,7 @@ const TaskPageClient = ({ id }: TaskPageClientProps) => {
           <AccordionTrigger className="text-lg">Objectives:</AccordionTrigger>
           <AccordionContent className="flex flex-col gap-4 text-balance">
             {/* TaskObjectives */}
-            <Suspense
-              fallback={
-                <DataTableSkeleton
-                  rowCount={1}
-                  withPagination={false}
-                  columnCount={1}
-                  filterCount={0}
-                  searchCount={0}
-                  shrinkZero
-                  className="p-0 md:p-0"
-                />
-              }
-            >
+            <Suspense fallback={<Spinner />}>
               <TaskObjectives taskId={taskData.id} />
             </Suspense>
           </AccordionContent>
@@ -197,19 +174,7 @@ const TaskPageClient = ({ id }: TaskPageClientProps) => {
             Initial Equipment:
           </AccordionTrigger>
           <AccordionContent className="flex flex-col gap-4 text-balance">
-            <Suspense
-              fallback={
-                <DataTableSkeleton
-                  rowCount={1}
-                  withPagination={false}
-                  columnCount={1}
-                  filterCount={0}
-                  searchCount={0}
-                  shrinkZero
-                  className="p-0 md:p-0"
-                />
-              }
-            >
+            <Suspense fallback={<Spinner />}>
               <TaskStartRewards taskId={taskData.id} />
             </Suspense>
           </AccordionContent>
@@ -218,19 +183,7 @@ const TaskPageClient = ({ id }: TaskPageClientProps) => {
           <AccordionTrigger className="text-lg">Rewards:</AccordionTrigger>
           <AccordionContent className="flex flex-col gap-4 text-balance">
             <ScrollArea className="rounded-md border">
-              <Suspense
-                fallback={
-                  <DataTableSkeleton
-                    rowCount={1}
-                    withPagination={false}
-                    columnCount={1}
-                    filterCount={0}
-                    searchCount={0}
-                    shrinkZero
-                    className="p-0 md:p-0"
-                  />
-                }
-              >
+              <Suspense fallback={<Spinner />}>
                 <TaskFinishRewards
                   taskId={taskData.id}
                   experience={taskData.experience}
@@ -245,19 +198,7 @@ const TaskPageClient = ({ id }: TaskPageClientProps) => {
             Failure Penalty:
           </AccordionTrigger>
           <AccordionContent className="flex flex-col gap-4 text-balance">
-            <Suspense
-              fallback={
-                <DataTableSkeleton
-                  rowCount={1}
-                  withPagination={false}
-                  columnCount={1}
-                  filterCount={0}
-                  searchCount={0}
-                  shrinkZero
-                  className="p-0 md:p-0"
-                />
-              }
-            >
+            <Suspense fallback={<Spinner />}>
               <TaskFailure taskId={taskData.id} />
             </Suspense>
           </AccordionContent>

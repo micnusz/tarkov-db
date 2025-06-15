@@ -19,15 +19,15 @@ const TaskRequirements = ({ taskId }: Props) => {
       {taskData.taskRequirements.length > 0 ? (
         <ScrollArea className="rounded-md border">
           <ul>
-            {taskData.taskRequirements ? (
-              <li className="text-sm md:text-base mt-4">
+            {taskData.taskRequirements.map((req) => (
+              <li key={req.task.id} className="text-sm md:text-base mt-4">
                 • Must be level{" "}
                 <span className="text-destructive">
-                  {taskData.minPlayerLevel}
+                  {req.task.minPlayerLevel}
                 </span>{" "}
                 to start this quest.{" "}
               </li>
-            ) : null}
+            ))}
             {taskData.taskRequirements.map((req) => (
               <li key={req.task.id} className="text-sm md:text-base ">
                 • Must complete -{" "}

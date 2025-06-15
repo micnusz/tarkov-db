@@ -21,7 +21,7 @@ export default function DefaultHeader<TData, TValue>({
   const { table } = info;
 
   return (
-    <div className="h-[4.5rem] ">
+    <div className="h-[4rem] ">
       <ContextMenu>
         <ContextMenuTrigger
           className="flex w-full h-full items-center gap-4 cursor-pointer"

@@ -99,19 +99,7 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
           </AccordionTrigger>
           <AccordionContent className="flex flex-col gap-4 text-balance">
             {/* Task rewards, lazy-laod and suspense */}
-            <Suspense
-              fallback={
-                <DataTableSkeleton
-                  rowCount={1}
-                  withPagination={false}
-                  columnCount={1}
-                  filterCount={0}
-                  searchCount={0}
-                  shrinkZero
-                  className="p-0 md:p-0"
-                />
-              }
-            >
+            <Suspense fallback={<Spinner />}>
               <TaskRewards itemId={itemData.id} />
             </Suspense>
           </AccordionContent>
@@ -120,19 +108,7 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
           <AccordionTrigger className="text-lg">Required For:</AccordionTrigger>
           <AccordionContent className="flex flex-col gap-4 text-balance">
             {/* Required For, lazy-laod and suspense */}
-            <Suspense
-              fallback={
-                <DataTableSkeleton
-                  rowCount={1}
-                  withPagination={false}
-                  columnCount={1}
-                  filterCount={0}
-                  searchCount={0}
-                  shrinkZero
-                  className="p-0 md:p-0"
-                />
-              }
-            >
+            <Suspense fallback={<Spinner />}>
               <RequiredFor itemId={itemData.id} />
             </Suspense>
           </AccordionContent>
@@ -142,19 +118,7 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
           <AccordionTrigger className="text-lg">Buy Price:</AccordionTrigger>
           <AccordionContent className="flex flex-col gap-4 text-balance">
             {/* Trader Buy, lazy-laod and suspense */}
-            <Suspense
-              fallback={
-                <DataTableSkeleton
-                  rowCount={1}
-                  withPagination={false}
-                  columnCount={1}
-                  filterCount={0}
-                  searchCount={0}
-                  shrinkZero
-                  className="p-0 md:p-0"
-                />
-              }
-            >
+            <Suspense fallback={<Spinner />}>
               <DataTableBuy itemId={itemData.id} />
             </Suspense>
           </AccordionContent>
@@ -163,19 +127,7 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
           <AccordionTrigger className="text-lg">Sell Price:</AccordionTrigger>
           <AccordionContent className="flex flex-col gap-4 text-balance">
             {/* Trader Sell, lazy-laod and suspense */}
-            <Suspense
-              fallback={
-                <DataTableSkeleton
-                  rowCount={1}
-                  withPagination={false}
-                  columnCount={1}
-                  filterCount={0}
-                  searchCount={0}
-                  shrinkZero
-                  className="p-0 md:p-0"
-                />
-              }
-            >
+            <Suspense fallback={<Spinner />}>
               <DataTableSell itemId={itemData.id} />
             </Suspense>
           </AccordionContent>
@@ -185,19 +137,7 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
           <AccordionTrigger className="text-lg">Barters:</AccordionTrigger>
           <AccordionContent className="flex flex-col gap-4 text-balance">
             {/* Barters, lazy-laod and suspense */}
-            <Suspense
-              fallback={
-                <DataTableSkeleton
-                  rowCount={1}
-                  withPagination={false}
-                  columnCount={1}
-                  filterCount={0}
-                  searchCount={0}
-                  shrinkZero
-                  className="p-0 md:p-0"
-                />
-              }
-            >
+            <Suspense fallback={<Spinner />}>
               <DataTableBarters itemId={itemData.id} />
             </Suspense>
           </AccordionContent>
@@ -206,19 +146,7 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
           <AccordionTrigger className="text-lg">Crafted With:</AccordionTrigger>
           <AccordionContent className="flex flex-col gap-4 text-balance">
             {/* Craftings, lazy-laod and suspense */}
-            <Suspense
-              fallback={
-                <DataTableSkeleton
-                  rowCount={1}
-                  withPagination={false}
-                  columnCount={1}
-                  filterCount={0}
-                  searchCount={0}
-                  shrinkZero
-                  className="p-0 md:p-0"
-                />
-              }
-            >
+            <Suspense fallback={<Spinner />}>
               <DataTableCraftings itemId={itemData.id} />
             </Suspense>
           </AccordionContent>

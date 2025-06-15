@@ -13,6 +13,14 @@ const Variants = ({ itemId }: VariantsProps) => {
     queryFn: () => client.getItemIdVariants(itemId),
   });
 
+  const presetVariants =
+    itemData?.properties?.presets ??
+    itemData?.properties?.baseItem?.properties?.presets ??
+    [];
+
+  // Jeśli brak presetów, nie renderuj nic (poza ewentualnym loaderem)
+  if (!presetVariants || presetVariants.length === 0) return null;
+
   return <ItemVariants itemData={itemData} />;
 };
 
