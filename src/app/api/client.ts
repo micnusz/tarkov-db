@@ -46,8 +46,21 @@ import {
 import { graphqlClient } from "@/lib/graphql-client";
 
 export const client = {
-  async getItems(): Promise<GetItems["items"]> {
-    const data = await graphqlClient.request<GetItems>(GET_ITEMS);
+  async getItems(
+    limit: number,
+    offset: number,
+    name?: string
+  ): Promise<GetItems["items"]> {
+    const variables: { limit: number; offset: number; name?: string } = {
+      limit,
+      offset,
+    };
+
+    if (name?.trim()) {
+      variables.name = name;
+    }
+
+    const data = await graphqlClient.request<GetItems>(GET_ITEMS, variables);
     return data.items;
   },
 

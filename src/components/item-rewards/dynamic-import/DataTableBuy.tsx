@@ -17,7 +17,7 @@ const DataTableBuy = ({ itemId }: DataTableBuyProps) => {
     queryFn: () => client.getItemIdPrices(itemId),
   });
   const { data: tradersData } = useSuspenseQuery({
-    queryKey: ["item-trader-buy"],
+    queryKey: ["item-traders"],
     queryFn: () => client.getTraders(),
   });
 
@@ -38,7 +38,7 @@ const DataTableBuy = ({ itemId }: DataTableBuyProps) => {
                 {trader && (
                   <Image
                     aria-label={`Image of trader: ${trader.name}`}
-                    src={trader.image4xLink}
+                    src={trader.imageLink}
                     alt={`${trader.name}`}
                     width={50}
                     height={50}

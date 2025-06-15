@@ -219,7 +219,7 @@ export type GetBackpackById = {
 export type Trader = {
   id: string;
   name: string;
-  image4xLink: string;
+  imageLink: string;
 };
 
 export type GetTraders = {

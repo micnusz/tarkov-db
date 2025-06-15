@@ -14,9 +14,14 @@ export const generateMetadata = async (): Promise<Metadata> => {
 };
 export default async function Home() {
   const queryClient = getQueryClient();
+
+  const offset = 0;
+  const limit = 20;
+  const name = "";
+
   await queryClient.prefetchQuery({
-    queryKey: ["items"],
-    queryFn: () => client.getItems(),
+    queryKey: ["items", offset, limit, name],
+    queryFn: () => client.getItems(limit, offset, name),
   });
 
   return (

@@ -1,8 +1,8 @@
 import { gql } from "graphql-request";
 
 export const GET_ITEMS = gql`
-  query GetItems {
-    items {
+  query GetItems($limit: Int, $offset: Int, $name: String) {
+    items(limit: $limit, offset: $offset, name: $name) {
       name
       id
       gridImageLink
@@ -54,7 +54,7 @@ export const GET_ITEM_ID_TITLE = gql`
     }
   }
 `;
-
+//Item Base, item/[id]
 export const GET_ITEM_BASE_ID = gql`
   query GetItemBaseId($id: ID!) {
     item(id: $id) {
@@ -68,7 +68,7 @@ export const GET_ITEM_BASE_ID = gql`
     }
   }
 `;
-
+//Item Variants, item/[id]
 export const GET_ITEM_ID_VARIANTS = gql`
   query GetItemIdVariants($id: ID!) {
     item(id: $id) {
@@ -101,7 +101,7 @@ export const GET_ITEM_ID_VARIANTS = gql`
     }
   }
 `;
-
+//Item Task, item/[id]
 export const GET_ITEM_ID_TASK = gql`
   query GetItemIdTask($id: ID!) {
     item(id: $id) {
@@ -132,7 +132,7 @@ export const GET_ITEM_ID_TASK = gql`
     }
   }
 `;
-
+//Item Price, item/[id]
 export const GET_ITEM_ID_PRICES = gql`
   query GetItemIdPrices($id: ID!) {
     item(id: $id) {
@@ -154,7 +154,7 @@ export const GET_ITEM_ID_PRICES = gql`
     }
   }
 `;
-
+//Item Barter, item/[id]
 export const GET_ITEM_ID_BARTERS = gql`
   query GetItemIdBarters($id: ID!) {
     item(id: $id) {
@@ -169,6 +169,7 @@ export const GET_ITEM_ID_BARTERS = gql`
           count
           quantity
           item {
+            avg24hPrice
             id
             name
             gridImageLink
@@ -178,6 +179,7 @@ export const GET_ITEM_ID_BARTERS = gql`
           quantity
           count
           item {
+            avg24hPrice
             id
             name
             gridImageLink
@@ -194,6 +196,7 @@ export const GET_ITEM_ID_BARTERS = gql`
           quantity
           count
           item {
+            avg24hPrice
             id
             name
             gridImageLink
@@ -203,6 +206,7 @@ export const GET_ITEM_ID_BARTERS = gql`
           quantity
           count
           item {
+            avg24hPrice
             id
             name
             gridImageLink
@@ -212,7 +216,7 @@ export const GET_ITEM_ID_BARTERS = gql`
     }
   }
 `;
-
+//Item Crafting, item/[id]
 export const GET_ITEM_ID_CRAFTING = gql`
   query GetItemIdCrafts($id: ID!) {
     item(id: $id) {
@@ -234,6 +238,7 @@ export const GET_ITEM_ID_CRAFTING = gql`
         requiredItems {
           count
           item {
+            avg24hPrice
             id
             name
             gridImageLink
@@ -242,6 +247,7 @@ export const GET_ITEM_ID_CRAFTING = gql`
         rewardItems {
           count
           item {
+            avg24hPrice
             id
             name
             gridImageLink
@@ -265,6 +271,7 @@ export const GET_ITEM_ID_CRAFTING = gql`
         requiredItems {
           count
           item {
+            avg24hPrice
             id
             name
             gridImageLink
@@ -273,6 +280,7 @@ export const GET_ITEM_ID_CRAFTING = gql`
         rewardItems {
           count
           item {
+            avg24hPrice
             id
             name
             gridImageLink
@@ -400,7 +408,7 @@ export const GET_WEAPON_ID = gql`
 export const GET_TRADERS = gql`
   query GetTraders {
     traders {
-      image4xLink
+      imageLink
       id
       name
     }

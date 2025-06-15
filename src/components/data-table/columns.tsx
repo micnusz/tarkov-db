@@ -393,6 +393,39 @@ export const columnsCrafting = [
     enableSorting: false,
     enableHiding: false,
   }),
+  columnHelperBarter.accessor((row) => row.requiredItems ?? "", {
+    id: "cost",
+    header: (info) => <DefaultHeader info={info} name="Crafting Cost" />,
+    cell: (info) => {
+      const requiredItems = info.getValue();
+
+      if (!requiredItems.length) {
+        return <span className="text-gray-400 italic">N/A</span>;
+      }
+
+      const totalCost = requiredItems.reduce(
+        (sum: number, { item, count, quantity }: BarterItem) => {
+          const qty = quantity ?? count ?? 0;
+          const price =
+            typeof item.avg24hPrice === "number" ? item.avg24hPrice : 0;
+          return sum + qty * price;
+        },
+        0
+      );
+
+      return (
+        <div className="text-sm font-medium">
+          {totalCost > 0 ? (
+            `${totalCost.toLocaleString("de-DE")}₽`
+          ) : (
+            <span className="text-gray-400 italic">N/A</span>
+          )}
+        </div>
+      );
+    },
+    enableSorting: true,
+    enableHiding: true,
+  }),
 ] as ColumnDef<CraftingProperties>[];
 
 //Columns /weapon
