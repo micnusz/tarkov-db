@@ -16,6 +16,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { Briefcase, TowerControl } from "lucide-react";
 import CraftingDurationFormat from "../modules/crafting-duration-format";
 import Image from "next/image";
+import CaliberFormat from "../modules/ammo-format";
 
 //Column Barter
 const columnHelperBarter = createColumnHelper<Barter>();
@@ -581,6 +582,7 @@ export const columnsBackpacks = [
     enableColumnFilter: false,
   }),
   columnHelperBackpacks.accessor((row) => row.name, {
+    filterFn: "includesString",
     id: "name",
     header: (info) => <DefaultHeader info={info} name="Name" />,
     cell: (info) => {
@@ -595,7 +597,25 @@ export const columnsBackpacks = [
         </div>
       );
     },
-    filterFn: "includesString",
+  }),
+  columnHelperBackpacks.accessor((row) => row.wikiLink, {
+    id: "wikiLink",
+    header: (info) => <DefaultHeader info={info} name="WikiLink" />,
+    cell: (info) => {
+      const wikiLink = info.getValue();
+
+      return (
+        <a
+          className="text-chart-1 hover:text-gray-700 underline text-sm flex items-center "
+          href={wikiLink}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Wiki
+        </a>
+      );
+    },
+    enableColumnFilter: false,
   }),
   columnHelperBackpacks.accessor("properties.grids", {
     header: (info) => <DefaultHeader info={info} name="Grid" />,
@@ -608,11 +628,25 @@ export const columnsBackpacks = [
     },
   }),
   columnHelperBackpacks.accessor("properties.capacity", {
-    header: (info) => <DefaultHeader info={info} name="Slots inside" />,
+    id: "capacity",
+    header: (info) => <DefaultHeader info={info} name="Capacity" />,
     cell: (info) => info.getValue(),
+    filterFn: (row, columnId, filterValue) => {
+      if (filterValue === null) return true;
+      const value = Number(row.getValue(columnId));
+      if (isNaN(value)) return false;
+      return value <= filterValue + 0.0001;
+    },
   }),
   columnHelperBackpacks.accessor("weight", {
     header: (info) => <DefaultHeader info={info} name="Weight" />,
+    id: "weight",
+    filterFn: (row, columnId, filterValue) => {
+      if (filterValue === null) return true;
+      const value = Number(row.getValue(columnId));
+      if (isNaN(value)) return false;
+      return value <= filterValue + 0.0001;
+    },
     cell: (info) => {
       return (
         <>
@@ -621,38 +655,19 @@ export const columnsBackpacks = [
       );
     },
   }),
-  columnHelperBackpacks.accessor(
-    (row) => {
-      const cheapest =
-        row.buyFor && row.buyFor.length > 0
-          ? row.buyFor.reduce((min, current) =>
-              current.priceRUB < min.priceRUB ? current : min
-            )
-          : null;
 
-      return cheapest
-        ? `${cheapest.vendor.name} – ${cheapest.priceRUB.toLocaleString(
-            "de-DE"
-          )} ₽`
-        : "N/A";
-    },
-    {
-      id: "lowestBuyPrice",
-      header: (info) => (
-        <DefaultHeader
-          info={info}
-          name="Best to buy from
-"
-        />
-      ),
-      cell: (info) => `${info.getValue()}`,
-    }
-  ),
   columnHelperBackpacks.accessor("properties.ergoPenalty", {
+    id: "ergoPenalty",
     header: (info) => <DefaultHeader info={info} name="ErgoPen" />,
+    filterFn: (row, columnId, filterValue) => {
+      if (filterValue === null) return true;
+      const value = Number(row.getValue(columnId));
+      if (isNaN(value)) return false;
+      return value <= filterValue + 0.0001;
+    },
     cell: (info) => {
-      const value = info.getValue<number>();
-      const percent = Math.round(value * 100);
+      const initialValue = info.getValue<number>();
+      const percent = Math.round(initialValue * 100); //
 
       const style = {
         color: percent < 0 ? "red" : percent > 0 ? "green" : "inherit",
@@ -663,7 +678,14 @@ export const columnsBackpacks = [
     },
   }),
   columnHelperBackpacks.accessor("properties.speedPenalty", {
+    id: "speedPenalty",
     header: (info) => <DefaultHeader info={info} name="MoveSpeedPen" />,
+    filterFn: (row, columnId, filterValue) => {
+      if (filterValue === null) return true;
+      const value = Number(row.getValue(columnId));
+      if (isNaN(value)) return false;
+      return value <= filterValue + 0.0001;
+    },
     cell: (info) => {
       const value = info.getValue<number>();
       const percent = Math.round(value * 100);
@@ -678,6 +700,12 @@ export const columnsBackpacks = [
   }),
   columnHelperBackpacks.accessor("properties.turnPenalty", {
     header: (info) => <DefaultHeader info={info} name="TurnPen" />,
+    id: "turnPenalty",
+    filterFn: (row, columnId, filterValue) => {
+      if (filterValue === null) return true;
+      const value: number = row.getValue(columnId);
+      return value <= filterValue;
+    },
     cell: (info) => {
       const value = info.getValue<number>();
       const percent = Math.round(value * 100);
@@ -1148,23 +1176,6 @@ export const columnsAmmo = [
     enableSorting: false,
     enableColumnFilter: false,
   }),
-  columnHelperAmmo.accessor("caliber", {
-    id: "caliber",
-    header: (info) => <DefaultHeader info={info} name="Caliber" />,
-    cell: (info) => {
-      const caliberRaw = info.getValue<string>();
-
-      return (
-        <Link href={`/item/${info.row.original.item.id}`}>
-          <div className={`flex flex-row items-center gap-2`}>
-            <span>{caliberRaw}</span>
-          </div>
-        </Link>
-      );
-    },
-    filterFn: "equals",
-  }),
-
   columnHelperAmmo.accessor("item.name", {
     id: "name",
     header: (info) => <DefaultHeader info={info} name="Name" />,
@@ -1177,11 +1188,31 @@ export const columnsAmmo = [
 
       return (
         <Link href={`/item/${info.row.original.item.id}`}>
-          <span>{bulletName}</span>
+          <span className="hover:text-chart-2 text-foreground">
+            {bulletName}
+          </span>
         </Link>
       );
     },
     filterFn: "includesString",
+  }),
+  columnHelperAmmo.accessor("caliber", {
+    id: "caliber",
+    header: (info) => <DefaultHeader info={info} name="Caliber" />,
+    cell: (info) => {
+      const caliberRaw = info.getValue<string>();
+
+      return (
+        <div className={`flex flex-row items-center gap-2`}>
+          <Link href={`/item/${info.row.original.item.id}`}>
+            <span className="hover:text-chart-2 text-foreground">
+              {CaliberFormat(caliberRaw)}
+            </span>
+          </Link>
+        </div>
+      );
+    },
+    filterFn: "equals",
   }),
 
   columnHelperAmmo.accessor("penetrationPower", {

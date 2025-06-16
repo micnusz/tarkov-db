@@ -4,7 +4,6 @@ import { client } from "./api/client";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import FleaMarketClient from "@/components/FleaMarketClient";
 import { Metadata } from "next";
-import React from "react";
 
 export const generateMetadata = async (): Promise<Metadata> => {
   return {
@@ -22,6 +21,10 @@ export default async function Home() {
   await queryClient.prefetchQuery({
     queryKey: ["items", offset, limit, name],
     queryFn: () => client.getItems(limit, offset, name),
+  });
+  await queryClient.prefetchQuery({
+    queryKey: ["items-categories"],
+    queryFn: () => client.getItemCategories(),
   });
 
   return (

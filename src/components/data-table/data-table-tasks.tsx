@@ -25,6 +25,9 @@ import { Button } from "../ui/button";
 import { Task } from "@/app/api/types";
 import { DataTablePagination } from "./data-table-pagination";
 import { Input } from "../ui/input";
+import PopoverFilter from "../popover-filter";
+import DataTableSearchClient from "./data-table-search-client";
+import { DataTablePaginationClient } from "./data-table-pagination-client";
 
 interface DataTableTasksProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -40,6 +43,7 @@ export function DataTableTasks<TData extends Task, TValue>({
   );
   const [selectedTrader, setSelectedTrader] = useState<string | null>(null);
   const [selectedMap, setSelectedMap] = useState<string | null>(null);
+
   const tasks = Array.from(
     new Set((data as Task[]).map((task) => task.trader.name))
   ).sort();
@@ -50,11 +54,6 @@ export function DataTableTasks<TData extends Task, TValue>({
         .filter((name): name is string => Boolean(name))
     )
   ).sort();
-  const clearFilters = () => {
-    setColumnFilters([]);
-    setSelectedTrader(null);
-    setSelectedMap(null);
-  };
 
   const table = useReactTable({
     columns,
@@ -80,61 +79,63 @@ export function DataTableTasks<TData extends Task, TValue>({
     <>
       <div className="w-full flex flex-col gap-4 ">
         <div className="flex items-center py-4">
-          <Input
-            placeholder="Search"
-            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-            onChange={(event) =>
-              table.getColumn("name")?.setFilterValue(event.target.value)
-            }
-            className="max-w-sm"
-          />
+          <DataTableSearchClient table={table} />
+          <Button
+            variant="secondary"
+            size="sm"
+            className="mx-2"
+            onClick={() => {
+              setSelectedMap(null);
+              setSelectedTrader(null);
+              setColumnFilters([]);
+              table.resetColumnFilters();
+            }}
+          >
+            Clear
+          </Button>
         </div>
-        <div className="flex flex-wrap gap-2">
-          {tasks.map((trader) => (
-            <Button
-              aria-label={`Trader: ${trader}`}
-              key={trader}
-              variant={selectedTrader === trader ? "default" : "outline"}
-              size="sm"
-              onPointerDown={() => {
-                if (selectedTrader === trader) {
-                  clearFilters();
-                } else {
-                  setSelectedTrader(trader);
-                  setColumnFilters((prev) => [
-                    ...prev.filter((f) => f.id !== "trader"),
-                    { id: "trader", value: trader },
-                  ]);
-                }
+
+        <div className="flex gap-4">
+          <div className="flex flex-wrap gap-2">
+            <PopoverFilter
+              label="Trader"
+              value={selectedTrader}
+              onChange={(val) => {
+                setSelectedTrader(val);
+                setColumnFilters((prev) =>
+                  val
+                    ? [
+                        ...prev.filter((f) => f.id !== "trader"),
+                        { id: "trader", value: val },
+                      ]
+                    : prev.filter((f) => f.id !== "trader")
+                );
               }}
-            >
-              {trader}
-            </Button>
-          ))}
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {maps.map((mapName) => (
-            <Button
-              aria-label={`Map: ${mapName}`}
-              key={mapName}
-              variant={selectedMap === mapName ? "default" : "outline"}
-              size="sm"
-              onPointerDown={() => {
-                if (selectedMap === mapName) {
-                  clearFilters();
-                } else {
-                  setSelectedMap(mapName);
-                  setColumnFilters((prev) => [
-                    ...prev.filter((f) => f.id !== "map.name"),
-                    { id: "map.name", value: mapName },
-                  ]);
-                }
+              options={tasks}
+              formatter={(v) => v}
+            />
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <PopoverFilter
+              label="Map"
+              value={selectedMap}
+              onChange={(val) => {
+                setSelectedMap(val);
+                setColumnFilters((prev) =>
+                  val
+                    ? [
+                        ...prev.filter((f) => f.id !== "map.name"),
+                        { id: "map.name", value: val },
+                      ]
+                    : prev.filter((f) => f.id !== "map.name")
+                );
               }}
-            >
-              {mapName}
-            </Button>
-          ))}
+              options={maps}
+              formatter={(v) => v}
+            />
+          </div>
         </div>
+
         <Table>
           <TableHeader className="sticky top-0 z-10 bg-background shadow-md">
             {table.getHeaderGroups().map((headerGroup) => (
@@ -180,7 +181,7 @@ export function DataTableTasks<TData extends Task, TValue>({
             )}
           </TableBody>
         </Table>
-        <DataTablePagination table={table} />
+        <DataTablePaginationClient table={table} />
       </div>
     </>
   );

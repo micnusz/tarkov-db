@@ -25,6 +25,16 @@ import { Button } from "../ui/button";
 import { Ammo } from "@/app/api/types";
 import { DataTablePagination } from "./data-table-pagination";
 import { Input } from "../ui/input";
+import CaliberFormat from "../modules/ammo-format";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "../ui/accordion";
+import DataTableSearchClient from "./data-table-search-client";
+import { DataTablePaginationClient } from "./data-table-pagination-client";
+import PopoverFilter from "../popover-filter";
 
 interface DataTableAmmoProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -42,11 +52,6 @@ export function DataTableAmmo<TData extends Ammo, TValue>({
   const ammo = Array.from(
     new Set((data as Ammo[]).map((ammo) => ammo.caliber))
   ).sort();
-
-  const clearFilters = () => {
-    setColumnFilters([]);
-    setSelectedAmmo(null);
-  };
 
   const table = useReactTable({
     columns,
@@ -72,37 +77,37 @@ export function DataTableAmmo<TData extends Ammo, TValue>({
     <>
       <div className="w-full flex flex-col gap-4 ">
         <div className="flex items-center py-4">
-          <Input
-            placeholder="Search"
-            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-            onChange={(event) =>
-              table.getColumn("name")?.setFilterValue(event.target.value)
-            }
-            className="max-w-sm"
-          />
+          <DataTableSearchClient table={table} />
+          <Button
+            variant="outline"
+            className="mx-2"
+            onClick={() => {
+              setColumnFilters([]);
+              setSelectedAmmo(null);
+              table.resetColumnFilters();
+            }}
+          >
+            Clear
+          </Button>
         </div>
         <div className="flex flex-wrap gap-2">
-          {ammo.map((ammo) => (
-            <Button
-              aria-label={`Ammo: ${ammo}`}
-              key={ammo}
-              variant={selectedAmmo === ammo ? "default" : "outline"}
-              size="sm"
-              onPointerDown={() => {
-                if (selectedAmmo === ammo) {
-                  clearFilters();
-                } else {
-                  setSelectedAmmo(ammo);
-                  setColumnFilters((prev) => [
-                    ...prev.filter((f) => f.id !== "caliber"),
-                    { id: "caliber", value: ammo },
-                  ]);
-                }
-              }}
-            >
-              {ammo}
-            </Button>
-          ))}
+          <PopoverFilter
+            label="Caliber"
+            value={selectedAmmo}
+            onChange={(val) => {
+              setSelectedAmmo(val);
+              setColumnFilters((prev) =>
+                val
+                  ? [
+                      ...prev.filter((f) => f.id !== "caliber"),
+                      { id: "caliber", value: val },
+                    ]
+                  : prev.filter((f) => f.id !== "caliber")
+              );
+            }}
+            options={ammo}
+            formatter={CaliberFormat}
+          />
         </div>
         <Table>
           <TableHeader className="sticky top-0 z-10 bg-background shadow-md">
@@ -126,7 +131,6 @@ export function DataTableAmmo<TData extends Ammo, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className="cursor-pointer"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -150,7 +154,7 @@ export function DataTableAmmo<TData extends Ammo, TValue>({
             )}
           </TableBody>
         </Table>
-        <DataTablePagination table={table} />
+        <DataTablePaginationClient table={table} />
       </div>
     </>
   );

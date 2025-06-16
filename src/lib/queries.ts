@@ -1,5 +1,6 @@
 import { gql } from "graphql-request";
 
+//Item /FleaMarket
 export const GET_ITEMS = gql`
   query GetItems(
     $limit: Int
@@ -447,29 +448,9 @@ export const GET_BACKPACKS = gql`
     items(type: backpack) {
       id
       name
-      shortName
-      description
       wikiLink
-      types
-      basePrice
       weight
-      image8xLink
-      iconLink
       gridImageLink
-      buyFor {
-        vendor {
-          name
-        }
-        price
-        priceRUB
-      }
-      sellFor {
-        vendor {
-          name
-        }
-        price
-        priceRUB
-      }
       properties {
         __typename
         ... on ItemPropertiesBackpack {
@@ -531,47 +512,21 @@ export const GET_BACKPACK_ID = gql`
     }
   }
 `;
-//Tasks, table
+
+//Tasks, Data-table
 export const GET_TASKS = gql`
   query GetTasks {
     tasks {
-      successMessageId
       id
-      kappaRequired
-      taskImageLink
       name
-      experience
       minPlayerLevel
+      kappaRequired
       lightkeeperRequired
       wikiLink
       taskRequirements {
         task {
-          minPlayerLevel
           id
           name
-        }
-      }
-      startRewards {
-        items {
-          quantity
-          count
-          item {
-            name
-          }
-        }
-      }
-      finishRewards {
-        items {
-          quantity
-          count
-          item {
-            id
-            name
-          }
-        }
-        skillLevelReward {
-          name
-          level
         }
       }
       objectives {
@@ -579,9 +534,6 @@ export const GET_TASKS = gql`
           name
           id
         }
-        description
-        id
-        optional
       }
       map {
         name
@@ -591,10 +543,6 @@ export const GET_TASKS = gql`
         id
         name
         imageLink
-        image4xLink
-        reputationLevels {
-          __typename
-        }
       }
     }
   }

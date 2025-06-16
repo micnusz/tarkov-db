@@ -38,7 +38,9 @@ export const Header = () => {
               {navLinks.map((link) => (
                 <NavigationMenuItem key={link.title}>
                   <NavigationMenuLink asChild className="text-lg">
-                    <Link href={link.href}>{link.title}</Link>
+                    <Link prefetch={true} href={link.href}>
+                      {link.title}
+                    </Link>
                   </NavigationMenuLink>
                 </NavigationMenuItem>
               ))}

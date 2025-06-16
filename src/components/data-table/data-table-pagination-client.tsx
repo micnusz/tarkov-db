@@ -6,35 +6,30 @@ import {
   ChevronsRight,
 } from "lucide-react";
 import { Button } from "../ui/button";
+import { Table } from "@tanstack/react-table";
 
-interface DataTablePaginationProps {
-  pageIndex: number;
-  pageSize: number;
-  pageCount: number;
-  onPageChange: (newPageIndex: number) => void;
-  onPageSizeChange: (newPageSize: number) => void;
-  canPreviousPage: boolean;
-  canNextPage: boolean;
+interface DataTablePaginationClientProps<TData> {
+  table: Table<TData>;
 }
 
-export function DataTablePagination({
-  pageIndex,
-  pageSize,
-  pageCount,
-  onPageChange,
-  onPageSizeChange,
-  canPreviousPage,
-  canNextPage,
-}: DataTablePaginationProps) {
+export function DataTablePaginationClient<TData>({
+  table,
+}: DataTablePaginationClientProps<TData>) {
+  const { pageIndex, pageSize } = table.getState().pagination;
+
+  const pageCount = table.getPageCount();
+  const canPreviousPage = table.getCanPreviousPage();
+  const canNextPage = table.getCanNextPage();
+
   return (
-    <div className="flex items-center justify-between px-2">
+    <div className="flex items-center justify-between px-2 mt-4">
       <div className="flex items-center space-x-6 lg:space-x-8">
         <div className="flex items-center space-x-2">
           <p className="text-sm font-medium">Rows per page</p>
           <select
             className="h-8 rounded border border-gray-300"
             value={pageSize}
-            onChange={(e) => onPageSizeChange(Number(e.target.value))}
+            onChange={(e) => table.setPageSize(Number(e.target.value))}
           >
             {[20, 25, 30, 40, 50].map((size) => (
               <option key={size} value={size}>
@@ -48,7 +43,7 @@ export function DataTablePagination({
           <Button
             variant="outline"
             size="icon"
-            onClick={() => onPageChange(0)}
+            onClick={() => table.setPageIndex(0)}
             disabled={!canPreviousPage}
             aria-label="Go to first page"
           >
@@ -57,19 +52,19 @@ export function DataTablePagination({
           <Button
             variant="outline"
             size="icon"
-            onClick={() => onPageChange(pageIndex - 1)}
+            onClick={() => table.previousPage()}
             disabled={!canPreviousPage}
             aria-label="Go to previous page"
           >
             <ChevronLeft />
           </Button>
-          <span>
+          <span className="text-sm">
             Page {pageIndex + 1} of {pageCount}
           </span>
           <Button
             variant="outline"
             size="icon"
-            onClick={() => onPageChange(pageIndex + 1)}
+            onClick={() => table.nextPage()}
             disabled={!canNextPage}
             aria-label="Go to next page"
           >
@@ -78,7 +73,7 @@ export function DataTablePagination({
           <Button
             variant="outline"
             size="icon"
-            onClick={() => onPageChange(pageCount - 1)}
+            onClick={() => table.setPageIndex(pageCount - 1)}
             disabled={!canNextPage}
             aria-label="Go to last page"
           >

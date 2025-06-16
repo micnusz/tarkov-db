@@ -1,11 +1,14 @@
 "use client";
 
 import { client } from "@/app/api/client";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { DataTableFleaMarket } from "./data-table/data-table-flea";
 import { columnsFlea } from "./data-table/columns";
 import { useEffect, useMemo, useState } from "react";
 import debounce from "lodash.debounce";
+import { BaseItem } from "@/app/api/types";
+import { DataTablePagination } from "./data-table/data-table-pagination";
+import Spinner from "@/lib/Spinner";
 
 const FleaMarketClient = () => {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 20 });
@@ -40,7 +43,7 @@ const FleaMarketClient = () => {
   }, [name, debouncedSetName]);
 
   // react-query with debouncedName
-  const { data = [], isLoading } = useQuery({
+  const { data = [], isLoading } = useQuery<BaseItem[], Error>({
     queryKey: ["items", offset, limit, debouncedName, selectedCategory],
     queryFn: () =>
       client.getItems(
@@ -49,26 +52,48 @@ const FleaMarketClient = () => {
         debouncedName || undefined,
         selectedCategory ? [selectedCategory] : undefined
       ),
+    staleTime: 5 * 60 * 1000,
   });
+
   //Filtering items to only displaying flea available ones
   const fleaItems = data?.filter((item) =>
     item.buyFor?.some((offer) => offer.vendor.name === "Flea Market")
   );
+
+  //Pagination
+  const totalCount = 4000;
+  const pageCount = Math.ceil(totalCount / pagination.pageSize);
+
+  function handlePageChange(newPageIndex: number) {
+    if (newPageIndex < 0 || newPageIndex >= pageCount) return;
+    setPagination((prev) => ({ ...prev, pageIndex: newPageIndex }));
+  }
+
+  function handlePageSizeChange(newPageSize: number) {
+    setPagination({ pageIndex: 0, pageSize: newPageSize });
+  }
 
   return (
     <div className="w-full h-full flex-col justify-center items-center p-4 md:p-10">
       <DataTableFleaMarket
         data={fleaItems ?? []}
         columns={columnsFlea}
-        pagination={pagination}
-        setPagination={setPagination}
         name={name}
         setName={setName}
-        isLoading={isLoading}
         categories={categories ?? []}
         selectedCategory={selectedCategory}
         setSelectedCategory={setSelectedCategory}
         isLoadingCat={isLoadingCat}
+        isLoading={isLoading}
+      />
+      <DataTablePagination
+        pageIndex={pagination.pageIndex}
+        pageSize={pagination.pageSize}
+        pageCount={pageCount}
+        onPageChange={handlePageChange}
+        onPageSizeChange={handlePageSizeChange}
+        canPreviousPage={pagination.pageIndex > 0}
+        canNextPage={pagination.pageIndex + 1 < pageCount}
       />
     </div>
   );
