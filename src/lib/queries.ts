@@ -342,12 +342,9 @@ export const GET_AMMO = gql`
       initialSpeed
       ricochetChance
       penetrationChance
-      penetrationPowerDeviation
-
       item {
         id
         name
-        basePrice
         iconLink
       }
     }
@@ -793,6 +790,7 @@ export const GET_CONTAINERS_ITEMS = gql`
   }
 `;
 
+// /Barter
 export const GET_BARTERS = gql`
   query GetBarters {
     barters {
@@ -807,6 +805,9 @@ export const GET_BARTERS = gql`
           avg24hPrice
           category {
             name
+            parent {
+              name
+            }
           }
           image8xLink
           gridImageLink
@@ -823,6 +824,9 @@ export const GET_BARTERS = gql`
           avg24hPrice
           category {
             name
+            parent {
+              name
+            }
           }
           image8xLink
           gridImageLink

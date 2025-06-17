@@ -19,32 +19,53 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import React, { useState } from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import { Button } from "../ui/button";
-import { Ammo } from "@/app/api/types";
-import CaliberFormat from "../modules/ammo-format";
 import DataTableSearchClient from "./data-table-search-client";
 import { DataTablePaginationClient } from "./data-table-pagination-client";
 import PopoverFilter from "../popover-filter";
+import { useTableFilters } from "@/hooks/UseTableFilters";
+import { SliderFilterCombobox } from "../slider-filter-combobox";
+import RangeFilter from "../range-filter";
+type FilterValue =
+  | string
+  | number
+  | null
+  | { min: number | null; max: number | null };
 
-interface DataTableAmmoProps<TData, TValue> {
+interface FilterConfig {
+  id?: string;
+  label?: string;
+  formatter?: (
+    value:
+      | string
+      | number
+      | { min: number | null; max: number | null }
+      | null
+      | undefined
+  ) => string;
+
+  options?: string[];
+  filterType?: "select" | "slider" | "range";
+  min?: number;
+  max?: number;
+  step?: number;
+}
+
+interface DataTableClientProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  filters?: FilterConfig[];
 }
-export function DataTableAmmo<TData extends Ammo, TValue>({
+export function DataTableClient<TData, TValue>({
   columns,
   data,
-}: DataTableAmmoProps<TData, TValue>) {
+  filters,
+}: DataTableClientProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
-  const [selectedAmmo, setSelectedAmmo] = useState<string | null>(null);
-
-  const ammo = Array.from(
-    new Set((data as Ammo[]).map((ammo) => ammo.caliber))
-  ).sort();
-
   const table = useReactTable({
     columns,
     data,
@@ -58,6 +79,9 @@ export function DataTableAmmo<TData extends Ammo, TValue>({
       pagination: {
         pageSize: 20,
       },
+      columnVisibility: {
+        traderLevel: false,
+      },
     },
     getCoreRowModel: getCoreRowModel(),
     onColumnFiltersChange: setColumnFilters,
@@ -65,41 +89,80 @@ export function DataTableAmmo<TData extends Ammo, TValue>({
     getPaginationRowModel: getPaginationRowModel(),
   });
 
+  const { state: filterState, dispatch } = useTableFilters(
+    filters?.map((f) => f.id!).filter(Boolean) ?? []
+  );
+
+  const handleFilterChange = (id: string, value: FilterValue) => {
+    dispatch({ type: "SET_FILTER", id, value });
+    setColumnFilters((prev) =>
+      value === null
+        ? prev.filter((f) => f.id !== id)
+        : [...prev.filter((f) => f.id !== id), { id, value }]
+    );
+  };
+
+  const handleResetFilters = () => {
+    dispatch({ type: "RESET_ALL" });
+    setColumnFilters([]);
+  };
+
   return (
     <>
-      <div className="w-full flex flex-col gap-4 ">
+      <div className="w-full flex flex-col gap-4">
         <div className="flex items-center py-4">
           <DataTableSearchClient table={table} />
           <Button
             variant="outline"
             className="mx-2"
-            onClick={() => {
-              setColumnFilters([]);
-              setSelectedAmmo(null);
-              table.resetColumnFilters();
-            }}
+            onClick={handleResetFilters}
           >
             Clear
           </Button>
         </div>
         <div className="flex flex-wrap gap-2">
-          <PopoverFilter
-            label="Caliber"
-            value={selectedAmmo}
-            onChange={(val) => {
-              setSelectedAmmo(val);
-              setColumnFilters((prev) =>
-                val
-                  ? [
-                      ...prev.filter((f) => f.id !== "caliber"),
-                      { id: "caliber", value: val },
-                    ]
-                  : prev.filter((f) => f.id !== "caliber")
+          {filters?.map((filter) => {
+            if (!filter.id) return null;
+            if (filter.filterType === "slider") {
+              return (
+                <SliderFilterCombobox
+                  key={filter.id}
+                  label={filter.label!}
+                  min={filter.min ?? 0}
+                  max={filter.max ?? 100}
+                  step={filter.step ?? 1}
+                  value={filterState[filter.id!] ?? null}
+                  formatter={filter.formatter}
+                  onChange={(val) => handleFilterChange(filter.id!, val)}
+                  showClear={true}
+                />
               );
-            }}
-            options={ammo}
-            formatter={CaliberFormat}
-          />
+            } else if (filter.filterType === "select") {
+              return (
+                <PopoverFilter
+                  key={filter.id}
+                  label={filter.label!}
+                  options={filter.options ?? []}
+                  value={filterState[filter.id!] ?? null}
+                  onChange={(val) => handleFilterChange(filter.id!, val)}
+                  formatter={filter.formatter}
+                />
+              );
+            } else if (filter.filterType === "range") {
+              return (
+                <RangeFilter
+                  key={filter.id}
+                  label={filter.label ?? ""}
+                  min={filter.min ?? 0}
+                  max={filter.max ?? 100}
+                  formatter={filter.formatter}
+                  value={filterState[filter.id] ?? { min: null, max: null }}
+                  onChange={(val) => handleFilterChange(filter.id!, val)}
+                  showClear={true}
+                />
+              );
+            }
+          })}
         </div>
         <Table>
           <TableHeader className="sticky top-0 z-10 bg-background shadow-md">

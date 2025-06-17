@@ -17,19 +17,21 @@ import { Briefcase, TowerControl } from "lucide-react";
 import CraftingDurationFormat from "../modules/crafting-duration-format";
 import Image from "next/image";
 import CaliberFormat from "../modules/ammo-format";
+import formatCurrency from "../modules/currency-format";
 
 //Column Barter
 const columnHelperBarter = createColumnHelper<Barter>();
 export const columnsBarter = [
-  columnHelperBarter.accessor((row) => row.trader?.imageLink ?? "", {
+  columnHelperBarter.accessor((row) => row.trader.name ?? "", {
     id: "trader",
+    filterFn: "equals",
     header: (info) => <DefaultHeader info={info} name="Trader" />,
     cell: (info) => {
       const trader = info.row.original?.trader;
       const level = info.row.original?.level;
 
       if (!trader || !trader.imageLink || !trader.name) {
-        return <span className="text-gray-400 italic">Brak danych</span>;
+        return <span className="text-gray-400 italic">N/A</span>;
       }
 
       return (
@@ -37,19 +39,26 @@ export const columnsBarter = [
           <Image
             src={trader.imageLink}
             alt={trader.name}
-            width={50}
-            height={50}
+            width={75}
+            height={75}
             loading="lazy"
             className="object-contain h-25"
           />
           {level != null && (
-            <Badge className=" absolute left-10 -top-2 -right-1 text-xs px-1.5 py-0.5">
+            <Badge className=" absolute left-0 top-0  text-xs px-1.5 py-0.5">
               Lv. {level}
             </Badge>
           )}
         </div>
       );
     },
+  }),
+  columnHelperBarter.accessor((row) => row.level ?? null, {
+    id: "traderLevel",
+    filterFn: (row, columnId, filterValue) =>
+      String(row.getValue(columnId)) === filterValue,
+    header: "Trader Level",
+    cell: (info) => <span>{info.getValue()}</span>,
   }),
   columnHelperBarter.accessor((row) => row.rewardItems?.[0]?.item?.name ?? "", {
     id: "name",
@@ -65,13 +74,13 @@ export const columnsBarter = [
 
       return (
         <div className="flex items-center gap-3 min-w-0">
-          <div className="relative shrink-0">
+          <div className="relative shrink-0 ">
             {item.gridImageLink && (
               <Image
                 src={item.gridImageLink}
                 alt={item.name}
-                width={50}
-                height={50}
+                width={75}
+                height={75}
                 loading="lazy"
                 className="object-contain h-25"
               />
@@ -83,7 +92,7 @@ export const columnsBarter = [
             )}
           </div>
           <Link href={`/item/${item.id}`}>
-            <span className="text-sm  truncate hover:text-chart-2 ">
+            <span className="text-sm truncate hover:text-chart-2 max-w-[300px] block">
               {item.name}
             </span>
           </Link>
@@ -92,6 +101,22 @@ export const columnsBarter = [
     },
     filterFn: "includesString",
   }),
+  columnHelperBarter.accessor(
+    (row) => row.rewardItems?.[0]?.item?.category?.name ?? "",
+    {
+      id: "category",
+      header: (info) => <DefaultHeader info={info} name="Category" />,
+      cell: (info) => {
+        const name = info.getValue();
+        return name ? (
+          <span className="font-medium">{name}</span>
+        ) : (
+          <span className="text-gray-400 italic">N/A</span>
+        );
+      },
+      filterFn: "equals",
+    }
+  ),
   columnHelperBarter.accessor((row) => row.requiredItems ?? "", {
     id: "required",
     header: (info) => <DefaultHeader info={info} name="Required" />,
@@ -148,39 +173,45 @@ export const columnsBarter = [
     enableSorting: false,
     enableHiding: false,
   }),
-  columnHelperBarter.accessor((row) => row.requiredItems ?? "", {
-    id: "cost",
-    header: (info) => <DefaultHeader info={info} name="Barter Cost" />,
-    cell: (info) => {
-      const requiredItems = info.getValue();
-
-      if (!requiredItems.length) {
-        return <span className="text-gray-400 italic">N/A</span>;
-      }
-
-      const totalCost = requiredItems.reduce(
-        (sum: number, { item, count, quantity }: BarterItem) => {
-          const qty = quantity ?? count ?? 0;
-          const price =
-            typeof item.avg24hPrice === "number" ? item.avg24hPrice : 0;
-          return sum + qty * price;
+  columnHelperBarter.accessor(
+    (row) => {
+      const requiredItems = row.requiredItems ?? [];
+      return requiredItems.reduce(
+        (total, { item, count = 1, quantity = 1 }) => {
+          const itemPrice = item?.avg24hPrice ?? 0;
+          const qty = quantity ?? count;
+          return total + itemPrice * qty;
         },
         0
       );
-
-      return (
-        <div className="text-sm font-medium">
-          {totalCost > 0 ? (
-            `${totalCost.toLocaleString("de-DE")}₽`
-          ) : (
-            <span className="text-gray-400 italic">N/A</span>
-          )}
-        </div>
-      );
     },
-    enableSorting: true,
-    enableHiding: true,
-  }),
+    {
+      id: "barterCost",
+      header: (info) => <DefaultHeader info={info} name="Barter Cost" />,
+      cell: (info) => {
+        const cost = info.getValue();
+        return cost > 0 ? (
+          <span>{formatCurrency("roubles", cost)}</span>
+        ) : (
+          <span className="text-gray-400 italic">N/A</span>
+        );
+      },
+      enableSorting: true,
+      filterFn: (row, id, filterValue) => {
+        // filterValue to teraz { min: number|null, max: number|null }
+        if (!filterValue) return true;
+
+        const cost: number = row.getValue(id);
+        const { min, max } = filterValue;
+
+        if (min !== null && cost < min) return false;
+        if (max !== null && cost > max) return false;
+
+        return true;
+      },
+    }
+  ),
+
   columnHelperBarter.accessor(
     (row) => row.rewardItems?.[0]?.item.avg24hPrice ?? null,
     {
@@ -203,17 +234,11 @@ export const columnsBarter = [
       enableHiding: true,
     }
   ),
-  columnHelperBarter.accessor((row) => row, {
-    id: "profit",
-    header: (info) => <DefaultHeader info={info} name="Barter profit" />,
-    cell: (info) => {
-      const row = info.getValue();
+  columnHelperBarter.accessor(
+    (row) => {
+      const rewardPrice = row.rewardItems?.[0]?.item.avg24hPrice ?? 0;
 
-      const rewardItem = row.rewardItems?.[0]?.item;
-      const rewardPrice = rewardItem?.avg24hPrice ?? 0;
-
-      const requiredItems = row.requiredItems ?? [];
-      const barterCost = requiredItems.reduce(
+      const barterCost = (row.requiredItems ?? []).reduce(
         (total: number, { item, count = 1, quantity = 1 }: BarterItem) => {
           const itemPrice = item?.avg24hPrice ?? 0;
           const qty = quantity ?? count;
@@ -222,26 +247,34 @@ export const columnsBarter = [
         0
       );
 
-      const profit = rewardPrice - barterCost;
-      const formattedProfit = profit.toLocaleString("de-DE") + "₽";
-
-      return (
-        <span
-          className={
-            profit > 0
-              ? "text-green-600"
-              : profit < 0
-              ? "text-red-600"
-              : "text-gray-600"
-          }
-        >
-          {formattedProfit}
-        </span>
-      );
+      return rewardPrice - barterCost;
     },
-    enableSorting: true,
-    enableHiding: false,
-  }),
+    {
+      id: "profit",
+      header: (info) => <DefaultHeader info={info} name="Barter profit" />,
+      cell: (info) => {
+        const profit = info.getValue();
+
+        const formattedProfit = profit.toLocaleString("de-DE") + "₽";
+
+        return (
+          <span
+            className={
+              profit > 0
+                ? "text-green-600"
+                : profit < 0
+                ? "text-red-600"
+                : "text-gray-600"
+            }
+          >
+            {formattedProfit}
+          </span>
+        );
+      },
+      enableSorting: true,
+      enableHiding: false,
+    }
+  ),
 ] as ColumnDef<Barter>[];
 
 //Crafting
@@ -1218,20 +1251,64 @@ export const columnsAmmo = [
   columnHelperAmmo.accessor("penetrationPower", {
     header: (info) => <DefaultHeader info={info} name="Pen" />,
     cell: (info) => info.getValue(),
+    filterFn: (row, id, filterValue) => {
+      if (!filterValue) return true;
+
+      const cost: number = row.getValue(id);
+      const { min, max } = filterValue;
+
+      if (min !== null && cost < min) return false;
+      if (max !== null && cost > max) return false;
+
+      return true;
+    },
   }),
 
   columnHelperAmmo.accessor("damage", {
     header: (info) => <DefaultHeader info={info} name="Dmg" />,
     cell: (info) => info.getValue(),
+    filterFn: (row, id, filterValue) => {
+      if (!filterValue) return true;
+
+      const cost: number = row.getValue(id);
+      const { min, max } = filterValue;
+
+      if (min !== null && cost < min) return false;
+      if (max !== null && cost > max) return false;
+
+      return true;
+    },
   }),
 
   columnHelperAmmo.accessor("armorDamage", {
     header: (info) => <DefaultHeader info={info} name="ArD" />,
     cell: (info) => info.getValue(),
+    filterFn: (row, id, filterValue) => {
+      if (!filterValue) return true;
+
+      const cost: number = row.getValue(id);
+      const { min, max } = filterValue;
+
+      if (min !== null && cost < min) return false;
+      if (max !== null && cost > max) return false;
+
+      return true;
+    },
   }),
 
   columnHelperAmmo.accessor("accuracyModifier", {
     header: (info) => <DefaultHeader info={info} name="Acc" />,
+    filterFn: (row, id, filterValue) => {
+      if (!filterValue) return true;
+      const cost: number = row.getValue(id);
+      const { min, max } = filterValue;
+      const costPercent = cost * 100;
+
+      if (min !== null && costPercent < min) return false;
+      if (max !== null && costPercent > max) return false;
+
+      return true;
+    },
     cell: (info) => {
       const percent = Math.round(info.getValue() * 100);
       return (
@@ -1249,6 +1326,17 @@ export const columnsAmmo = [
 
   columnHelperAmmo.accessor("recoilModifier", {
     header: (info) => <DefaultHeader info={info} name="Recoil" />,
+    filterFn: (row, id, filterValue) => {
+      if (!filterValue) return true;
+      const cost: number = row.getValue(id);
+      const { min, max } = filterValue;
+      const costPercent = cost * 100;
+
+      if (min !== null && costPercent < min) return false;
+      if (max !== null && costPercent > max) return false;
+
+      return true;
+    },
     cell: (info) => {
       const percent = Math.round(info.getValue() * 100);
       return (
@@ -1267,16 +1355,49 @@ export const columnsAmmo = [
   columnHelperAmmo.accessor("fragmentationChance", {
     header: (info) => <DefaultHeader info={info} name="Frag" />,
     cell: (info) => `${Math.round(info.getValue() * 100)}%`,
+    filterFn: (row, id, filterValue) => {
+      if (!filterValue) return true;
+      const cost: number = row.getValue(id);
+      const { min, max } = filterValue;
+      const costPercent = cost * 100;
+
+      if (min !== null && costPercent < min) return false;
+      if (max !== null && costPercent > max) return false;
+
+      return true;
+    },
   }),
 
   columnHelperAmmo.accessor("initialSpeed", {
     header: (info) => <DefaultHeader info={info} name="Speed m/s" />,
     cell: (info) => info.getValue(),
+    filterFn: (row, id, filterValue) => {
+      if (!filterValue) return true;
+
+      const cost: number = row.getValue(id);
+      const { min, max } = filterValue;
+
+      if (min !== null && cost < min) return false;
+      if (max !== null && cost > max) return false;
+
+      return true;
+    },
   }),
 
   columnHelperAmmo.accessor("ricochetChance", {
     header: (info) => <DefaultHeader info={info} name="Ricochet" />,
     cell: (info) => `${Math.round(info.getValue() * 100)}%`,
+    filterFn: (row, id, filterValue) => {
+      if (!filterValue) return true;
+      const cost: number = row.getValue(id);
+      const { min, max } = filterValue;
+      const costPercent = cost * 100;
+
+      if (min !== null && costPercent < min) return false;
+      if (max !== null && costPercent > max) return false;
+
+      return true;
+    },
   }),
 ] as ColumnDef<Ammo>[];
 

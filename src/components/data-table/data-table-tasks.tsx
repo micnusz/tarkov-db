@@ -23,8 +23,6 @@ import {
 import React, { useState } from "react";
 import { Button } from "../ui/button";
 import { Task } from "@/app/api/types";
-import { DataTablePagination } from "./data-table-pagination";
-import { Input } from "../ui/input";
 import PopoverFilter from "../popover-filter";
 import DataTableSearchClient from "./data-table-search-client";
 import { DataTablePaginationClient } from "./data-table-pagination-client";
@@ -41,19 +39,6 @@ export function DataTableTasks<TData extends Task, TValue>({
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
-  const [selectedTrader, setSelectedTrader] = useState<string | null>(null);
-  const [selectedMap, setSelectedMap] = useState<string | null>(null);
-
-  const tasks = Array.from(
-    new Set((data as Task[]).map((task) => task.trader.name))
-  ).sort();
-  const maps = Array.from(
-    new Set(
-      data
-        .map((item) => item.map?.name)
-        .filter((name): name is string => Boolean(name))
-    )
-  ).sort();
 
   const table = useReactTable({
     columns,

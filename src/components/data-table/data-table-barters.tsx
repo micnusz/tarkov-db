@@ -42,6 +42,7 @@ export function DataTableBarters<TData extends Barter, TValue>({
   const traders = Array.from(
     new Set((data as Barter[]).map((trader) => trader.trader.name))
   ).sort();
+
   const clearFilters = () => {
     setColumnFilters([]);
     setSelectedTrader(null);
