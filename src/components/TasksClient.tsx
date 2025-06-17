@@ -2,10 +2,10 @@
 
 import { client } from "@/app/api/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { DataTableTasks } from "./data-table/data-table-tasks";
 import { columnsTaskAdvanced } from "./data-table/columns";
 import { Task } from "@/app/api/types";
 import { DataTableClient } from "./data-table/data-table-client";
+import UniversalFormat from "./modules/universal-format";
 
 const TasksClient = () => {
   const { data } = useSuspenseQuery({
@@ -26,7 +26,7 @@ const TasksClient = () => {
   ).sort();
 
   return (
-    <div className="w-full h-full flex-col justify-center items-center p-10">
+    <div className="w-full h-full flex-col justify-center items-center p-4 md:p-10">
       <DataTableClient
         data={data}
         columns={columnsTaskAdvanced}
@@ -34,12 +34,26 @@ const TasksClient = () => {
           {
             id: "trader",
             label: "Trader",
+            filterType: "select",
             options: trader,
+          },
+          {
+            id: "minPlayerLevel",
+            label: "Min. Player Level",
+            filterType: "range",
+            formatter: UniversalFormat,
           },
           {
             id: "map.name",
             label: "Map",
+            filterType: "select",
             options: maps,
+          },
+          {
+            id: "requirements",
+            label: "Required For",
+            filterType: "select",
+            options: ["Both", "Kappa", "Lightkeeper", "None"],
           },
         ]}
       />

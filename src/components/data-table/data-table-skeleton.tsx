@@ -54,7 +54,7 @@ export function DataTableSkeleton({
             ? Array.from({ length: filterCount }).map((_, i) => (
                 <Skeleton
                   key={i}
-                  className="w-screen h-[2.5rem] w-[2rem] md:w-[4rem] border-dashed mb-2"
+                  className="w-screen h-[2.5rem] w-[3rem] md:w-[10rem] border-dashed mb-2"
                 />
               ))
             : null}

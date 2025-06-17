@@ -10,13 +10,20 @@ import {
 import { MenuIcon } from "lucide-react";
 import SearchBar from "../SearchBar";
 import { useState } from "react";
-import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "../ui/sheet";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "../ui/sheet";
+import { Button } from "../ui/button";
 
 const navLinks: { href: string; title: string }[] = [
   { href: "/ammo", title: "Ammo" },
   { href: "/barter", title: "Barter" },
   { href: "/items", title: "Items" },
-  { href: "/maps", title: "Maps" },
   { href: "/", title: "Flea Market" },
   { href: "/tasks", title: "Tasks" },
 ];
@@ -55,21 +62,33 @@ export const Header = () => {
         <div className="flex lg:hidden items-center">
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
             <SheetTrigger asChild>
-              <button className="p-2 rounded-md focus:outline-none">
+              <Button
+                className="p-2 rounded-md focus:outline-none"
+                variant="ghost"
+              >
                 {mobileOpen ? (
                   <MenuIcon className="w-6 h-6" />
                 ) : (
                   <MenuIcon className="w-6 h-6" />
                 )}
-              </button>
+              </Button>
             </SheetTrigger>
+
             <SheetContent
               side="right"
-              className="bg-black/60 backdrop-blur-sm w-full max-w-sm"
+              className="bg-black/60 backdrop-blur-sm w-screen [&>button]:hidden "
             >
               <div className="px-4 py-6 space-y-6">
                 {/* SearchBar wewnątrz Sheet */}
-                <SearchBar />
+
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex-1 min-w-0">
+                    <SearchBar />
+                  </div>
+                  <SheetClose className="p-2 rounded-md hover:bg-muted transition">
+                    Close
+                  </SheetClose>
+                </div>
 
                 {/* Linki */}
                 <SheetTitle className="text-muted">Menu</SheetTitle>

@@ -464,6 +464,33 @@ export const GET_BACKPACKS = gql`
     }
   }
 `;
+// Items/Armors
+export const GET_ARMORS = gql`
+  query GetArmors {
+    items(types: armor) {
+      id
+      name
+      weight
+      wikiLink
+      gridImageLink
+      properties {
+        __typename
+        ... on ItemPropertiesArmor {
+          zones
+          speedPenalty
+          class
+          ergoPenalty
+          material {
+            name
+          }
+          durability
+          turnPenalty
+          armorType
+        }
+      }
+    }
+  }
+`;
 
 export const GET_BACKPACK_ID = gql`
   query GetBackpackById($ids: [ID]) {

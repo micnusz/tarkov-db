@@ -16,6 +16,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "./ui/separator";
 import Link from "next/link";
 import SearchBarLoading from "./ui/search-bar-loading";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 const SearchBar = () => {
   const [search, setSearch] = useState("");
@@ -63,6 +64,9 @@ const SearchBar = () => {
           </div>
         </DialogTrigger>
         <DialogContent className="border-foreground/20">
+          <DialogTitle>
+            <VisuallyHidden>Title</VisuallyHidden>
+          </DialogTitle>
           <DialogHeader>
             <Input
               type="text"

@@ -56,6 +56,22 @@ export type BackpackItem = BaseItem & {
   };
 };
 
+export type ArmorsItem = BaseItem & {
+  properties: {
+    zones: string[];
+    speedPenalty: number;
+    class: number;
+    ergoPenalty: number;
+    material: {
+      name: string;
+      id: string;
+    };
+    durability: number;
+    turnPenalty: number;
+    armorType: string;
+  };
+};
+
 export type WeaponItem = BaseItem & {
   properties: WeaponProperties;
   category: Category;
@@ -213,6 +229,10 @@ export type GetWeaponById = {
 // Backpacks
 export type GetBackpacks = {
   items: BackpackItem[];
+};
+
+export type GetArmors = {
+  items: ArmorsItem[];
 };
 
 export type GetBackpackById = {

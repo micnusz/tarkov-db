@@ -1,5 +1,6 @@
 import {
   Ammo,
+  ArmorsItem,
   BackpackItem,
   Barter,
   BarterItem,
@@ -753,6 +754,213 @@ export const columnsBackpacks = [
   }),
 ] as ColumnDef<BackpackItem>[];
 
+//Columns /armors
+const columnHelperArmors = createColumnHelper<ArmorsItem>();
+export const columnsArmors = [
+  columnHelperArmors.accessor((row) => row.gridImageLink, {
+    id: "icon",
+    header: (info) => <DefaultHeader info={info} name="Icon" />,
+    cell: (info) => {
+      const name = info.getValue();
+      const row = info.row.original;
+
+      return (
+        <Link href={`/item/${row.id}`}>
+          <div className="flex items-center gap-2">
+            <Image
+              src={row.gridImageLink}
+              alt={name}
+              width={100}
+              height={100}
+              loading="lazy"
+              className="aspect-square object-contain"
+            />
+          </div>
+        </Link>
+      );
+    },
+    enableSorting: false,
+    enableColumnFilter: false,
+  }),
+  columnHelperArmors.accessor((row) => row.name, {
+    filterFn: "includesString",
+    id: "name",
+    header: (info) => <DefaultHeader info={info} name="Name" />,
+    cell: (info) => {
+      const name = info.getValue();
+      const row = info.row.original;
+
+      return (
+        <div className="flex items-center gap-2">
+          <Link href={`/item/${row.id}`}>
+            <span className="text-sm hover:text-chart-2">{name}</span>
+          </Link>
+        </div>
+      );
+    },
+  }),
+  columnHelperArmors.accessor("properties.class", {
+    header: (info) => <DefaultHeader info={info} name="Armor Class" />,
+    id: "class",
+    filterFn: (row, columnId, filterValue) => {
+      if (filterValue === null) return true;
+      const value = Number(row.getValue(columnId));
+      if (isNaN(value)) return false;
+      return value <= filterValue + 0.0001;
+    },
+    cell: (info) => {
+      const armor = info.getValue();
+      return armor > 0 ? (
+        <>
+          <span>{armor}</span>
+        </>
+      ) : (
+        <span className="italic text-gray-400 text-sm">
+          No armor plates at default.
+        </span>
+      );
+    },
+  }),
+  columnHelperArmors.accessor((row) => row.wikiLink, {
+    id: "wikiLink",
+    header: (info) => <DefaultHeader info={info} name="WikiLink" />,
+    cell: (info) => {
+      const wikiLink = info.getValue();
+
+      return (
+        <a
+          className="text-chart-1 hover:text-gray-700 underline text-sm flex items-center "
+          href={wikiLink}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Wiki
+        </a>
+      );
+    },
+    enableColumnFilter: false,
+  }),
+  columnHelperArmors.accessor("properties.durability", {
+    header: (info) => <DefaultHeader info={info} name="Base Durability" />,
+    id: "durability",
+    filterFn: (row, columnId, filterValue) => {
+      if (filterValue === null) return true;
+      const value = Number(row.getValue(columnId));
+      if (isNaN(value)) return false;
+      return value <= filterValue + 0.0001;
+    },
+    cell: (info) => {
+      const durability = info.getValue();
+      return durability ? (
+        <span>{durability}</span>
+      ) : (
+        <span className="text-muted-foreground text-sm italic">N/A</span>
+      );
+    },
+  }),
+
+  columnHelperArmors.accessor("weight", {
+    header: (info) => <DefaultHeader info={info} name="Weight" />,
+    id: "weight",
+    filterFn: (row, columnId, filterValue) => {
+      if (filterValue === null) return true;
+      const value = Number(row.getValue(columnId));
+      if (isNaN(value)) return false;
+      return value <= filterValue + 0.0001;
+    },
+    cell: (info) => {
+      return (
+        <>
+          <span>{info.getValue()}kg</span>
+        </>
+      );
+    },
+  }),
+
+  columnHelperBackpacks.accessor("properties.ergoPenalty", {
+    id: "ergoPenalty",
+    header: (info) => <DefaultHeader info={info} name="ErgoPen" />,
+    filterFn: (row, columnId, filterValue) => {
+      if (filterValue === null) return true;
+      const value = Number(row.getValue(columnId));
+      if (isNaN(value)) return false;
+      return value <= filterValue + 0.0001;
+    },
+    cell: (info) => {
+      const initialValue = info.getValue<number>();
+
+      if (!Number.isFinite(initialValue)) {
+        return (
+          <span className="text-muted-foreground text-sm italic">N/A</span>
+        );
+      }
+
+      const percent = Math.round(initialValue * 100);
+
+      const style = {
+        color: percent < 0 ? "red" : percent > 0 ? "green" : "inherit",
+        fontWeight: 500,
+      };
+
+      return <span style={style}>{percent}%</span>;
+    },
+  }),
+  columnHelperBackpacks.accessor("properties.speedPenalty", {
+    id: "speedPenalty",
+    header: (info) => <DefaultHeader info={info} name="MoveSpeedPen" />,
+    filterFn: (row, columnId, filterValue) => {
+      if (filterValue === null) return true;
+      const value = Number(row.getValue(columnId));
+      if (isNaN(value)) return false;
+      return value <= filterValue + 0.0001;
+    },
+    cell: (info) => {
+      const value = info.getValue<number>();
+
+      if (!Number.isFinite(value)) {
+        return (
+          <span className="italic text-sm text-muted-foreground">N/A</span>
+        );
+      }
+
+      const percent = Math.round(value * 100);
+      const style = {
+        color: percent < 0 ? "red" : percent > 0 ? "green" : "inherit",
+        fontWeight: 500,
+      };
+
+      return <span style={style}>{percent}%</span>;
+    },
+  }),
+
+  columnHelperBackpacks.accessor("properties.turnPenalty", {
+    header: (info) => <DefaultHeader info={info} name="TurnPen" />,
+    id: "turnPenalty",
+    filterFn: (row, columnId, filterValue) => {
+      if (filterValue === null) return true;
+      const value: number = row.getValue(columnId);
+      return Number.isFinite(value) && value <= filterValue;
+    },
+    cell: (info) => {
+      const value = info.getValue<number>();
+
+      if (!Number.isFinite(value)) {
+        return (
+          <span className="italic text-sm text-muted-foreground">N/A</span>
+        );
+      }
+
+      const percent = Math.round(value * 100);
+      const style = {
+        color: percent < 0 ? "red" : percent > 0 ? "green" : "inherit",
+        fontWeight: 500,
+      };
+
+      return <span style={style}>{percent}%</span>;
+    },
+  }),
+] as ColumnDef<ArmorsItem>[];
+
 //Columns Task, /item/[id]
 const columnHelperTask = createColumnHelper<Task>();
 export const columnsTaskSimple = [
@@ -919,6 +1127,17 @@ export const columnsTaskAdvanced = [
     id: "minPlayerLevel",
     header: (info) => <DefaultHeader info={info} name="Min. Level" />,
     cell: (info) => info.getValue(),
+    filterFn: (row, id, filterValue) => {
+      if (!filterValue) return true;
+
+      const cost: number = row.getValue(id);
+      const { min, max } = filterValue;
+
+      if (min !== null && cost < min) return false;
+      if (max !== null && cost > max) return false;
+
+      return true;
+    },
   }),
   columnHelper.accessor((row) => row.map?.name ?? "", {
     id: "map.name",
@@ -933,52 +1152,64 @@ export const columnsTaskAdvanced = [
       );
     },
   }),
-  columnHelper.accessor(
-    (row) => ({
-      kappa: row.kappaRequired,
-      lightkeeper: row.lightkeeperRequired,
-    }),
-    {
-      id: "requirements",
-      header: (info) => <DefaultHeader info={info} name="Required for K/L" />,
-      cell: (info) => {
-        const { kappa, lightkeeper } = info.getValue();
-        const hasAny = kappa || lightkeeper;
+  {
+    id: "requirements",
+    header: (info) => <DefaultHeader info={info} name="Required for K/L" />,
+    filterFn: (row, id, filterValue) => {
+      if (!filterValue || filterValue === "All") return true;
 
-        return hasAny ? (
-          <div className="flex items-center gap-2 justify-center">
-            {kappa && (
-              <Tooltip>
-                <TooltipTrigger>
-                  <Briefcase className="w-5 h-5" aria-label="Kappa icon" />
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Required for Kappa</p>
-                </TooltipContent>
-              </Tooltip>
-            )}
-            {lightkeeper && (
-              <Tooltip>
-                <TooltipTrigger>
-                  <TowerControl
-                    className="w-5 h-5"
-                    aria-label="Lighthouse icon"
-                  />
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Required for Lightkeeper</p>
-                </TooltipContent>
-              </Tooltip>
-            )}
-          </div>
-        ) : (
-          <div className="flex justify-center">
-            <span className="text-gray-400 italic">Not Required</span>
-          </div>
-        );
-      },
-    }
-  ),
+      const { kappaRequired, lightkeeperRequired } = row.original;
+
+      switch (filterValue) {
+        case "Both":
+          return kappaRequired === true && lightkeeperRequired === true;
+        case "Kappa":
+          return kappaRequired === true;
+        case "Lightkeeper":
+          return lightkeeperRequired === true;
+        case "None":
+          return kappaRequired === false && lightkeeperRequired === false;
+        default:
+          return true;
+      }
+    },
+    cell: (info) => {
+      const { kappaRequired, lightkeeperRequired } = info.row.original;
+      const hasAny = kappaRequired || lightkeeperRequired;
+
+      return hasAny ? (
+        <div className="flex items-center gap-2 justify-center">
+          {kappaRequired && (
+            <Tooltip>
+              <TooltipTrigger>
+                <Briefcase className="w-5 h-5" aria-label="Kappa icon" />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Required for Kappa</p>
+              </TooltipContent>
+            </Tooltip>
+          )}
+          {lightkeeperRequired && (
+            <Tooltip>
+              <TooltipTrigger>
+                <TowerControl
+                  className="w-5 h-5"
+                  aria-label="Lighthouse icon"
+                />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Required for Lightkeeper</p>
+              </TooltipContent>
+            </Tooltip>
+          )}
+        </div>
+      ) : (
+        <div className="flex justify-center">
+          <span className="text-gray-400 italic">Not Required</span>
+        </div>
+      );
+    },
+  },
 ] as ColumnDef<Task>[];
 
 //Columns Flea Market
@@ -1021,7 +1252,9 @@ export const columnsFlea = [
       return (
         <Link href={`/item/${row.id}`}>
           <div className="flex items-center  gap-3">
-            <span className="text-sm font-medium">{name}</span>
+            <span className="text-sm font-medium hover:text-chart-2">
+              {name}
+            </span>
           </div>
         </Link>
       );

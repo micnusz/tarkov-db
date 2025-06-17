@@ -1,6 +1,7 @@
 import {
   GET_ALL_WEAPONS,
   GET_AMMO,
+  GET_ARMORS,
   GET_BACKPACK_ID,
   GET_BACKPACKS,
   GET_BARTER_ITEMS,
@@ -30,6 +31,7 @@ import {
 } from "@/lib/queries";
 import {
   GetAmmoCaliber,
+  GetArmors,
   GetBackpackById,
   GetBackpacks,
   GetBarterItems,
@@ -48,6 +50,7 @@ import {
 import { graphqlClient } from "@/lib/graphql-client";
 
 export const client = {
+  //server side
   async getItems(
     limit: number,
     offset: number,
@@ -197,6 +200,11 @@ export const client = {
 
   async getBackpacks(): Promise<GetBackpacks["items"]> {
     const data = await graphqlClient.request<GetBackpacks>(GET_BACKPACKS);
+    return data.items;
+  },
+
+  async getArmors(): Promise<GetArmors["items"]> {
+    const data = await graphqlClient.request<GetArmors>(GET_ARMORS);
     return data.items;
   },
 
