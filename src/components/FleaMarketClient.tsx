@@ -61,7 +61,7 @@ const FleaMarketClient = () => {
   );
 
   //Pagination
-  const totalCount = 4000;
+  const totalCount = 3980;
   const pageCount = Math.ceil(totalCount / pagination.pageSize);
 
   function handlePageChange(newPageIndex: number) {
@@ -75,6 +75,9 @@ const FleaMarketClient = () => {
 
   return (
     <div className="w-full h-full flex-col justify-center items-center p-4 md:p-10">
+      <h1 className="scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance">
+        Flea Market
+      </h1>
       <DataTableFleaMarket
         data={fleaItems ?? []}
         columns={columnsFlea}

@@ -4,6 +4,9 @@ import { client } from "@/app/api/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { DataTableContainers } from "./data-table/data-table-containers";
 import { columnsContainer } from "./data-table/columns";
+import { DataTableClient } from "./data-table/data-table-client";
+import { Item } from "@/app/api/types";
+import UniversalFormat from "./modules/universal-format";
 
 const ContainersClient = () => {
   const { data } = useSuspenseQuery({
@@ -11,9 +14,40 @@ const ContainersClient = () => {
     queryFn: () => client.getBarterItems(),
   });
 
+  const categories = Array.from(
+    new Set((data as Item[]).map((category) => category.category?.name))
+  ).sort();
+
   return (
-    <div className="w-full h-full flex-col justify-center items-center p-10">
-      <DataTableContainers columns={columnsContainer} data={data} />
+    <div className="w-full h-full flex-col justify-center items-center p-4 md:p-10">
+      <h1 className="scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance">
+        Containers
+      </h1>
+      <DataTableClient
+        columns={columnsContainer}
+        data={data}
+        filters={[
+          {
+            id: "category",
+            label: "Category",
+            filterType: "select",
+            options: categories.map(String),
+            formatter: UniversalFormat,
+          },
+          {
+            id: "capacity",
+            label: "Capacity",
+            filterType: "range",
+            formatter: UniversalFormat,
+          },
+          {
+            id: "avg24hPrice",
+            label: "Avg. 24h Price",
+            filterType: "range",
+            formatter: (val) => `${val}`,
+          },
+        ]}
+      />
     </div>
   );
 };

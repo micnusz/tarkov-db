@@ -96,6 +96,7 @@ export function DataTableClient<TData, TValue>({
       },
       columnVisibility: {
         traderLevel: false,
+        __typename: false,
       },
     },
     getCoreRowModel: getCoreRowModel(),

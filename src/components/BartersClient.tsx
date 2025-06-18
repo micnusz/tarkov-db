@@ -34,7 +34,10 @@ const BartersClient = () => {
   ).sort((a, b) => a - b);
 
   return (
-    <div className="w-full h-full flex-col justify-center items-center p-10">
+    <div className="w-full h-full flex-col justify-center items-center p-4 md:p-10">
+      <h1 className="scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance">
+        Barters
+      </h1>
       <DataTableClient
         data={data}
         columns={columnsBarter}

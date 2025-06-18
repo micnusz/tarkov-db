@@ -60,7 +60,7 @@ const RangeFilter = ({
       </PopoverTrigger>
       <PopoverContent className="rounded-lg shadow-md p-4 w-[280px]">
         <div className="flex flex-col gap-3">
-          <div className="flex gap-2">
+          <div className="flex gap-2 mt-2">
             <Input
               type="number"
               placeholder="Min"
@@ -91,11 +91,14 @@ const RangeFilter = ({
             />
           </div>
 
-          {showClear && (value.min !== null || value.max !== null) && (
-            <Button variant="secondary" size="sm" onClick={handleClear}>
-              Clear
-            </Button>
-          )}
+          <Button
+            className="mb-2"
+            variant="secondary"
+            size="sm"
+            onClick={handleClear}
+          >
+            Clear
+          </Button>
         </div>
       </PopoverContent>
     </Popover>

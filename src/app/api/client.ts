@@ -1,12 +1,14 @@
 import {
   GET_ALL_WEAPONS,
   GET_AMMO,
+  GET_ARMOR_PLATES,
   GET_ARMORS,
   GET_BACKPACK_ID,
   GET_BACKPACKS,
   GET_BARTER_ITEMS,
   GET_BARTERS,
   GET_CONTAINERS_ITEMS,
+  GET_FACE_COVERS,
   GET_ITEM_BASE_ID,
   GET_ITEM_ID_BARTERS,
   GET_ITEM_ID_CRAFTING,
@@ -37,6 +39,7 @@ import {
   GetBarterItems,
   GetBarters,
   GetContainerItems,
+  GetHelmets,
   GetItemById,
   GetItemCategories,
   GetItems,
@@ -203,8 +206,21 @@ export const client = {
     return data.items;
   },
 
+  //items/armors
   async getArmors(): Promise<GetArmors["items"]> {
     const data = await graphqlClient.request<GetArmors>(GET_ARMORS);
+    return data.items;
+  },
+
+  //items/armor-plates
+  async getArmorPlates(): Promise<GetArmors["items"]> {
+    const data = await graphqlClient.request<GetArmors>(GET_ARMOR_PLATES);
+    return data.items;
+  },
+
+  //items/face-covers
+  async getFaceCovers(): Promise<GetHelmets["items"]> {
+    const data = await graphqlClient.request<GetHelmets>(GET_FACE_COVERS);
     return data.items;
   },
 

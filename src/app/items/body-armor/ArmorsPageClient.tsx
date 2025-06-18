@@ -1,29 +1,50 @@
 "use client";
 import { client } from "@/app/api/client";
-import { columnsBackpacks } from "@/components/data-table/columns";
-import { DataTableBackpacks } from "@/components/data-table/data-table-backpacks";
+import { ArmorsItem } from "@/app/api/types";
+import { columnsArmors } from "@/components/data-table/columns";
 import { DataTableClient } from "@/components/data-table/data-table-client";
 import UniversalFormat from "@/components/modules/universal-format";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
-const BackpacksPageClient = () => {
+const ArmorsPageClient = () => {
   const { data = [] } = useSuspenseQuery({
-    queryKey: ["backpacks"],
-    queryFn: () => client.getBackpacks(),
+    queryKey: ["armors"],
+    queryFn: () => client.getArmors(),
   });
+
+  const traderLevel = Array.from(
+    new Set(
+      (data as ArmorsItem[])
+        .map((level) => level.properties.class)
+        .filter((lvl): lvl is number => lvl !== undefined)
+    )
+  ).sort((a, b) => a - b);
 
   return (
     <div className="w-full h-full flex-col justify-center items-center p-4 md:p-10">
       <h1 className="scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance">
-        Backpacks
+        Body Armor
       </h1>
       <DataTableClient
-        columns={columnsBackpacks}
+        columns={columnsArmors}
         data={data}
         filters={[
           {
-            id: "capacity",
-            label: "Capacity",
+            id: "__typename",
+            label: "Type",
+            filterType: "select",
+            options: ["Armor vests", "Armored chest rigs"],
+          },
+          {
+            id: "class",
+            label: "Armor Lvl",
+            filterType: "select",
+            options: traderLevel.map(String),
+            formatter: (val) => `Level ${val}`,
+          },
+          {
+            id: "durability",
+            label: "Durability",
             filterType: "range",
             formatter: UniversalFormat,
           },
@@ -35,7 +56,7 @@ const BackpacksPageClient = () => {
           },
           {
             id: "ergoPenalty",
-            label: "Ergo. Penalty",
+            label: "Ergo Penalty",
             filterType: "range",
             formatter: UniversalFormat,
           },
@@ -57,4 +78,4 @@ const BackpacksPageClient = () => {
   );
 };
 
-export default BackpacksPageClient;
+export default ArmorsPageClient;

@@ -6,6 +6,7 @@ import {
   BarterItem,
   BaseItem,
   CraftingProperties,
+  Item,
   Task,
   WeaponItem,
 } from "@/app/api/types";
@@ -19,6 +20,10 @@ import CraftingDurationFormat from "../modules/crafting-duration-format";
 import Image from "next/image";
 import CaliberFormat from "../modules/ammo-format";
 import formatCurrency from "../modules/currency-format";
+import { Button } from "../ui/button";
+import { UniversalNumberFormatFn } from "../modules/universal-number-filterfn";
+import { UniversalStringFilterFn } from "../modules/universal-string-filterfn";
+import RicochetChanceFormat from "../modules/ricochet-chance-format";
 
 //Column Barter
 const columnHelperBarter = createColumnHelper<Barter>();
@@ -277,6 +282,153 @@ export const columnsBarter = [
     }
   ),
 ] as ColumnDef<Barter>[];
+
+//Column items/barter-items
+const columnHelperBarterItems = createColumnHelper<Item>();
+export const columnsBarterItems = [
+  columnHelperBarterItems.accessor((row) => row.gridImageLink, {
+    id: "icon",
+    header: (info) => <DefaultHeader info={info} name="Icon" />,
+    cell: (info) => {
+      const icon = info.getValue();
+      const row = info.row.original;
+
+      return (
+        <Link href={`/item/${row.id}`}>
+          <div className="flex items-center gap-3">
+            <Image
+              aria-label={`Image of barter: ${row.name}`}
+              src={icon}
+              alt={`${row.name}`}
+              width={75}
+              height={75}
+              className="aspect-square object-contain h-25"
+            />
+          </div>
+        </Link>
+      );
+    },
+    enableSorting: false,
+    enableHiding: false,
+  }),
+  columnHelperBarterItems.accessor((row) => row.name, {
+    id: "name",
+    header: (info) => <DefaultHeader info={info} name="Name" />,
+    cell: (info) => {
+      const name = info.getValue();
+      const row = info.row.original;
+
+      return (
+        <div className="flex items-center  gap-3">
+          <Link href={`/item/${row.id}`}>
+            <span className="text-sm font-medium hover:text-chart-2">
+              {name}
+            </span>
+          </Link>
+        </div>
+      );
+    },
+  }),
+  columnHelperBarterItems.accessor((row) => row.category?.name ?? "", {
+    id: "category",
+    header: (info) => <DefaultHeader info={info} name="Category" />,
+    filterFn: (row, columnId, filterValue) => {
+      const value = row.original.category?.name ?? "";
+      return value.toLowerCase().includes(filterValue.toLowerCase());
+    },
+    cell: (info) => {
+      const row = info.row.original;
+      const name = row.category?.name;
+
+      return name ? (
+        <span className="text-sm font-medium">{name}</span>
+      ) : (
+        <span className="text-gray-400 italic">N/A</span>
+      );
+    },
+  }),
+  columnHelperBarterItems.accessor("wikiLink", {
+    header: (info) => <DefaultHeader info={info} name="Wiki" />,
+    cell: (info) => {
+      const wikiLink = info.getValue();
+      return wikiLink ? (
+        <div className="">
+          <a
+            className="text-chart-2 hover:text-chart-4 underline text-sm flex items-center "
+            href={wikiLink}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Wiki
+          </a>
+        </div>
+      ) : (
+        <span className="text-gray-400 italic">N/A</span>
+      );
+    },
+  }),
+
+  columnHelperBarterItems.accessor("avg24hPrice", {
+    header: (info) => <DefaultHeader info={info} name="Avg Price (24h)" />,
+    filterFn: UniversalNumberFormatFn,
+    cell: (info) => {
+      const value = info.getValue<number | null | undefined>();
+      return typeof value === "number" ? (
+        <div className="flex flex-col">
+          <span className="text-sm text-gray-700">Avg</span>
+          <span className="text-base font-medium">
+            {value.toLocaleString("de-DE")}₽
+          </span>
+        </div>
+      ) : (
+        <span className="text-gray-400 italic">N/A</span>
+      );
+    },
+  }),
+  columnHelperBarterItems.accessor(
+    (row) => {
+      const sellFor = row.sellFor ?? [];
+
+      if (sellFor.length === 0) return null;
+
+      const bestOffer = sellFor.reduce((max, current) =>
+        current.priceRUB > max.priceRUB ? current : max
+      );
+
+      return bestOffer.priceRUB ?? null;
+    },
+    {
+      id: "highestSellPrice",
+      header: (info) => <DefaultHeader info={info} name="Best to Sell" />,
+      cell: (info) => {
+        const price = info.getValue();
+        const row = info.row.original;
+        const sellFor = row.sellFor ?? [];
+
+        const bestOffer =
+          sellFor.length > 0
+            ? sellFor.reduce((max, current) =>
+                current.priceRUB > max.priceRUB ? current : max
+              )
+            : null;
+
+        const vendor = bestOffer?.vendor?.name ?? "Unknown";
+
+        return typeof price === "number" ? (
+          <div className="flex flex-col">
+            <span className="text-sm text-gray-700">{vendor}</span>
+            <span className="text-base font-medium">
+              {price.toLocaleString("de-DE")}₽
+            </span>
+          </div>
+        ) : (
+          <span className="text-gray-400 italic">N/A</span>
+        );
+      },
+      sortingFn: "basic",
+    }
+  ),
+] as ColumnDef<Item>[];
 
 //Crafting
 const columnHelperCrafting = createColumnHelper<CraftingProperties>();
@@ -624,9 +776,11 @@ export const columnsBackpacks = [
       const row = info.row.original;
 
       return (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 max-w-80">
           <Link href={`/item/${row.id}`}>
-            <span className="text-sm hover:text-chart-2">{name}</span>
+            <span className="text-sm hover:text-chart-2 text-sm truncate hover:text-chart-2 max-w-[14rem] md:max-w-[32rem] block">
+              {name}
+            </span>
           </Link>
         </div>
       );
@@ -634,13 +788,13 @@ export const columnsBackpacks = [
   }),
   columnHelperBackpacks.accessor((row) => row.wikiLink, {
     id: "wikiLink",
-    header: (info) => <DefaultHeader info={info} name="WikiLink" />,
+    header: (info) => <DefaultHeader info={info} name="Wiki" />,
     cell: (info) => {
       const wikiLink = info.getValue();
 
       return (
         <a
-          className="text-chart-1 hover:text-gray-700 underline text-sm flex items-center "
+          className="text-chart-2 hover:text-gray-700 underline text-sm flex items-center "
           href={wikiLink}
           target="_blank"
           rel="noopener noreferrer"
@@ -665,21 +819,21 @@ export const columnsBackpacks = [
     id: "capacity",
     header: (info) => <DefaultHeader info={info} name="Capacity" />,
     cell: (info) => info.getValue(),
-    filterFn: (row, columnId, filterValue) => {
-      if (filterValue === null) return true;
-      const value = Number(row.getValue(columnId));
-      if (isNaN(value)) return false;
-      return value <= filterValue + 0.0001;
-    },
+    filterFn: UniversalNumberFormatFn,
   }),
   columnHelperBackpacks.accessor("weight", {
     header: (info) => <DefaultHeader info={info} name="Weight" />,
     id: "weight",
-    filterFn: (row, columnId, filterValue) => {
-      if (filterValue === null) return true;
-      const value = Number(row.getValue(columnId));
-      if (isNaN(value)) return false;
-      return value <= filterValue + 0.0001;
+    filterFn: (row, id, filterValue) => {
+      if (!filterValue) return true;
+
+      const cost: number = row.getValue(id);
+      const { min, max } = filterValue;
+
+      if (min !== null && cost < min) return false;
+      if (max !== null && cost > max) return false;
+
+      return true;
     },
     cell: (info) => {
       return (
@@ -693,11 +847,16 @@ export const columnsBackpacks = [
   columnHelperBackpacks.accessor("properties.ergoPenalty", {
     id: "ergoPenalty",
     header: (info) => <DefaultHeader info={info} name="ErgoPen" />,
-    filterFn: (row, columnId, filterValue) => {
-      if (filterValue === null) return true;
-      const value = Number(row.getValue(columnId));
-      if (isNaN(value)) return false;
-      return value <= filterValue + 0.0001;
+    filterFn: (row, id, filterValue) => {
+      if (!filterValue) return true;
+      const cost: number = row.getValue(id);
+      const { min, max } = filterValue;
+      const costPercent = cost * 100;
+
+      if (min !== null && costPercent > min) return false;
+      if (max !== null && costPercent < max) return false;
+
+      return true;
     },
     cell: (info) => {
       const initialValue = info.getValue<number>();
@@ -714,11 +873,16 @@ export const columnsBackpacks = [
   columnHelperBackpacks.accessor("properties.speedPenalty", {
     id: "speedPenalty",
     header: (info) => <DefaultHeader info={info} name="MoveSpeedPen" />,
-    filterFn: (row, columnId, filterValue) => {
-      if (filterValue === null) return true;
-      const value = Number(row.getValue(columnId));
-      if (isNaN(value)) return false;
-      return value <= filterValue + 0.0001;
+    filterFn: (row, id, filterValue) => {
+      if (!filterValue) return true;
+      const cost: number = row.getValue(id);
+      const { min, max } = filterValue;
+      const costPercent = cost * 100;
+
+      if (min !== null && costPercent > min) return false;
+      if (max !== null && costPercent < max) return false;
+
+      return true;
     },
     cell: (info) => {
       const value = info.getValue<number>();
@@ -735,10 +899,16 @@ export const columnsBackpacks = [
   columnHelperBackpacks.accessor("properties.turnPenalty", {
     header: (info) => <DefaultHeader info={info} name="TurnPen" />,
     id: "turnPenalty",
-    filterFn: (row, columnId, filterValue) => {
-      if (filterValue === null) return true;
-      const value: number = row.getValue(columnId);
-      return value <= filterValue;
+    filterFn: (row, id, filterValue) => {
+      if (!filterValue) return true;
+      const cost: number = row.getValue(id);
+      const { min, max } = filterValue;
+      const costPercent = cost * 100;
+
+      if (min !== null && costPercent > min) return false;
+      if (max !== null && costPercent < max) return false;
+
+      return true;
     },
     cell: (info) => {
       const value = info.getValue<number>();
@@ -757,6 +927,39 @@ export const columnsBackpacks = [
 //Columns /armors
 const columnHelperArmors = createColumnHelper<ArmorsItem>();
 export const columnsArmors = [
+  columnHelperArmors.accessor(
+    (row) => row.properties?.__typename ?? "Unknown",
+    {
+      id: "__typename",
+      enableColumnFilter: false,
+      enableHiding: false,
+      header: (info) => <DefaultHeader info={info} name="Type" />,
+      filterFn: (row, id, filterValue) => {
+        if (!filterValue || filterValue === "All") return true;
+
+        const rawType = row.original.properties?.__typename;
+
+        switch (filterValue) {
+          case "Armor vests":
+            return rawType === "ItemPropertiesArmor";
+          case "Armored chest rigs":
+            return rawType === "ItemPropertiesChestRig";
+          default:
+            return true;
+        }
+      },
+      cell: (info) => {
+        const rawType = info.getValue();
+        const readable =
+          rawType === "ItemPropertiesArmor"
+            ? "Armor"
+            : rawType === "ItemPropertiesChestRig"
+            ? "Chest Rig"
+            : "Other";
+        return <span>{readable}</span>;
+      },
+    }
+  ),
   columnHelperArmors.accessor((row) => row.gridImageLink, {
     id: "icon",
     header: (info) => <DefaultHeader info={info} name="Icon" />,
@@ -802,12 +1005,7 @@ export const columnsArmors = [
   columnHelperArmors.accessor("properties.class", {
     header: (info) => <DefaultHeader info={info} name="Armor Class" />,
     id: "class",
-    filterFn: (row, columnId, filterValue) => {
-      if (filterValue === null) return true;
-      const value = Number(row.getValue(columnId));
-      if (isNaN(value)) return false;
-      return value <= filterValue + 0.0001;
-    },
+    filterFn: UniversalStringFilterFn,
     cell: (info) => {
       const armor = info.getValue();
       return armor > 0 ? (
@@ -841,13 +1039,18 @@ export const columnsArmors = [
     enableColumnFilter: false,
   }),
   columnHelperArmors.accessor("properties.durability", {
-    header: (info) => <DefaultHeader info={info} name="Base Durability" />,
+    header: (info) => <DefaultHeader info={info} name="Durability" />,
     id: "durability",
-    filterFn: (row, columnId, filterValue) => {
-      if (filterValue === null) return true;
-      const value = Number(row.getValue(columnId));
-      if (isNaN(value)) return false;
-      return value <= filterValue + 0.0001;
+    filterFn: (row, id, filterValue) => {
+      if (!filterValue) return true;
+
+      const cost: number = row.getValue(id);
+      const { min, max } = filterValue;
+
+      if (min !== null && cost < min) return false;
+      if (max !== null && cost > max) return false;
+
+      return true;
     },
     cell: (info) => {
       const durability = info.getValue();
@@ -860,13 +1063,18 @@ export const columnsArmors = [
   }),
 
   columnHelperArmors.accessor("weight", {
-    header: (info) => <DefaultHeader info={info} name="Weight" />,
+    header: (info) => <DefaultHeader info={info} name="Base Weight" />,
     id: "weight",
-    filterFn: (row, columnId, filterValue) => {
-      if (filterValue === null) return true;
-      const value = Number(row.getValue(columnId));
-      if (isNaN(value)) return false;
-      return value <= filterValue + 0.0001;
+    filterFn: (row, id, filterValue) => {
+      if (!filterValue) return true;
+
+      const cost: number = row.getValue(id);
+      const { min, max } = filterValue;
+
+      if (min !== null && cost < min) return false;
+      if (max !== null && cost > max) return false;
+
+      return true;
     },
     cell: (info) => {
       return (
@@ -880,11 +1088,16 @@ export const columnsArmors = [
   columnHelperBackpacks.accessor("properties.ergoPenalty", {
     id: "ergoPenalty",
     header: (info) => <DefaultHeader info={info} name="ErgoPen" />,
-    filterFn: (row, columnId, filterValue) => {
-      if (filterValue === null) return true;
-      const value = Number(row.getValue(columnId));
-      if (isNaN(value)) return false;
-      return value <= filterValue + 0.0001;
+    filterFn: (row, id, filterValue) => {
+      if (!filterValue) return true;
+      const cost: number = row.getValue(id);
+      const { min, max } = filterValue;
+      const costPercent = cost * 100;
+
+      if (min !== null && costPercent > min) return false;
+      if (max !== null && costPercent < max) return false;
+
+      return true;
     },
     cell: (info) => {
       const initialValue = info.getValue<number>();
@@ -908,11 +1121,16 @@ export const columnsArmors = [
   columnHelperBackpacks.accessor("properties.speedPenalty", {
     id: "speedPenalty",
     header: (info) => <DefaultHeader info={info} name="MoveSpeedPen" />,
-    filterFn: (row, columnId, filterValue) => {
-      if (filterValue === null) return true;
-      const value = Number(row.getValue(columnId));
-      if (isNaN(value)) return false;
-      return value <= filterValue + 0.0001;
+    filterFn: (row, id, filterValue) => {
+      if (!filterValue) return true;
+      const cost: number = row.getValue(id);
+      const { min, max } = filterValue;
+      const costPercent = cost * 100;
+
+      if (min !== null && costPercent > min) return false;
+      if (max !== null && costPercent < max) return false;
+
+      return true;
     },
     cell: (info) => {
       const value = info.getValue<number>();
@@ -936,10 +1154,16 @@ export const columnsArmors = [
   columnHelperBackpacks.accessor("properties.turnPenalty", {
     header: (info) => <DefaultHeader info={info} name="TurnPen" />,
     id: "turnPenalty",
-    filterFn: (row, columnId, filterValue) => {
-      if (filterValue === null) return true;
-      const value: number = row.getValue(columnId);
-      return Number.isFinite(value) && value <= filterValue;
+    filterFn: (row, id, filterValue) => {
+      if (!filterValue) return true;
+      const cost: number = row.getValue(id);
+      const { min, max } = filterValue;
+      const costPercent = cost * 100;
+
+      if (min !== null && costPercent > min) return false;
+      if (max !== null && costPercent < max) return false;
+
+      return true;
     },
     cell: (info) => {
       const value = info.getValue<number>();
@@ -957,6 +1181,598 @@ export const columnsArmors = [
       };
 
       return <span style={style}>{percent}%</span>;
+    },
+  }),
+] as ColumnDef<ArmorsItem>[];
+
+//Columns /armor-plates
+const columnHelperArmorPlates = createColumnHelper<ArmorsItem>();
+export const columnsArmorPlates = [
+  columnHelperArmorPlates.accessor((row) => row.gridImageLink, {
+    id: "icon",
+    header: (info) => <DefaultHeader info={info} name="Icon" />,
+    cell: (info) => {
+      const name = info.getValue();
+      const row = info.row.original;
+
+      return (
+        <Link href={`/item/${row.id}`}>
+          <div className="flex items-center gap-2">
+            <Image
+              src={row.gridImageLink}
+              alt={name}
+              width={75}
+              height={75}
+              loading="lazy"
+              className="aspect-square object-contain"
+            />
+          </div>
+        </Link>
+      );
+    },
+    enableSorting: false,
+    enableColumnFilter: false,
+  }),
+  columnHelperArmorPlates.accessor((row) => row.name, {
+    filterFn: "includesString",
+    id: "name",
+    header: (info) => <DefaultHeader info={info} name="Name" />,
+    cell: (info) => {
+      const name = info.getValue();
+      const row = info.row.original;
+
+      return (
+        <div className="flex items-center gap-2">
+          <Link href={`/item/${row.id}`}>
+            <span className="text-sm truncate hover:text-chart-2 max-w-[30rem] block">
+              {name}
+            </span>
+          </Link>
+        </div>
+      );
+    },
+  }),
+  columnHelperArmorPlates.accessor("properties.class", {
+    header: (info) => <DefaultHeader info={info} name="Armor Class" />,
+    id: "class",
+    filterFn: (row, columnId, filterValue) =>
+      String(row.getValue(columnId)) === filterValue,
+    cell: (info) => {
+      const armor = info.getValue();
+      return armor > 0 ? (
+        <>
+          <div className="w-20">
+            <span>{armor}</span>
+          </div>
+        </>
+      ) : (
+        <span className="italic text-gray-400 text-sm">
+          No armor plates at default.
+        </span>
+      );
+    },
+  }),
+  columnHelperArmorPlates.accessor("properties.material.name", {
+    header: (info) => <DefaultHeader info={info} name="Material" />,
+    id: "material",
+    filterFn: (row, columnId, filterValue) =>
+      String(row.getValue(columnId)) === filterValue,
+    cell: (info) => {
+      const name = info.getValue();
+      return (
+        <div className="flex grow max-w-40 ">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span className="text-sm truncate cursor-pointer max-w-[300px] block">
+                {name}
+              </span>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{name}</p>
+            </TooltipContent>
+          </Tooltip>
+        </div>
+      );
+    },
+  }),
+  columnHelperArmorPlates.accessor((row) => row.wikiLink, {
+    id: "wikiLink",
+    header: (info) => <DefaultHeader info={info} name="WikiLink" />,
+    cell: (info) => {
+      const wikiLink = info.getValue();
+
+      return (
+        <div className="max-w-10">
+          <a
+            className="text-chart-1 hover:text-gray-700 underline text-sm  "
+            href={wikiLink}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Wiki
+          </a>
+        </div>
+      );
+    },
+    enableColumnFilter: false,
+  }),
+  columnHelperArmorPlates.accessor("properties.durability", {
+    header: (info) => <DefaultHeader info={info} name="Durability" />,
+    id: "durability",
+    filterFn: (row, id, filterValue) => {
+      if (!filterValue) return true;
+
+      const cost: number = row.getValue(id);
+      const { min, max } = filterValue;
+
+      if (min !== null && cost < min) return false;
+      if (max !== null && cost > max) return false;
+
+      return true;
+    },
+    cell: (info) => {
+      const durability = info.getValue();
+      return durability ? (
+        <div className="w-20">
+          <span>{durability}</span>
+        </div>
+      ) : (
+        <span className="text-muted-foreground text-sm italic">N/A</span>
+      );
+    },
+  }),
+
+  columnHelperArmorPlates.accessor("weight", {
+    header: (info) => <DefaultHeader info={info} name="Base Weight" />,
+    id: "weight",
+    filterFn: (row, id, filterValue) => {
+      if (!filterValue) return true;
+
+      const cost: number = row.getValue(id);
+      const { min, max } = filterValue;
+
+      if (min !== null && cost < min) return false;
+      if (max !== null && cost > max) return false;
+
+      return true;
+    },
+    cell: (info) => {
+      return (
+        <>
+          <div className="w-20">
+            <span>{info.getValue()}kg</span>
+          </div>
+        </>
+      );
+    },
+  }),
+
+  columnHelperArmorPlates.accessor("properties.ergoPenalty", {
+    id: "ergoPenalty",
+    header: (info) => <DefaultHeader info={info} name="ErgoPen" />,
+    filterFn: (row, id, filterValue) => {
+      if (!filterValue) return true;
+      const cost: number = row.getValue(id);
+      const { min, max } = filterValue;
+      const costPercent = cost * 100;
+
+      if (min !== null && costPercent > min) return false;
+      if (max !== null && costPercent < max) return false;
+
+      return true;
+    },
+    cell: (info) => {
+      const initialValue = info.getValue<number>();
+
+      if (!Number.isFinite(initialValue)) {
+        return (
+          <span className="text-muted-foreground text-sm italic">N/A</span>
+        );
+      }
+
+      const percent = Math.round(initialValue * 100);
+
+      const style = {
+        color: percent < 0 ? "red" : percent > 0 ? "green" : "inherit",
+        fontWeight: 500,
+      };
+
+      return (
+        <div className="max-w-20">
+          <span style={style}>{percent}%</span>
+        </div>
+      );
+    },
+  }),
+  columnHelperArmorPlates.accessor("properties.speedPenalty", {
+    id: "speedPenalty",
+    header: (info) => <DefaultHeader info={info} name="SpeedPen" />,
+    filterFn: (row, id, filterValue) => {
+      if (!filterValue) return true;
+      const cost: number = row.getValue(id);
+      const { min, max } = filterValue;
+      const costPercent = cost * 100;
+
+      if (min !== null && costPercent > min) return false;
+      if (max !== null && costPercent < max) return false;
+
+      return true;
+    },
+    cell: (info) => {
+      const value = info.getValue<number>();
+
+      if (!Number.isFinite(value)) {
+        return (
+          <span className="italic text-sm text-muted-foreground">N/A</span>
+        );
+      }
+
+      const percent = Math.round(value * 100);
+      const style = {
+        color: percent < 0 ? "red" : percent > 0 ? "green" : "inherit",
+        fontWeight: 500,
+      };
+
+      return (
+        <div className="max-w-20">
+          <span style={style}>{percent}%</span>
+        </div>
+      );
+    },
+  }),
+
+  columnHelperArmorPlates.accessor("properties.turnPenalty", {
+    header: (info) => <DefaultHeader info={info} name="TurnPen" />,
+    id: "turnPenalty",
+    filterFn: (row, id, filterValue) => {
+      if (!filterValue) return true;
+      const cost: number = row.getValue(id);
+      const { min, max } = filterValue;
+      const costPercent = cost * 100;
+
+      if (min !== null && costPercent > min) return false;
+      if (max !== null && costPercent < max) return false;
+
+      return true;
+    },
+    cell: (info) => {
+      const value = info.getValue<number>();
+
+      if (!Number.isFinite(value)) {
+        return (
+          <span className="italic text-sm text-muted-foreground">N/A</span>
+        );
+      }
+
+      const percent = Math.round(value * 100);
+      const style = {
+        color: percent < 0 ? "red" : percent > 0 ? "green" : "inherit",
+        fontWeight: 500,
+      };
+
+      return (
+        <div className="max-w-20">
+          <span style={style}>{percent}%</span>
+        </div>
+      );
+    },
+  }),
+] as ColumnDef<ArmorsItem>[];
+
+//Columns /face-covers
+const columnHelperFaceCovers = createColumnHelper<ArmorsItem>();
+export const columnsFaceCovers = [
+  columnHelperArmors.accessor(
+    (row) => row.properties?.__typename ?? "Unknown",
+    {
+      id: "__typename",
+      enableColumnFilter: false,
+      enableHiding: false,
+      header: (info) => <DefaultHeader info={info} name="Type" />,
+      filterFn: (row, id, filterValue) => {
+        if (!filterValue || filterValue === "All") return true;
+
+        const rawType = row.original.properties?.__typename;
+
+        switch (filterValue) {
+          case "Armored Face Covers":
+            return rawType === "ItemPropertiesHelmet";
+          default:
+            return true;
+        }
+      },
+      cell: (info) => {
+        const rawType = info.getValue();
+        const readable =
+          rawType === "ItemPropertiesHelmet" ? "ArmoredFC" : "Other";
+        return <span>{readable}</span>;
+      },
+    }
+  ),
+  columnHelperFaceCovers.accessor((row) => row.gridImageLink, {
+    id: "icon",
+    header: (info) => <DefaultHeader info={info} name="Icon" />,
+    cell: (info) => {
+      const name = info.getValue();
+      const row = info.row.original;
+
+      return (
+        <Link href={`/item/${row.id}`}>
+          <div className="flex items-center gap-2">
+            <Image
+              src={row.gridImageLink}
+              alt={name}
+              width={75}
+              height={75}
+              className="aspect-square object-contain h-25"
+            />
+          </div>
+        </Link>
+      );
+    },
+    enableSorting: false,
+    enableColumnFilter: false,
+  }),
+  columnHelperFaceCovers.accessor((row) => row.name, {
+    filterFn: "includesString",
+    id: "name",
+    header: (info) => <DefaultHeader info={info} name="Name" />,
+    cell: (info) => {
+      const name = info.getValue();
+      const row = info.row.original;
+
+      return (
+        <div className="flex items-center gap-2">
+          <Link href={`/item/${row.id}`}>
+            <span className="text-sm truncate hover:text-chart-2 max-w-[30rem] block">
+              {name}
+            </span>
+          </Link>
+        </div>
+      );
+    },
+  }),
+  columnHelperFaceCovers.accessor((row) => row.properties.class ?? "", {
+    header: (info) => <DefaultHeader info={info} name="Armor Class" />,
+    id: "class",
+    filterFn: (row, columnId, filterValue) =>
+      String(row.getValue(columnId)) === filterValue,
+    cell: (info) => {
+      const armor = info.getValue();
+      return armor > 0 ? (
+        <>
+          <div className="w-20">
+            <span>{armor}</span>
+          </div>
+        </>
+      ) : (
+        <span className="italic text-gray-400 text-sm">N/A</span>
+      );
+    },
+  }),
+  columnHelperFaceCovers.accessor((row) => row.properties.material.name ?? "", {
+    header: (info) => <DefaultHeader info={info} name="Material" />,
+    id: "material",
+    filterFn: (row, columnId, filterValue) =>
+      String(row.getValue(columnId)) === filterValue,
+    cell: (info) => {
+      const name: string = info.getValue();
+      return name ? (
+        <div className="flex grow max-w-40 ">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span className="text-sm truncate cursor-pointer max-w-[300px] block">
+                {name}
+              </span>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{name}</p>
+            </TooltipContent>
+          </Tooltip>
+        </div>
+      ) : (
+        <span className="italic text-gray-400 text-sm">N/A</span>
+      );
+    },
+  }),
+  columnHelperFaceCovers.accessor((row) => row.properties?.ricochetY ?? null, {
+    id: "ricochet",
+    header: (info) => <DefaultHeader info={info} name="Ricochet Chance" />,
+    filterFn: UniversalStringFilterFn,
+    cell: (info) => {
+      const ricochet: number | null = info.getValue();
+
+      if (ricochet == null)
+        return <span className="italic text-gray-400 text-sm">N/A</span>;
+
+      return (
+        <div className="flex items-center gap-2">
+          <span>{RicochetChanceFormat(ricochet)}</span>
+        </div>
+      );
+    },
+  }),
+
+  columnHelperFaceCovers.accessor((row) => row.wikiLink, {
+    id: "wikiLink",
+    header: (info) => <DefaultHeader info={info} name="WikiLink" />,
+    cell: (info) => {
+      const wikiLink = info.getValue();
+
+      return (
+        <div className="max-w-10">
+          <a
+            className="text-chart-1 hover:text-gray-700 underline text-sm  "
+            href={wikiLink}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Wiki
+          </a>
+        </div>
+      );
+    },
+    enableColumnFilter: false,
+  }),
+  columnHelperFaceCovers.accessor("properties.durability", {
+    header: (info) => <DefaultHeader info={info} name="Durability" />,
+    id: "durability",
+    filterFn: (row, id, filterValue) => {
+      if (!filterValue) return true;
+
+      const cost: number = row.getValue(id);
+      const { min, max } = filterValue;
+
+      if (min !== null && cost < min) return false;
+      if (max !== null && cost > max) return false;
+
+      return true;
+    },
+    cell: (info) => {
+      const durability = info.getValue();
+      return durability ? (
+        <div className="w-20">
+          <span>{durability}</span>
+        </div>
+      ) : (
+        <span className="text-muted-foreground text-sm italic">N/A</span>
+      );
+    },
+  }),
+
+  columnHelperFaceCovers.accessor("weight", {
+    header: (info) => <DefaultHeader info={info} name="Base Weight" />,
+    id: "weight",
+    filterFn: (row, id, filterValue) => {
+      if (!filterValue) return true;
+
+      const cost: number = row.getValue(id);
+      const { min, max } = filterValue;
+
+      if (min !== null && cost < min) return false;
+      if (max !== null && cost > max) return false;
+
+      return true;
+    },
+    cell: (info) => {
+      return (
+        <>
+          <div className="w-20">
+            <span>{info.getValue()}kg</span>
+          </div>
+        </>
+      );
+    },
+  }),
+
+  columnHelperFaceCovers.accessor("properties.ergoPenalty", {
+    id: "ergoPenalty",
+    header: (info) => <DefaultHeader info={info} name="ErgoPen" />,
+    filterFn: (row, id, filterValue) => {
+      if (!filterValue) return true;
+      const cost: number = row.getValue(id);
+      const { min, max } = filterValue;
+      const costPercent = cost * 100;
+
+      if (min !== null && costPercent > min) return false;
+      if (max !== null && costPercent < max) return false;
+
+      return true;
+    },
+    cell: (info) => {
+      const initialValue = info.getValue<number>();
+
+      if (!Number.isFinite(initialValue)) {
+        return (
+          <span className="text-muted-foreground text-sm italic">N/A</span>
+        );
+      }
+
+      const percent = Math.round(initialValue * 100);
+
+      const style = {
+        color: percent < 0 ? "red" : percent > 0 ? "green" : "inherit",
+        fontWeight: 500,
+      };
+
+      return (
+        <div className="max-w-20">
+          <span style={style}>{percent}%</span>
+        </div>
+      );
+    },
+  }),
+  columnHelperFaceCovers.accessor("properties.speedPenalty", {
+    id: "speedPenalty",
+    header: (info) => <DefaultHeader info={info} name="SpeedPen" />,
+    filterFn: (row, id, filterValue) => {
+      if (!filterValue) return true;
+      const cost: number = row.getValue(id);
+      const { min, max } = filterValue;
+      const costPercent = cost * 100;
+
+      if (min !== null && costPercent > min) return false;
+      if (max !== null && costPercent < max) return false;
+
+      return true;
+    },
+    cell: (info) => {
+      const value = info.getValue<number>();
+
+      if (!Number.isFinite(value)) {
+        return (
+          <span className="italic text-sm text-muted-foreground">N/A</span>
+        );
+      }
+
+      const percent = Math.round(value * 100);
+      const style = {
+        color: percent < 0 ? "red" : percent > 0 ? "green" : "inherit",
+        fontWeight: 500,
+      };
+
+      return (
+        <div className="max-w-20">
+          <span style={style}>{percent}%</span>
+        </div>
+      );
+    },
+  }),
+
+  columnHelperFaceCovers.accessor("properties.turnPenalty", {
+    header: (info) => <DefaultHeader info={info} name="TurnPen" />,
+    id: "turnPenalty",
+    filterFn: (row, id, filterValue) => {
+      if (!filterValue) return true;
+      const cost: number = row.getValue(id);
+      const { min, max } = filterValue;
+      const costPercent = cost * 100;
+
+      if (min !== null && costPercent > min) return false;
+      if (max !== null && costPercent < max) return false;
+
+      return true;
+    },
+    cell: (info) => {
+      const value = info.getValue<number>();
+
+      if (!Number.isFinite(value)) {
+        return (
+          <span className="italic text-sm text-muted-foreground">N/A</span>
+        );
+      }
+
+      const percent = Math.round(value * 100);
+      const style = {
+        color: percent < 0 ? "red" : percent > 0 ? "green" : "inherit",
+        fontWeight: 500,
+      };
+
+      return (
+        <div className="max-w-20">
+          <span style={style}>{percent}%</span>
+        </div>
+      );
     },
   }),
 ] as ColumnDef<ArmorsItem>[];
@@ -1154,7 +1970,7 @@ export const columnsTaskAdvanced = [
   }),
   {
     id: "requirements",
-    header: (info) => <DefaultHeader info={info} name="Required for K/L" />,
+    header: (info) => <DefaultHeader info={info} name="Required For" />,
     filterFn: (row, id, filterValue) => {
       if (!filterValue || filterValue === "All") return true;
 
@@ -1651,8 +2467,9 @@ export const columnsContainer = [
               aria-label={`Icon of ${row.name}`}
               src={`${icon}`}
               alt={`Icon of ${row.name}`}
-              width={50}
-              height={50}
+              width={75}
+              height={75}
+              className="object-contain h-25"
             />
           </div>
         </Link>
@@ -1682,6 +2499,10 @@ export const columnsContainer = [
   columnHelperContainer.accessor((row) => row.category?.name ?? "", {
     id: "category",
     header: (info) => <DefaultHeader info={info} name="Category" />,
+    filterFn: (row, columnId, filterValue) => {
+      const value = row.original.category?.name ?? "";
+      return value.toLowerCase().includes(filterValue.toLowerCase());
+    },
     cell: (info) => {
       const row = info.row.original;
       const name = row.category?.name;
@@ -1692,10 +2513,6 @@ export const columnsContainer = [
         <span className="text-muted italic">N/A</span>
       );
     },
-    filterFn: (row, columnId, filterValue) => {
-      const value = row.original.category?.name ?? "";
-      return value.toLowerCase().includes(filterValue.toLowerCase());
-    },
   }),
   columnHelperContainer.accessor("wikiLink", {
     header: (info) => <DefaultHeader info={info} name="Wiki" />,
@@ -1704,7 +2521,7 @@ export const columnsContainer = [
       return wikiLink ? (
         <div className="">
           <a
-            className="text-chart-3 hover:text-gray-600 underline text-sm flex items-center "
+            className="text-chart-2 hover:text-gray-600 underline text-sm flex items-center "
             href={wikiLink}
             target="_blank"
             rel="noopener noreferrer"
@@ -1717,9 +2534,26 @@ export const columnsContainer = [
       );
     },
   }),
+  columnHelperBackpacks.accessor("properties.grids", {
+    header: (info) => <DefaultHeader info={info} name="Grid" />,
+    cell: (info) => {
+      const grids = info.getValue();
+      if (!grids || grids.length === 0) return "–";
+
+      const first = grids[0];
+      return `${first.width} × ${first.height}`;
+    },
+  }),
+  columnHelperBackpacks.accessor("properties.capacity", {
+    id: "capacity",
+    header: (info) => <DefaultHeader info={info} name="Capacity" />,
+    cell: (info) => info.getValue(),
+    filterFn: UniversalNumberFormatFn,
+  }),
 
   columnHelperContainer.accessor("avg24hPrice", {
     header: (info) => <DefaultHeader info={info} name="Avg Price (24h)" />,
+    filterFn: UniversalNumberFormatFn,
     cell: (info) => {
       const value = info.getValue<number | null | undefined>();
       return typeof value === "number" ? (

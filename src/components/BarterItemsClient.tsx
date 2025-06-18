@@ -1,164 +1,46 @@
 "use client";
 
 import { client } from "@/app/api/client";
-import { Item } from "@/app/api/types";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
-import { useMemo } from "react";
-import DefaultHeader from "./ui/default-header";
-import Link from "next/link";
-import { DataTableBarterItems } from "./data-table/data-table-barter-items";
-import Image from "next/image";
+import { columnsBarterItems } from "./data-table/columns";
+import { DataTableClient } from "./data-table/data-table-client";
+import { Item } from "@/app/api/types";
+import UniversalFormat from "./modules/universal-format";
 
 const BarterItemsClient = () => {
   const { data } = useSuspenseQuery({
     queryKey: ["barter-items"],
     queryFn: () => client.getBarterItems(),
   });
-  const columnHelper = useMemo(() => createColumnHelper<Item>(), []);
-  const columns = useMemo(
-    () =>
-      [
-        columnHelper.accessor((row) => row.gridImageLink, {
-          id: "icon",
-          header: (info) => <DefaultHeader info={info} name="Icon" />,
-          cell: (info) => {
-            const icon = info.getValue();
-            const row = info.row.original;
 
-            return (
-              <Link href={`/item/${row.id}`}>
-                <div className="flex items-center gap-3">
-                  <Image
-                    aria-label={`Image of barter: ${row.name}`}
-                    src={icon}
-                    alt={`${row.name}`}
-                    width={50}
-                    height={50}
-                    className="aspect-square object-contain"
-                  />
-                </div>
-              </Link>
-            );
-          },
-          enableSorting: false,
-          enableHiding: false,
-        }),
-        columnHelper.accessor((row) => row.name, {
-          id: "name",
-          header: (info) => <DefaultHeader info={info} name="Name" />,
-          cell: (info) => {
-            const name = info.getValue();
-            const row = info.row.original;
-
-            return (
-              <div className="flex items-center  gap-3">
-                <Link href={`/item/${row.id}`}>
-                  <span className="text-sm font-medium hover:text-chart-2">
-                    {name}
-                  </span>
-                </Link>
-              </div>
-            );
-          },
-        }),
-        columnHelper.accessor((row) => row.category?.name ?? "", {
-          id: "category",
-          header: (info) => <DefaultHeader info={info} name="Category" />,
-          cell: (info) => {
-            const row = info.row.original;
-            const name = row.category?.name;
-
-            return name ? (
-              <span className="text-sm font-medium">{name}</span>
-            ) : (
-              <span className="text-gray-400 italic">N/A</span>
-            );
-          },
-          filterFn: (row, columnId, filterValue) => {
-            const value = row.original.category?.name ?? "";
-            return value.toLowerCase().includes(filterValue.toLowerCase());
-          },
-        }),
-        columnHelper.accessor("wikiLink", {
-          header: (info) => <DefaultHeader info={info} name="Wiki" />,
-          cell: (info) => {
-            const wikiLink = info.getValue();
-            return wikiLink ? (
-              <div className="">
-                <a
-                  className="text-chart-3 hover:text-gray-400 underline text-sm flex items-center "
-                  href={wikiLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Wiki
-                </a>
-              </div>
-            ) : (
-              <span className="text-gray-400 italic">N/A</span>
-            );
-          },
-        }),
-
-        columnHelper.accessor("avg24hPrice", {
-          header: (info) => (
-            <DefaultHeader info={info} name="Avg Price (24h)" />
-          ),
-          cell: (info) => {
-            const value = info.getValue<number | null | undefined>();
-            return typeof value === "number" ? (
-              <div className="flex flex-col">
-                <span className="text-sm text-gray-700">Avg</span>
-                <span className="text-base font-medium">
-                  {value.toLocaleString("de-DE")}₽
-                </span>
-              </div>
-            ) : (
-              <span className="text-gray-400 italic">N/A</span>
-            );
-          },
-        }),
-        columnHelper.accessor(
-          (row) => {
-            const cheapest =
-              row.sellFor && row.sellFor.length > 0
-                ? row.sellFor.reduce((min, current) =>
-                    current.priceRUB > min.priceRUB ? current : min
-                  )
-                : null;
-
-            return cheapest;
-          },
-          {
-            id: "highestSellPrice",
-            header: (info) => <DefaultHeader info={info} name="Best to Sell" />,
-            cell: (info) => {
-              const cheapest = info.getValue();
-              const price = cheapest?.priceRUB;
-
-              return cheapest && typeof price === "number" ? (
-                <div className="flex flex-col">
-                  <span className="text-sm text-gray-700">
-                    {cheapest.vendor.name}
-                  </span>
-                  <span className="text-base font-medium">
-                    {price.toLocaleString("de-DE")}₽
-                  </span>
-                </div>
-              ) : (
-                <span className="text-gray-400 italic">N/A</span>
-              );
-            },
-          }
-        ),
-      ] as ColumnDef<Item>[],
-    [columnHelper]
-  );
+  const categories = Array.from(
+    new Set((data as Item[]).map((category) => category.category?.name))
+  ).sort();
 
   return (
-    <div className="w-full h-full flex-col justify-center items-center p-10">
-      <DataTableBarterItems columns={columns} data={data} />
+    <div className="w-full h-full flex-col justify-center items-center p-4 md:p-10">
+      <h1 className="scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance">
+        Barter Items
+      </h1>
+      <DataTableClient
+        columns={columnsBarterItems}
+        data={data}
+        filters={[
+          {
+            id: "category",
+            label: "Category",
+            filterType: "select",
+            options: categories.map(String),
+            formatter: UniversalFormat,
+          },
+          {
+            id: "avg24hPrice",
+            label: "Avg. 24h Price",
+            filterType: "range",
+            formatter: (val) => `${val}`,
+          },
+        ]}
+      />
     </div>
   );
 };

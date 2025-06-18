@@ -1,20 +1,25 @@
-import { Category } from "@/app/api/types";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 
 type ItemCategoryCardProps = {
-  category: Category;
+  category: {
+    id: string;
+    href: string;
+    name: string;
+  };
 };
 
 const ItemCategoryCard = ({ category }: ItemCategoryCardProps) => {
   return (
-    <Link href={`items/${category.id}`}>
+    <Link href={category.href}>
       <Card
         key={category.id}
-        className="py-20 flex text-center hover:border hover:border-chart-4"
+        className="bg-accent h-48 w-full shadow-md hover:shadow-lg transition-shadow duration-200 rounded-xl p-4 flex flex-col justify-center"
       >
-        <CardHeader>
-          <CardTitle className="">{category.name}</CardTitle>
+        <CardHeader className="text-center ">
+          <CardTitle className="text-lg font-semibold">
+            {category.name}
+          </CardTitle>
         </CardHeader>
       </Card>
     </Link>

@@ -439,7 +439,7 @@ export const GET_TRADERS = gql`
     }
   }
 `;
-
+// Items/Backpacks
 export const GET_BACKPACKS = gql`
   query GetBackpacks {
     items(type: backpack) {
@@ -475,6 +475,18 @@ export const GET_ARMORS = gql`
       gridImageLink
       properties {
         __typename
+        ... on ItemPropertiesChestRig {
+          speedPenalty
+          class
+          ergoPenalty
+          material {
+            name
+            id
+          }
+          durability
+          turnPenalty
+          armorType
+        }
         ... on ItemPropertiesArmor {
           zones
           speedPenalty
@@ -486,6 +498,32 @@ export const GET_ARMORS = gql`
           durability
           turnPenalty
           armorType
+        }
+      }
+    }
+  }
+`;
+// Items/armor-plates
+export const GET_ARMOR_PLATES = gql`
+  query GetArmorPlates {
+    items(types: armorPlate) {
+      id
+      name
+      weight
+      wikiLink
+      gridImageLink
+      properties {
+        __typename
+        ... on ItemPropertiesArmorAttachment {
+          armorType
+          class
+          material {
+            name
+          }
+          durability
+          speedPenalty
+          turnPenalty
+          ergoPenalty
         }
       }
     }
@@ -737,6 +775,7 @@ export const GET_TASK_ID_TRADERS = gql`
   }
 `;
 
+// items/barter-items
 export const GET_BARTER_ITEMS = gql`
   query GetBarterItems {
     items(types: [barter]) {
@@ -779,25 +818,19 @@ export const GET_BARTER_ITEMS = gql`
   }
 `;
 
+//items/containers
 export const GET_CONTAINERS_ITEMS = gql`
   query GetContainerItems {
     items(types: [container]) {
       id
       name
-      shortName
       wikiLink
       category {
         name
         id
       }
-      types
       basePrice
-      image8xLink
       gridImageLink
-      category {
-        name
-        id
-      }
       buyFor {
         vendor {
           name
@@ -813,6 +846,48 @@ export const GET_CONTAINERS_ITEMS = gql`
         priceRUB
       }
       avg24hPrice
+      properties {
+        __typename
+        ... on ItemPropertiesContainer {
+          capacity
+          grids {
+            width
+            height
+          }
+        }
+      }
+    }
+  }
+`;
+// items/face-covers
+export const GET_FACE_COVERS = gql`
+  query GetFaceCovers {
+    items(categoryNames: [FaceCover]) {
+      id
+      name
+      wikiLink
+      gridImageLink
+      avg24hPrice
+      weight
+      properties {
+        __typename
+        ... on ItemPropertiesHelmet {
+          deafening
+          class
+          material {
+            name
+          }
+          ricochetY
+          headZones
+          blocksHeadset
+          armorType
+          durability
+          __typename
+          turnPenalty
+          ergoPenalty
+          speedPenalty
+        }
+      }
     }
   }
 `;

@@ -14,7 +14,6 @@ import {
   Sheet,
   SheetClose,
   SheetContent,
-  SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "../ui/sheet";
@@ -22,7 +21,7 @@ import { Button } from "../ui/button";
 
 const navLinks: { href: string; title: string }[] = [
   { href: "/ammo", title: "Ammo" },
-  { href: "/barter", title: "Barter" },
+  { href: "/barters", title: "Barters" },
   { href: "/items", title: "Items" },
   { href: "/", title: "Flea Market" },
   { href: "/tasks", title: "Tasks" },

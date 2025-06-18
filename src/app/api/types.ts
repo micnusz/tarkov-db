@@ -62,6 +62,7 @@ export type ArmorsItem = BaseItem & {
     speedPenalty: number;
     class: number;
     ergoPenalty: number;
+    ricochetY: number;
     material: {
       name: string;
       id: string;
@@ -232,6 +233,10 @@ export type GetBackpacks = {
 };
 
 export type GetArmors = {
+  items: ArmorsItem[];
+};
+
+export type GetHelmets = {
   items: ArmorsItem[];
 };
 
