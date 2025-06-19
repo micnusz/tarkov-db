@@ -9,6 +9,9 @@ import {
   GET_BARTERS,
   GET_CONTAINERS_ITEMS,
   GET_FACE_COVERS,
+  GET_GRENADES,
+  GET_HEADSETS,
+  GET_HELMETS,
   GET_ITEM_BASE_ID,
   GET_ITEM_ID_BARTERS,
   GET_ITEM_ID_CRAFTING,
@@ -39,6 +42,8 @@ import {
   GetBarterItems,
   GetBarters,
   GetContainerItems,
+  GetGrenade,
+  GetHeadsets,
   GetHelmets,
   GetItemById,
   GetItemCategories,
@@ -221,6 +226,22 @@ export const client = {
   //items/face-covers
   async getFaceCovers(): Promise<GetHelmets["items"]> {
     const data = await graphqlClient.request<GetHelmets>(GET_FACE_COVERS);
+    return data.items;
+  },
+
+  //items/helmets
+  async getHelmets(): Promise<GetHelmets["items"]> {
+    const data = await graphqlClient.request<GetHelmets>(GET_HELMETS);
+    return data.items;
+  },
+  //items/grenades
+  async getGrenades(): Promise<GetGrenade["items"]> {
+    const data = await graphqlClient.request<GetGrenade>(GET_GRENADES);
+    return data.items;
+  },
+  //items/headsets
+  async getHeadsets(): Promise<GetHeadsets["items"]> {
+    const data = await graphqlClient.request<GetHeadsets>(GET_HEADSETS);
     return data.items;
   },
 

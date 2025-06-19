@@ -1,3 +1,4 @@
+// components/filters/RangeSliderFilterCombobox.tsx
 import {
   Popover,
   PopoverContent,
@@ -6,11 +7,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { useState } from "react";
+import { UniversalNumberRange } from "./modules/universal-number-filterfn";
 
 interface SliderFilterComboboxProps {
   label: string;
-  value: number | null;
-  onChange: (val: number | null) => void;
+  value: UniversalNumberRange;
+  onChange: (val: UniversalNumberRange) => void;
   min: number;
   max: number;
   step?: number;
@@ -32,14 +34,18 @@ export function SliderFilterCombobox({
 }: SliderFilterComboboxProps) {
   const [open, setOpen] = useState(false);
 
-  const formattedValue =
-    value !== null ? (formatter ? formatter(value) : `${value}${unit}`) : "Any";
+  const display =
+    value.min != null && value.max != null
+      ? `${formatter ? formatter(value.min) : value.min}${unit} - ${
+          formatter ? formatter(value.max) : value.max
+        }${unit}`
+      : "Any";
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button variant="outline" className="justify-between">
-          {label}: {formattedValue}
+          {label}: {display}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[260px] bg-accent">
@@ -48,17 +54,21 @@ export function SliderFilterCombobox({
             min={min}
             max={max}
             step={step}
-            value={value !== null ? [value] : undefined}
-            onValueChange={(val) => onChange(val[0])}
-            className="w-full"
+            value={[value.min ?? min, value.max ?? max]}
+            onValueChange={([minVal, maxVal]) =>
+              onChange({
+                min: minVal,
+                max: maxVal,
+              })
+            }
           />
           <div className="flex justify-between items-center text-sm text-muted-foreground">
-            <span>Selected: {formattedValue}</span>
+            <span>Selected: {display}</span>
             {showClear && (
               <Button
                 variant="secondary"
                 size="sm"
-                onClick={() => onChange(null)}
+                onClick={() => onChange({ min: null, max: null })}
               >
                 Clear
               </Button>

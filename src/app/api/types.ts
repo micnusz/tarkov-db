@@ -63,6 +63,7 @@ export type ArmorsItem = BaseItem & {
     class: number;
     ergoPenalty: number;
     ricochetY: number;
+    blocksHeadset: boolean;
     material: {
       name: string;
       id: string;
@@ -70,6 +71,25 @@ export type ArmorsItem = BaseItem & {
     durability: number;
     turnPenalty: number;
     armorType: string;
+  };
+};
+
+export type GrenadeItem = BaseItem & {
+  properties: {
+    type: string;
+    fuse: number;
+    fragments: number;
+    minExplosionDistance: number;
+    maxExplosionDistance: number;
+    contusionRadius: number;
+  };
+};
+
+export type HeadsetItem = BaseItem & {
+  properties: {
+    ambientVolume: number;
+    distanceModifier: number;
+    distortion: number;
   };
 };
 
@@ -238,6 +258,14 @@ export type GetArmors = {
 
 export type GetHelmets = {
   items: ArmorsItem[];
+};
+
+export type GetGrenade = {
+  items: GrenadeItem[];
+};
+
+export type GetHeadsets = {
+  items: HeadsetItem[];
 };
 
 export type GetBackpackById = {

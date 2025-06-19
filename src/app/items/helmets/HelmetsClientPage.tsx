@@ -1,20 +1,20 @@
 "use client";
 
 import { client } from "@/app/api/client";
-import { ArmorsItem, Item } from "@/app/api/types";
+import { ArmorsItem } from "@/app/api/types";
 import {
-  columnsBarterItems,
-  columnsFaceCovers,
+  columnsHeadsets,
+  columnsHelmets,
 } from "@/components/data-table/columns";
 import { DataTableClient } from "@/components/data-table/data-table-client";
 import RicochetChanceFormat from "@/components/modules/ricochet-chance-format";
 import UniversalFormat from "@/components/modules/universal-format";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
-const FaceCoversClientPage = () => {
+const HelmetsClientPage = () => {
   const { data } = useSuspenseQuery({
-    queryKey: ["face-covers"],
-    queryFn: () => client.getFaceCovers(),
+    queryKey: ["helmets"],
+    queryFn: () => client.getHelmets(),
   });
 
   const armorClass = Array.from(
@@ -45,21 +45,26 @@ const FaceCoversClientPage = () => {
     new Set(ricochetValues.map(RicochetChanceFormat))
   ).sort();
 
+  const blocksHeadset = Array.from(
+    new Set(
+      (data as ArmorsItem[])
+        .map((headset) => headset.properties?.blocksHeadset)
+        .filter((value): value is boolean => value !== undefined)
+        .map((val) => (val ? "Blocks" : "Allows"))
+    )
+  ).sort();
+
+  console.log(blocksHeadset);
+
   return (
     <div className="w-full h-full flex-col justify-center items-center p-4 md:p-10">
       <h1 className="scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance">
-        Face Covers
+        Helmets
       </h1>
       <DataTableClient
-        columns={columnsFaceCovers}
+        columns={columnsHelmets}
         data={data}
         filters={[
-          {
-            id: "__typename",
-            label: "Type",
-            filterType: "select",
-            options: ["Armored Face Covers"],
-          },
           {
             id: "class",
             label: "Armor Class",
@@ -84,8 +89,54 @@ const FaceCoversClientPage = () => {
           {
             id: "durability",
             label: "Durability",
-            filterType: "range",
+            filterType: "slider",
+            min: 30,
+            max: 180,
+            step: 1,
             formatter: UniversalFormat,
+          },
+          {
+            id: "blocksHeadset",
+            label: "Headset",
+            filterType: "select",
+            options: blocksHeadset,
+            formatter: UniversalFormat,
+          },
+          {
+            id: "weight",
+            label: "Weight",
+            filterType: "slider",
+            min: 0.3,
+            max: 4.5,
+            step: 0.1,
+            formatter: (val) => `${val}kg`,
+          },
+          {
+            id: "ergoPenalty",
+            label: "Ergo Penalty",
+            filterType: "slider",
+            min: -5,
+            max: 0,
+            step: 0.1,
+            formatter: (val) => `${val}%`,
+          },
+          {
+            id: "speedPenalty",
+            label: "Speed Penalty",
+            filterType: "slider",
+            min: -2,
+            max: 0,
+            step: 0.1,
+            formatter: (val) => `${val}%`,
+          },
+          {
+            id: "turnPenalty",
+            label: "Turn Penalty",
+            filterType: "slider",
+            min: -10,
+            max: 0,
+            step: 0.1,
+            formatter: (val) => `${val}%`,
           },
         ]}
       />
@@ -93,4 +144,4 @@ const FaceCoversClientPage = () => {
   );
 };
 
-export default FaceCoversClientPage;
+export default HelmetsClientPage;

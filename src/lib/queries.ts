@@ -946,3 +946,75 @@ export const GET_BARTERS = gql`
     }
   }
 `;
+
+// items/grenades
+export const GET_GRENADES = gql`
+  query GetGrenades {
+    items(types: [grenade]) {
+      id
+      name
+      wikiLink
+      gridImageLink
+      weight
+      properties {
+        __typename
+        ... on ItemPropertiesGrenade {
+          type
+          fuse
+          fragments
+          minExplosionDistance
+          maxExplosionDistance
+          contusionRadius
+        }
+      }
+    }
+  }
+`;
+// items/headsets
+export const GET_HEADSETS = gql`
+  query GetHeadsets {
+    items(types: [headphones]) {
+      id
+      name
+      wikiLink
+      gridImageLink
+      weight
+      properties {
+        __typename
+        ... on ItemPropertiesHeadphone {
+          ambientVolume
+          distanceModifier
+          distortion
+        }
+      }
+    }
+  }
+`;
+
+//items/helmets
+export const GET_HELMETS = gql`
+  query GetHelmets {
+    items(types: [helmet]) {
+      id
+      name
+      wikiLink
+      gridImageLink
+      weight
+      properties {
+        __typename
+        ... on ItemPropertiesHelmet {
+          durability
+          class
+          blocksHeadset
+          ricochetY
+          material {
+            name
+          }
+          turnPenalty
+          ergoPenalty
+          speedPenalty
+        }
+      }
+    }
+  }
+`;

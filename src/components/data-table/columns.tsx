@@ -6,6 +6,8 @@ import {
   BarterItem,
   BaseItem,
   CraftingProperties,
+  GrenadeItem,
+  HeadsetItem,
   Item,
   Task,
   WeaponItem,
@@ -15,15 +17,19 @@ import DefaultHeader from "../ui/default-header";
 import { Badge } from "../ui/badge";
 import Link from "next/link";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
-import { Briefcase, TowerControl } from "lucide-react";
+import { Briefcase, Check, TowerControl, X } from "lucide-react";
 import CraftingDurationFormat from "../modules/crafting-duration-format";
 import Image from "next/image";
 import CaliberFormat from "../modules/ammo-format";
 import formatCurrency from "../modules/currency-format";
-import { Button } from "../ui/button";
-import { UniversalNumberFormatFn } from "../modules/universal-number-filterfn";
 import { UniversalStringFilterFn } from "../modules/universal-string-filterfn";
 import RicochetChanceFormat from "../modules/ricochet-chance-format";
+import { UniversalNumberFormatFn } from "../modules/universal-number-filterfn";
+import HeadsetsDistanceFormat from "../modules/headsets-distance-format";
+import HeadsetsDistortionFormat from "../modules/headsets-distortion-format";
+import { ricochetFilterFn } from "../modules/ricochet-filter-fn";
+import { RangeFilterFormat } from "../modules/range-filter-format";
+import { universalPenaltyFilter } from "../modules/universal-penalty-filter";
 
 //Column Barter
 const columnHelperBarter = createColumnHelper<Barter>();
@@ -1532,13 +1538,15 @@ export const columnsFaceCovers = [
       );
     },
   }),
-  columnHelperFaceCovers.accessor((row) => row.properties.class ?? "", {
+  columnHelperFaceCovers.accessor((row) => row.properties?.class ?? "", {
     header: (info) => <DefaultHeader info={info} name="Armor Class" />,
     id: "class",
+
     filterFn: (row, columnId, filterValue) =>
       String(row.getValue(columnId)) === filterValue,
     cell: (info) => {
       const armor = info.getValue();
+
       return armor > 0 ? (
         <>
           <div className="w-20">
@@ -1550,35 +1558,38 @@ export const columnsFaceCovers = [
       );
     },
   }),
-  columnHelperFaceCovers.accessor((row) => row.properties.material.name ?? "", {
-    header: (info) => <DefaultHeader info={info} name="Material" />,
-    id: "material",
-    filterFn: (row, columnId, filterValue) =>
-      String(row.getValue(columnId)) === filterValue,
-    cell: (info) => {
-      const name: string = info.getValue();
-      return name ? (
-        <div className="flex grow max-w-40 ">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <span className="text-sm truncate cursor-pointer max-w-[300px] block">
-                {name}
-              </span>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>{name}</p>
-            </TooltipContent>
-          </Tooltip>
-        </div>
-      ) : (
-        <span className="italic text-gray-400 text-sm">N/A</span>
-      );
-    },
-  }),
+  columnHelperFaceCovers.accessor(
+    (row) => row.properties?.material.name ?? "",
+    {
+      header: (info) => <DefaultHeader info={info} name="Material" />,
+      id: "material",
+      filterFn: (row, columnId, filterValue) =>
+        String(row.getValue(columnId)) === filterValue,
+      cell: (info) => {
+        const name: string = info.getValue();
+        return name ? (
+          <div className="flex grow max-w-40 ">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="text-sm truncate cursor-pointer max-w-[300px] block">
+                  {name}
+                </span>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{name}</p>
+              </TooltipContent>
+            </Tooltip>
+          </div>
+        ) : (
+          <span className="italic text-gray-400 text-sm">N/A</span>
+        );
+      },
+    }
+  ),
   columnHelperFaceCovers.accessor((row) => row.properties?.ricochetY ?? null, {
     id: "ricochet",
     header: (info) => <DefaultHeader info={info} name="Ricochet Chance" />,
-    filterFn: UniversalStringFilterFn,
+    filterFn: ricochetFilterFn,
     cell: (info) => {
       const ricochet: number | null = info.getValue();
 
@@ -1592,42 +1603,10 @@ export const columnsFaceCovers = [
       );
     },
   }),
-
-  columnHelperFaceCovers.accessor((row) => row.wikiLink, {
-    id: "wikiLink",
-    header: (info) => <DefaultHeader info={info} name="WikiLink" />,
-    cell: (info) => {
-      const wikiLink = info.getValue();
-
-      return (
-        <div className="max-w-10">
-          <a
-            className="text-chart-1 hover:text-gray-700 underline text-sm  "
-            href={wikiLink}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Wiki
-          </a>
-        </div>
-      );
-    },
-    enableColumnFilter: false,
-  }),
   columnHelperFaceCovers.accessor("properties.durability", {
     header: (info) => <DefaultHeader info={info} name="Durability" />,
     id: "durability",
-    filterFn: (row, id, filterValue) => {
-      if (!filterValue) return true;
-
-      const cost: number = row.getValue(id);
-      const { min, max } = filterValue;
-
-      if (min !== null && cost < min) return false;
-      if (max !== null && cost > max) return false;
-
-      return true;
-    },
+    filterFn: UniversalNumberFormatFn,
     cell: (info) => {
       const durability = info.getValue();
       return durability ? (
@@ -1775,7 +1754,637 @@ export const columnsFaceCovers = [
       );
     },
   }),
+  columnHelperFaceCovers.accessor((row) => row.wikiLink, {
+    id: "wikiLink",
+    header: (info) => <DefaultHeader info={info} name="WikiLink" />,
+    cell: (info) => {
+      const wikiLink = info.getValue();
+
+      return (
+        <div className="max-w-10">
+          <a
+            className="text-chart-1 hover:text-gray-700 underline text-sm  "
+            href={wikiLink}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Wiki
+          </a>
+        </div>
+      );
+    },
+    enableColumnFilter: false,
+  }),
 ] as ColumnDef<ArmorsItem>[];
+
+//Columns /helmets
+const columnHelperHelmets = createColumnHelper<ArmorsItem>();
+export const columnsHelmets = [
+  columnHelperHelmets.accessor(
+    (row) => row.properties?.__typename ?? "Unknown",
+    {
+      id: "__typename",
+      enableColumnFilter: false,
+      enableHiding: false,
+      header: (info) => <DefaultHeader info={info} name="Type" />,
+      filterFn: (row, id, filterValue) => {
+        if (!filterValue || filterValue === "All") return true;
+
+        const rawType = row.original.properties?.__typename;
+
+        switch (filterValue) {
+          case "Armored Face Covers":
+            return rawType === "ItemPropertiesHelmet";
+          default:
+            return true;
+        }
+      },
+      cell: (info) => {
+        const rawType = info.getValue();
+        const readable =
+          rawType === "ItemPropertiesHelmet" ? "ArmoredFC" : "Other";
+        return <span>{readable}</span>;
+      },
+    }
+  ),
+  columnHelperHelmets.accessor((row) => row.gridImageLink, {
+    id: "icon",
+    header: (info) => <DefaultHeader info={info} name="Icon" />,
+    cell: (info) => {
+      const name = info.getValue();
+      const row = info.row.original;
+
+      return (
+        <Link href={`/item/${row.id}`}>
+          <div className="flex items-center gap-2">
+            <Image
+              src={row.gridImageLink}
+              alt={name}
+              width={75}
+              height={75}
+              className="aspect-square object-contain h-25"
+            />
+          </div>
+        </Link>
+      );
+    },
+    enableSorting: false,
+    enableColumnFilter: false,
+  }),
+  columnHelperHelmets.accessor((row) => row.name, {
+    filterFn: "includesString",
+    id: "name",
+    header: (info) => <DefaultHeader info={info} name="Name" />,
+    cell: (info) => {
+      const name = info.getValue();
+      const row = info.row.original;
+
+      return (
+        <div className="flex items-center gap-2">
+          <Link href={`/item/${row.id}`}>
+            <span className="text-sm truncate hover:text-chart-2 max-w-[30rem] block">
+              {name}
+            </span>
+          </Link>
+        </div>
+      );
+    },
+  }),
+  columnHelperHelmets.accessor((row) => row.properties?.class ?? "", {
+    header: (info) => <DefaultHeader info={info} name="Armor Class" />,
+    id: "class",
+
+    filterFn: (row, columnId, filterValue) =>
+      String(row.getValue(columnId)) === filterValue,
+    cell: (info) => {
+      const armor = info.getValue();
+
+      return armor > 0 ? (
+        <>
+          <div className="w-20">
+            <span>{armor}</span>
+          </div>
+        </>
+      ) : (
+        <span className="italic text-gray-400 text-sm">N/A</span>
+      );
+    },
+  }),
+  columnHelperHelmets.accessor((row) => row.properties?.material.name ?? "", {
+    header: (info) => <DefaultHeader info={info} name="Material" />,
+    id: "material",
+    filterFn: (row, columnId, filterValue) =>
+      String(row.getValue(columnId)) === filterValue,
+    cell: (info) => {
+      const name: string = info.getValue();
+      return name ? (
+        <div className="flex grow max-w-30 ">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span className="text-sm truncate cursor-pointer  block">
+                {name}
+              </span>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{name}</p>
+            </TooltipContent>
+          </Tooltip>
+        </div>
+      ) : (
+        <span className="italic text-gray-400 text-sm">N/A</span>
+      );
+    },
+  }),
+  columnHelperHelmets.accessor((row) => row.properties?.ricochetY ?? null, {
+    id: "ricochet",
+    header: (info) => <DefaultHeader info={info} name="Ricochet Chance" />,
+    filterFn: ricochetFilterFn,
+    cell: (info) => {
+      const ricochet: number | null = info.getValue();
+
+      if (ricochet == null)
+        return <span className="italic text-gray-400 text-sm">N/A</span>;
+
+      return (
+        <div className="flex items-center gap-2">
+          <span>{RicochetChanceFormat(ricochet)}</span>
+        </div>
+      );
+    },
+  }),
+  columnHelperHelmets.accessor("properties.durability", {
+    header: (info) => <DefaultHeader info={info} name="Durability" />,
+    id: "durability",
+    filterFn: UniversalNumberFormatFn,
+    cell: (info) => {
+      const durability = info.getValue();
+      return durability ? (
+        <div className="w-20">
+          <span>{durability}</span>
+        </div>
+      ) : (
+        <span className="text-muted-foreground text-sm italic">N/A</span>
+      );
+    },
+  }),
+  columnHelperHelmets.accessor("properties.blocksHeadset", {
+    header: (info) => <DefaultHeader info={info} name="Headset?" />,
+    id: "blocksHeadset",
+    filterFn: (row, columnId, filterValue) => {
+      const value = row.getValue(columnId) as boolean;
+      const label = value ? "Blocks" : "Allows";
+      return label === filterValue;
+    },
+    cell: (info) => {
+      const blocksHeadset = info.getValue();
+
+      return (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className="w-8 flex justify-center cursor-default text-red-600">
+              {blocksHeadset ? (
+                <X size={20} />
+              ) : (
+                <Check size={20} className="text-green-600" />
+              )}
+            </div>
+          </TooltipTrigger>
+          <TooltipContent className="max-w-xs text-sm ">
+            {blocksHeadset ? "Blocks Headset" : "Allows Headset"}
+          </TooltipContent>
+        </Tooltip>
+      );
+    },
+  }),
+
+  columnHelperHelmets.accessor("weight", {
+    header: (info) => <DefaultHeader info={info} name="Weight" />,
+    id: "weight",
+    filterFn: UniversalNumberFormatFn,
+    cell: (info) => {
+      return (
+        <>
+          <div className="w-20">
+            <span>{info.getValue()}kg</span>
+          </div>
+        </>
+      );
+    },
+  }),
+
+  columnHelperHelmets.accessor("properties.ergoPenalty", {
+    id: "ergoPenalty",
+    header: (info) => <DefaultHeader info={info} name="ErgoPen" />,
+    filterFn: universalPenaltyFilter,
+    cell: (info) => {
+      const initialValue = info.getValue<number>();
+
+      if (!Number.isFinite(initialValue)) {
+        return (
+          <span className="text-muted-foreground text-sm italic">N/A</span>
+        );
+      }
+
+      const percent = Math.round(initialValue * 100);
+
+      const style = {
+        color: percent < 0 ? "red" : percent > 0 ? "green" : "inherit",
+        fontWeight: 500,
+      };
+
+      return (
+        <div className="max-w-20">
+          <span style={style}>{percent}%</span>
+        </div>
+      );
+    },
+  }),
+  columnHelperHelmets.accessor("properties.speedPenalty", {
+    id: "speedPenalty",
+    header: (info) => <DefaultHeader info={info} name="SpeedPen" />,
+    filterFn: universalPenaltyFilter,
+    cell: (info) => {
+      const value = info.getValue<number>();
+
+      if (!Number.isFinite(value)) {
+        return (
+          <span className="italic text-sm text-muted-foreground">N/A</span>
+        );
+      }
+
+      const percent = Math.round(value * 100);
+      const style = {
+        color: percent < 0 ? "red" : percent > 0 ? "green" : "inherit",
+        fontWeight: 500,
+      };
+
+      return (
+        <div className="max-w-20">
+          <span style={style}>{percent}%</span>
+        </div>
+      );
+    },
+  }),
+
+  columnHelperHelmets.accessor("properties.turnPenalty", {
+    header: (info) => <DefaultHeader info={info} name="TurnPen" />,
+    id: "turnPenalty",
+    filterFn: universalPenaltyFilter,
+    cell: (info) => {
+      const value = info.getValue<number>();
+
+      if (!Number.isFinite(value)) {
+        return (
+          <span className="italic text-sm text-muted-foreground">N/A</span>
+        );
+      }
+
+      const percent = Math.round(value * 100);
+      const style = {
+        color: percent < 0 ? "red" : percent > 0 ? "green" : "inherit",
+        fontWeight: 500,
+      };
+
+      return (
+        <div className="max-w-20">
+          <span style={style}>{percent}%</span>
+        </div>
+      );
+    },
+  }),
+  columnHelperHelmets.accessor((row) => row.wikiLink, {
+    id: "wikiLink",
+    header: (info) => <DefaultHeader info={info} name="WikiLink" />,
+    cell: (info) => {
+      const wikiLink = info.getValue();
+
+      return (
+        <div className="max-w-10">
+          <a
+            className="text-chart-2 hover:text-gray-700 underline text-sm  "
+            href={wikiLink}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Wiki
+          </a>
+        </div>
+      );
+    },
+    enableColumnFilter: false,
+    enableSorting: false,
+  }),
+] as ColumnDef<ArmorsItem>[];
+
+//Columns /grenades
+const columnHelperGrenades = createColumnHelper<GrenadeItem>();
+export const columnsGrenades = [
+  columnHelperGrenades.accessor((row) => row.gridImageLink, {
+    id: "icon",
+    header: (info) => <DefaultHeader info={info} name="Icon" />,
+    cell: (info) => {
+      const name = info.getValue();
+      const row = info.row.original;
+
+      return (
+        <Link href={`/item/${row.id}`}>
+          <div className="flex items-center gap-2">
+            <Image
+              src={row.gridImageLink}
+              alt={name}
+              width={75}
+              height={75}
+              className="aspect-square object-contain h-25"
+            />
+          </div>
+        </Link>
+      );
+    },
+    enableSorting: false,
+    enableColumnFilter: false,
+  }),
+  columnHelperGrenades.accessor((row) => row.name, {
+    filterFn: "includesString",
+    id: "name",
+    header: (info) => <DefaultHeader info={info} name="Name" />,
+    cell: (info) => {
+      const name = info.getValue();
+      const row = info.row.original;
+
+      return (
+        <div className="flex items-center gap-2">
+          <Link href={`/item/${row.id}`}>
+            <span className="text-sm truncate hover:text-chart-2 max-w-[30rem] block">
+              {name}
+            </span>
+          </Link>
+        </div>
+      );
+    },
+  }),
+  columnHelperGrenades.accessor((row) => row.properties?.type ?? "", {
+    header: (info) => <DefaultHeader info={info} name="Type" />,
+    id: "type",
+    filterFn: (row, columnId, filterValue) =>
+      String(row.getValue(columnId)) === filterValue,
+    cell: (info) => {
+      const type = info.getValue();
+
+      return (
+        <>
+          <div className="w-20">
+            <span>{type}</span>
+          </div>
+        </>
+      );
+    },
+  }),
+  columnHelperGrenades.accessor((row) => row.properties?.fuse ?? "", {
+    header: (info) => <DefaultHeader info={info} name="Fuse" />,
+    id: "fuse",
+    filterFn: UniversalNumberFormatFn,
+    cell: (info) => {
+      const fuse: number = info.getValue();
+      return (
+        <>
+          <div className="w-20  ">
+            <span>{fuse} sec</span>
+          </div>
+        </>
+      );
+    },
+    enableColumnFilter: true,
+  }),
+  columnHelperGrenades.accessor((row) => row.properties?.fragments ?? "", {
+    header: (info) => <DefaultHeader info={info} name="Fragments" />,
+    id: "fragments",
+    filterFn: UniversalNumberFormatFn,
+    cell: (info) => {
+      const fragments: number = info.getValue();
+      return (
+        <>
+          <div className="w-20">
+            <span>{fragments}</span>
+          </div>
+        </>
+      );
+    },
+  }),
+  columnHelperGrenades.accessor(
+    (row) => row.properties.maxExplosionDistance ?? "",
+    {
+      header: (info) => <DefaultHeader info={info} name="Max Distance" />,
+      id: "maxExplosion",
+      filterFn: UniversalNumberFormatFn,
+      cell: (info) => {
+        const maxExplosion: number = info.getValue();
+
+        return (
+          <>
+            <div className="w-20">
+              <span>{maxExplosion}m</span>
+            </div>
+          </>
+        );
+      },
+    }
+  ),
+  columnHelperGrenades.accessor((row) => row.weight ?? "", {
+    header: (info) => <DefaultHeader info={info} name="Weight" />,
+    id: "weight",
+    filterFn: UniversalNumberFormatFn,
+    cell: (info) => {
+      const weight = info.getValue();
+
+      return (
+        <>
+          <div className="w-20">
+            <span>{weight}kg</span>
+          </div>
+        </>
+      );
+    },
+  }),
+  columnHelperGrenades.accessor((row) => row.wikiLink, {
+    id: "wikiLink",
+    header: (info) => <DefaultHeader info={info} name="WikiLink" />,
+    cell: (info) => {
+      const wikiLink = info.getValue();
+
+      return (
+        <div className="max-w-10">
+          <a
+            className="text-chart-1 hover:text-gray-700 underline text-sm  "
+            href={wikiLink}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Wiki
+          </a>
+        </div>
+      );
+    },
+    enableColumnFilter: false,
+  }),
+] as ColumnDef<GrenadeItem>[];
+
+//Columns /headsets
+const columnHelperHeadsets = createColumnHelper<HeadsetItem>();
+export const columnsHeadsets = [
+  columnHelperHeadsets.accessor((row) => row.gridImageLink, {
+    id: "icon",
+    header: (info) => <DefaultHeader info={info} name="Icon" />,
+    cell: (info) => {
+      const name = info.getValue();
+      const row = info.row.original;
+
+      return (
+        <Link href={`/item/${row.id}`}>
+          <div className="flex items-center gap-2">
+            <Image
+              src={row.gridImageLink}
+              alt={name}
+              width={75}
+              height={75}
+              className="aspect-square object-contain h-25"
+            />
+          </div>
+        </Link>
+      );
+    },
+    enableSorting: false,
+    enableColumnFilter: false,
+  }),
+  columnHelperHeadsets.accessor((row) => row.name, {
+    filterFn: "includesString",
+    id: "name",
+    header: (info) => <DefaultHeader info={info} name="Name" />,
+    cell: (info) => {
+      const name = info.getValue();
+      const row = info.row.original;
+
+      return (
+        <div className="flex items-center gap-2">
+          <Link href={`/item/${row.id}`}>
+            <span className="text-sm truncate hover:text-chart-2 max-w-[30rem] block">
+              {name}
+            </span>
+          </Link>
+        </div>
+      );
+    },
+  }),
+  columnHelperHeadsets.accessor((row) => row.properties?.ambientVolume ?? "", {
+    header: (info) => <DefaultHeader info={info} name="Ambient Noise" />,
+    id: "ambientVolume",
+    filterFn: UniversalNumberFormatFn,
+    cell: (info) => {
+      const ambientVolume = info.getValue();
+
+      return (
+        <>
+          <div className="w-20">
+            <span>{ambientVolume}</span>
+          </div>
+        </>
+      );
+    },
+  }),
+  columnHelperHeadsets.accessor(
+    (row) => row.properties?.distanceModifier ?? "",
+    {
+      header: (info) => <DefaultHeader info={info} name="Distance Modifier" />,
+      id: "distanceModifier",
+      filterFn: UniversalNumberFormatFn,
+      cell: (info) => {
+        const distanceModifier = info.getValue();
+
+        return (
+          <>
+            <Tooltip>
+              <TooltipTrigger>
+                {HeadsetsDistanceFormat(distanceModifier)}
+              </TooltipTrigger>
+              <TooltipContent className="max-w-xs text-sm">
+                Increases the maximum range from which you can hear sounds in
+                the game.
+                <br />
+                <span className="text-muted-foreground">
+                  For example, +7% means you can hear footsteps about 7% farther
+                  than normal.
+                </span>
+              </TooltipContent>
+            </Tooltip>
+          </>
+        );
+      },
+    }
+  ),
+  columnHelperHeadsets.accessor((row) => row.properties?.distortion ?? "", {
+    header: (info) => <DefaultHeader info={info} name="Distortion" />,
+    id: "distortion",
+    filterFn: UniversalNumberFormatFn,
+    cell: (info) => {
+      const distortion = info.getValue();
+
+      return (
+        <>
+          <Tooltip>
+            <TooltipTrigger>
+              {HeadsetsDistortionFormat(distortion)}
+            </TooltipTrigger>
+            <TooltipContent className="max-w-xs text-sm">
+              Indicates how much the audio is distorted by the headset. Lower
+              values mean cleaner, clearer sound.
+              <br />
+              <span className="text-muted-foreground">
+                A distortion of 15% means slight audio distortion, but the sound
+                remains quite clear.
+              </span>
+            </TooltipContent>
+          </Tooltip>
+        </>
+      );
+    },
+  }),
+  columnHelperHeadsets.accessor((row) => row.weight ?? "", {
+    header: (info) => <DefaultHeader info={info} name="Weight" />,
+    id: "weight",
+    filterFn: UniversalNumberFormatFn,
+    cell: (info) => {
+      const weight = info.getValue();
+
+      return (
+        <>
+          <div className="w-20">
+            <span>{weight}kg</span>
+          </div>
+        </>
+      );
+    },
+  }),
+  columnHelperHeadsets.accessor((row) => row.wikiLink, {
+    id: "wikiLink",
+    header: (info) => <DefaultHeader info={info} name="Wiki" />,
+    cell: (info) => {
+      const wikiLink = info.getValue();
+
+      return (
+        <div className="max-w-10">
+          <a
+            className="text-chart-1 hover:text-gray-700 underline text-sm  "
+            href={wikiLink}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Wiki
+          </a>
+        </div>
+      );
+    },
+    enableColumnFilter: false,
+  }),
+] as ColumnDef<HeadsetItem>[];
 
 //Columns Task, /item/[id]
 const columnHelperTask = createColumnHelper<Task>();

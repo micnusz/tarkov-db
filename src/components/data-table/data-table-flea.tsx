@@ -146,7 +146,7 @@ export function DataTableFleaMarket<TData extends BaseItem, TValue>({
                   searchCount={0}
                   cellWidths={["3rem", "10rem", "6rem", "3rem", "3rem", "3rem"]}
                   shrinkZero
-                  className="p-0 md:p-0"
+                  className="p-0 md:p-0 md:mt-0 t-0"
                 />
               </TableCell>
             </TableRow>

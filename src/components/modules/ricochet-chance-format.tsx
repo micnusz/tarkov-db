@@ -3,7 +3,7 @@ export default function RicochetChanceFormat(ricochetValue: number): string {
     return "High";
   } else if (ricochetValue === 0.3 || ricochetValue === 0.2) {
     return "Medium";
-  } else if (ricochetValue === 0.1) {
+  } else if (ricochetValue <= 0.1) {
     return "Low";
-  } else return "No ricochet chance";
+  } else return "N/A";
 }

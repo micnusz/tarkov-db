@@ -31,7 +31,7 @@ export function DataTableSkeleton({
   return (
     <div
       className={cn(
-        "w-full h-full flex-col justify-center items-center p-4 md:p-10",
+        "w-full h-full flex-col justify-center items-center p-4 md:p-10 my-13 md:my-15 ",
         className
       )}
       {...props}
@@ -54,7 +54,7 @@ export function DataTableSkeleton({
             ? Array.from({ length: filterCount }).map((_, i) => (
                 <Skeleton
                   key={i}
-                  className="w-screen h-[2.5rem] w-[3rem] md:w-[10rem] border-dashed mb-2"
+                  className="w-screen h-[2.5rem] w-[8rem] md:w-[10rem] border-dashed mb-2"
                 />
               ))
             : null}

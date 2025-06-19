@@ -170,7 +170,9 @@ export function DataTableClient<TData, TValue>({
                         min={filter.min ?? 0}
                         max={filter.max ?? 100}
                         step={filter.step ?? 1}
-                        value={filterState[filter.id!] ?? null}
+                        value={
+                          filterState[filter.id!] ?? { min: null, max: null }
+                        }
                         formatter={filter.formatter}
                         onChange={(val) => handleFilterChange(filter.id!, val)}
                         showClear={true}
