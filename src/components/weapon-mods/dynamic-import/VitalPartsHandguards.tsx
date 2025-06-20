@@ -1,22 +1,22 @@
 "use client";
 
 import { client } from "@/app/api/client";
-import { columnsBarrels } from "@/components/data-table/columns";
+import { columnsGasBlock } from "@/components/data-table/columns";
 import { DataTableClient } from "@/components/data-table/data-table-client";
 import UniversalFormat from "@/components/modules/universal-format";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
-const VitalPartsBrrels = () => {
-  const { data: itemBarrels } = useSuspenseQuery({
-    queryKey: ["vital-parts-barrels"],
-    queryFn: () => client.getBarrels(),
+const VitalPartsHandguards = () => {
+  const { data: itemHandguards } = useSuspenseQuery({
+    queryKey: ["vital-parts-handguards"],
+    queryFn: () => client.getHandguards(),
   });
 
   return (
     <div>
       <DataTableClient
-        data={itemBarrels}
-        columns={columnsBarrels}
+        data={itemHandguards}
+        columns={columnsGasBlock}
         filters={[
           {
             id: "ergoPenalty",
@@ -42,4 +42,4 @@ const VitalPartsBrrels = () => {
   );
 };
 
-export default VitalPartsBrrels;
+export default VitalPartsHandguards;

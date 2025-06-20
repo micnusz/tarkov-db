@@ -7,6 +7,7 @@ import {
   BarterItem,
   BaseItem,
   CraftingProperties,
+  GasBlock,
   GrenadeItem,
   HeadsetItem,
   Item,
@@ -3551,15 +3552,16 @@ export const columnsBarrels = [
           <span className="text-muted-foreground text-sm italic">N/A</span>
         );
       }
-      const style = {
-        color:
-          initialValue < 0 ? "red" : initialValue > 0 ? "green" : "inherit",
-        fontWeight: 500,
-      };
+      const className =
+        initialValue < 0
+          ? "text-chart-3"
+          : initialValue > 0
+          ? "text-chart-2"
+          : "inherit";
 
       return (
         <div className="max-w-20">
-          <span style={style}>{initialValue}</span>
+          <span className={`${className} font-medium`}>{initialValue}</span>
         </div>
       );
     },
@@ -3572,18 +3574,37 @@ export const columnsBarrels = [
     cell: (info) => {
       const recoil = info.getValue();
       const formatRecoil = Math.round(recoil * 100);
-      const style = {
-        color:
-          formatRecoil < 0 ? "green" : formatRecoil > 0 ? "red" : "inherit",
-        fontWeight: 500,
-      };
+      const className =
+        formatRecoil < 0
+          ? "text-chart-2"
+          : formatRecoil > 0
+          ? "text-chart-2"
+          : "inherit";
 
       return formatRecoil ? (
         <div>
-          <span style={style}>{formatRecoil}%</span>
+          <span className={`${className} font-medium`}>{formatRecoil}%</span>
         </div>
       ) : (
         <span>0</span>
+      );
+    },
+  }),
+  columnHelperScopes.accessor("avg24hPrice", {
+    id: "avg24hPrice",
+    filterFn: UniversalNumberFormatFn,
+    header: (info) => <DefaultHeader info={info} name="Avg Flea Price (24h)" />,
+    cell: (info) => {
+      const value = info.getValue<number | null | undefined>();
+      return value != null ? (
+        <div className="flex flex-col">
+          <span className="text-sm text-gray-700">Avg</span>
+          <span className="text-base font-medium">
+            {value.toLocaleString("de-DE")}₽
+          </span>
+        </div>
+      ) : (
+        <span className="text-gray-400 italic">N/A</span>
       );
     },
   }),
@@ -3596,7 +3617,7 @@ export const columnsBarrels = [
       return (
         <div className="max-w-10">
           <a
-            className="text-chart-2 hover:text-gray-700 underline text-sm  "
+            className="text-foreground/70 hover:text-foreground/80 underline text-sm  "
             href={wikiLink}
             target="_blank"
             rel="noopener noreferrer"
@@ -3609,3 +3630,143 @@ export const columnsBarrels = [
     enableColumnFilter: false,
   }),
 ] as ColumnDef<BarrelItem>[];
+
+//Column Gas Block | /weapon-mods/vital parts
+const columnHelperGasBlock = createColumnHelper<GasBlock>();
+export const columnsGasBlock = [
+  columnHelperGasBlock.accessor((row) => row.gridImageLink, {
+    id: "icon",
+    header: (info) => <DefaultHeader info={info} name="Icon" />,
+    cell: (info) => {
+      const name = info.getValue();
+      const row = info.row.original;
+
+      return (
+        <Link href={`/item/${row.id}`}>
+          <div className="flex items-center gap-2 h-25">
+            <Image
+              src={row.gridImageLink}
+              alt={name}
+              width={75}
+              height={75}
+              className="aspect-square object-contain"
+            />
+          </div>
+        </Link>
+      );
+    },
+    enableSorting: false,
+    enableColumnFilter: false,
+  }),
+  columnHelperGasBlock.accessor((row) => row.name, {
+    filterFn: "includesString",
+    id: "name",
+    header: (info) => <DefaultHeader info={info} name="Name" />,
+    cell: (info) => {
+      const name = info.getValue();
+      const row = info.row.original;
+
+      return (
+        <div className="flex items-center gap-2">
+          <Link href={`/item/${row.id}`}>
+            <span className="text-sm truncate hover:text-chart-2 max-w-[30rem] block">
+              {name}
+            </span>
+          </Link>
+        </div>
+      );
+    },
+  }),
+  columnHelperGasBlock.accessor("properties.ergonomics", {
+    id: "ergoPenalty",
+    header: (info) => <DefaultHeader info={info} name="Ergo Modifier" />,
+    filterFn: universalPenaltyFilter,
+    cell: (info) => {
+      const initialValue = info.getValue<number>();
+
+      if (!Number.isFinite(initialValue)) {
+        return (
+          <span className="text-muted-foreground text-sm italic">N/A</span>
+        );
+      }
+
+      if (initialValue > 0) {
+        return (
+          <div className="max-w-20">
+            <span className="text-chart-2 font-medium">+{initialValue}</span>
+          </div>
+        );
+      }
+
+      if (initialValue < 0) {
+        return <span className="text-chart-3">{initialValue}</span>;
+      }
+
+      // 0 – bez stylu
+      return <span>{initialValue}</span>;
+    },
+  }),
+
+  columnHelperGasBlock.accessor("properties.recoilModifier", {
+    id: "recoilModifier",
+    filterFn: UniversalNumberFormatFn,
+    header: (info) => <DefaultHeader info={info} name="Recoil Modifier" />,
+    cell: (info) => {
+      const recoil = info.getValue();
+      const formatRecoil = Math.round(recoil * 100);
+      const className =
+        formatRecoil < 0
+          ? "text-chart-2"
+          : formatRecoil > 0
+          ? "text-chart-2"
+          : "inherit";
+
+      return formatRecoil ? (
+        <div>
+          <span className={`${className} font-medium`}>{formatRecoil}%</span>
+        </div>
+      ) : (
+        <span>0</span>
+      );
+    },
+  }),
+  columnHelperScopes.accessor("avg24hPrice", {
+    id: "avg24hPrice",
+    filterFn: UniversalNumberFormatFn,
+    header: (info) => <DefaultHeader info={info} name="Avg Flea Price (24h)" />,
+    cell: (info) => {
+      const value = info.getValue<number | null | undefined>();
+      return value != null ? (
+        <div className="flex flex-col">
+          <span className="text-sm text-gray-700">Avg</span>
+          <span className="text-base font-medium">
+            {value.toLocaleString("de-DE")}₽
+          </span>
+        </div>
+      ) : (
+        <span className="text-gray-400 italic">N/A</span>
+      );
+    },
+  }),
+  columnHelperGasBlock.accessor((row) => row.wikiLink, {
+    id: "wikiLink",
+    header: (info) => <DefaultHeader info={info} name="Wiki" />,
+    cell: (info) => {
+      const wikiLink = info.getValue();
+
+      return (
+        <div className="max-w-10">
+          <a
+            className="text-foreground/70 hover:text-foreground/80 underline text-sm  "
+            href={wikiLink}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Wiki
+          </a>
+        </div>
+      );
+    },
+    enableColumnFilter: false,
+  }),
+] as ColumnDef<GasBlock>[];

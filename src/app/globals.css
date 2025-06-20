@@ -53,21 +53,21 @@
   --radius: 0.625rem;
 
   /* Tło i tekst */
-  --background: oklch(0.1406 0.005 270); /* Wyblakły czarny */
+  --background: oklch(0.1206 0.003 270); /* Wyblakły czarny */
   --foreground: oklch(0.95 0.00 0);    /* Jasny tekst */
 
   /* Karty i popovery */
-  --card: oklch(0.15 0.01 270);
+  --card: oklch(0.1738 0.005 270);
   --card-foreground: oklch(0.95 0.00 0);
-  --popover: oklch(0.15 0.01 270);
+  --popover: oklch(0.1738 0.005 270);
   --popover-foreground: oklch(0.95 0.00 0);
 
   /* Kolory akcentujące */
-  --primary: oklch(0.35 0.05 120);     /* Oliwkowa zieleń */
+  --primary: oklch(0.4 0.05 120);     
   --primary-foreground: oklch(0.95 0.00 0);
-  --secondary: oklch(0.4 0.05 60);     /* Beżowy */
+  --secondary: oklch(0.4 0.05 60);    
   --secondary-foreground: oklch(0.95 0.00 0);
-  --accent: oklch(0.1738 0.005 270);         /* Rdzawy pomarańcz */
+  --accent: oklch(0.1738 0.005 270);        
   --accent-foreground: oklch(0.95 0.00 0);
 
   /* Kolory informacyjne */
@@ -76,8 +76,8 @@
   --destructive: oklch(0.6 0.1 20);    /* Ceglasty czerwony */
 
   /* Obramowania i pierścienie */
-  --border: oklch(0.1738 0.005 270);
-  --input: oklch(0.25 0.01 270);
+  --border: oklch(0.2095 0.005 270);
+  --input: oklch(0.2095 0.005 270);
   --ring: oklch(0.4 0.05 120);
   --chart-1: oklch(0.4 0.05 120);      /* Oliwkowa zieleń */
   --chart-2: oklch(0.5574 0.05 120);       /* Beżowy */

@@ -41,10 +41,15 @@ export function SliderFilterCombobox({
         }${unit}`
       : "Any";
 
+  const isRangeSelected = value.min != null && value.max != null;
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" className="justify-between">
+        <Button
+          variant={isRangeSelected ? "secondary" : "outline"}
+          className="justify-between"
+        >
           {label}: {display}
         </Button>
       </PopoverTrigger>
@@ -62,11 +67,14 @@ export function SliderFilterCombobox({
               })
             }
           />
-          <div className="flex justify-between items-center text-sm text-muted-foreground">
-            <span>Selected: {display}</span>
+          <div className="flex justify-between items-start text-sm text-muted-foreground">
+            <div className="flex flex-col">
+              <span className="font-medium">Selected:</span>
+              <span>{display}</span>
+            </div>
             {showClear && (
               <Button
-                variant="secondary"
+                variant="ghost"
                 size="sm"
                 onClick={() => onChange({ min: null, max: null })}
               >

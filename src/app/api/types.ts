@@ -96,6 +96,14 @@ export type BarrelItem = BaseItem & {
   };
 };
 
+export type GasBlock = BaseItem & {
+  properties: {
+    recoilModifier: number;
+    ergonomics: number;
+    accuracyModifier: number;
+  };
+};
+
 export type GrenadeItem = BaseItem & {
   properties: {
     type: string;
@@ -292,6 +300,10 @@ export type GetScopes = {
 
 export type GetBarrels = {
   items: BarrelItem[];
+};
+
+export type GetGasBlocks = {
+  items: GasBlock[];
 };
 
 export type GetGrenade = {

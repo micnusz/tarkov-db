@@ -129,7 +129,8 @@ export function DataTableClient<TData, TValue>({
         <div className="flex items-center pt-4">
           <DataTableSearchClient table={table} />
           <Button
-            variant="outline"
+            variant="secondary"
+            size="sm"
             className="mx-2"
             onClick={handleResetFilters}
           >
@@ -145,7 +146,7 @@ export function DataTableClient<TData, TValue>({
 
           <SheetContent
             side="left"
-            className="[&>button]:hidden w-screen md:w-[540px] md:max-h-[31rem] border-2 my-17 md:my-24 md:mx-10 bg-table-row/95 rounded-md "
+            className="[&>button]:hidden w-screen  md:max-h-[31rem] border-1 rounded-md "
           >
             <SheetHeader>
               <div className="flex items-center justify-between p-2 rounded-md">
@@ -207,8 +208,8 @@ export function DataTableClient<TData, TValue>({
                   }
                 })}
                 <Button
-                  className="my-4 w-full text-foreground hover:text-foreground/60"
-                  variant="secondary"
+                  className="my-4 w-full "
+                  variant="outline"
                   size="sm"
                   onClick={handleResetFilters}
                 >

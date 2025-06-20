@@ -2,7 +2,16 @@
 
 import ItemCategoryCard from "@/components/ui/item-category-card";
 import { weaponModsCategories } from "@/lib/categories";
+import { Metadata } from "next";
 import Link from "next/link";
+
+export const generateMetadata = async (): Promise<Metadata> => {
+  return {
+    title: "Weapon Mods - Tarkov.db",
+    description: "Tarkov.db, Weapon Mods",
+  };
+};
+
 const WeaponModsServerPage = () => {
   return (
     <main className="p-4 md:p-10 flex flex-wrap gap-4 justify-center">

@@ -1074,6 +1074,7 @@ export const GET_BARRELS = gql`
       name
       wikiLink
       gridImageLink
+      avg24hPrice
       category {
         name
       }
@@ -1082,6 +1083,67 @@ export const GET_BARRELS = gql`
         ... on ItemPropertiesBarrel {
           recoilModifier
           ergonomics
+        }
+      }
+    }
+  }
+`;
+//weapon-mods/vital-parts, Gas blocs
+export const GET_GAS_BLOCKS = gql`
+  query GetGasBlocks {
+    items(types: [mods], categoryNames: GasBlock) {
+      id
+      name
+      wikiLink
+      gridImageLink
+      avg24hPrice
+      properties {
+        __typename
+        ... on ItemPropertiesWeaponMod {
+          recoilModifier
+          ergonomics
+        }
+      }
+    }
+  }
+`;
+
+//weapon-mods/vital-parts, Handguard
+export const GET_HANDGUARD = gql`
+  query GetHandguard {
+    items(types: [mods], categoryNames: Handguard) {
+      id
+      name
+      wikiLink
+      gridImageLink
+      avg24hPrice
+      properties {
+        __typename
+        ... on ItemPropertiesWeaponMod {
+          recoilModifier
+          ergonomics
+          accuracyModifier
+        }
+      }
+    }
+  }
+`;
+
+//weapon-mods/vital-parts, Pistol grips
+export const GET_PISTOL_GRIPS = gql`
+  query GetPistolGrips {
+    items(types: [mods], categoryNames: PistolGrip) {
+      id
+      name
+      wikiLink
+      gridImageLink
+      avg24hPrice
+      properties {
+        __typename
+        ... on ItemPropertiesWeaponMod {
+          recoilModifier
+          ergonomics
+          accuracyModifier
         }
       }
     }

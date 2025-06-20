@@ -14,8 +14,8 @@ export const generateMetadata = async (): Promise<Metadata> => {
 const VitalPartsServerPage = async () => {
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({
-    queryKey: ["vital-parts"],
-    queryFn: () => client.getKeys(),
+    queryKey: ["vital-parts-barrels"],
+    queryFn: () => client.getBarrels(),
   });
 
   return (
