@@ -74,6 +74,28 @@ export type ArmorsItem = BaseItem & {
   };
 };
 
+export type KeyItem = BaseItem & {
+  properties: {
+    uses: number;
+  };
+};
+
+export type ScopeItem = BaseItem & {
+  properties: {
+    ergonomics: number;
+    zoomLevels: number[][];
+    sightModes: number[];
+    sightingRange: number;
+  };
+};
+
+export type BarrelItem = BaseItem & {
+  properties: {
+    recoilModifier: number;
+    ergonomics: number;
+  };
+};
+
 export type GrenadeItem = BaseItem & {
   properties: {
     type: string;
@@ -258,6 +280,18 @@ export type GetArmors = {
 
 export type GetHelmets = {
   items: ArmorsItem[];
+};
+
+export type GetKeys = {
+  items: KeyItem[];
+};
+
+export type GetScopes = {
+  items: ScopeItem[];
+};
+
+export type GetBarrels = {
+  items: BarrelItem[];
 };
 
 export type GetGrenade = {

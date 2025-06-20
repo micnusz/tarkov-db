@@ -18,9 +18,21 @@ export const itemCategories = [
   { href: "/items/headsets", id: "headsets", name: "Headsets" },
   { href: "/items/helmets", id: "helmets", name: "Helmets" },
   { href: "/items/keys", id: "keys", name: "Keys" },
-  { href: "/items/weapon-mods", id: "weapon-mods", name: "Weapon mods" },
+  {
+    href: "/items/weapon-mods",
+    id: "weapon-mods",
+    name: "Weapon mods, (categories)",
+  },
   { href: "/items/medical", id: "medical", name: "Medical" },
   { href: "/items/provisions", id: "provisions", name: "Provisions" },
   { href: "/items/rigs", id: "rigs", name: "Rigs" },
   { href: "/items/weapons", id: "weapons", name: "Weapons" },
+];
+
+export const weaponModsCategories = [
+  { href: "/vital-parts", id: "vital-parts", name: "Vital parts" },
+  { href: "/gear-mods", id: "gear-mods", name: "Gear mods " },
+  { href: "/scopes", id: "scopes", name: "Sights" },
+  { href: "/muzzle-devices", id: "muzzle-devices", name: "Muzzle devices" },
+  { href: "/functional-mods", id: "functional-mods", name: "Functional mods " },
 ];

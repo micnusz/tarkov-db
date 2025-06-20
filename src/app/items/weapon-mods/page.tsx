@@ -1,17 +1,17 @@
 "use server";
 
 import ItemCategoryCard from "@/components/ui/item-category-card";
-import { itemCategories } from "@/lib/categories";
+import { weaponModsCategories } from "@/lib/categories";
 import Link from "next/link";
-const ItemsPage = () => {
+const WeaponModsServerPage = () => {
   return (
     <main className="p-4 md:p-10 flex flex-wrap gap-4 justify-center">
-      {itemCategories.map((category) => (
+      {weaponModsCategories.map((category) => (
         <div
           key={category.id}
           className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5"
         >
-          <Link href={`${category.href}`}>
+          <Link href={`/items/weapon-mods/${category.href}/`}>
             <ItemCategoryCard category={category} />
           </Link>
         </div>
@@ -20,4 +20,4 @@ const ItemsPage = () => {
   );
 };
 
-export default ItemsPage;
+export default WeaponModsServerPage;

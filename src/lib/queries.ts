@@ -1018,3 +1018,72 @@ export const GET_HELMETS = gql`
     }
   }
 `;
+//items /keys
+export const GET_KEYS = gql`
+  query GetKeys {
+    items(types: [keys]) {
+      id
+      name
+      wikiLink
+      gridImageLink
+      avg24hPrice
+      category {
+        name
+        id
+        parent {
+          name
+        }
+      }
+      properties {
+        __typename
+        ... on ItemPropertiesKey {
+          uses
+        }
+      }
+    }
+  }
+`;
+
+//items /scopes
+export const GET_SCOPES = gql`
+  query GetScopes {
+    items(categoryNames: Scope) {
+      id
+      name
+      wikiLink
+      gridImageLink
+      avg24hPrice
+      properties {
+        __typename
+        ... on ItemPropertiesScope {
+          ergonomics
+          zoomLevels
+          sightModes
+          sightingRange
+        }
+      }
+    }
+  }
+`;
+
+//weapon-mods/vital-parts, barrels
+export const GET_BARRELS = gql`
+  query GetBarrels {
+    items(types: [mods], categoryNames: Barrel) {
+      id
+      name
+      wikiLink
+      gridImageLink
+      category {
+        name
+      }
+      properties {
+        __typename
+        ... on ItemPropertiesBarrel {
+          recoilModifier
+          ergonomics
+        }
+      }
+    }
+  }
+`;

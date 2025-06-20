@@ -2,6 +2,7 @@ import {
   Ammo,
   ArmorsItem,
   BackpackItem,
+  BarrelItem,
   Barter,
   BarterItem,
   BaseItem,
@@ -9,6 +10,8 @@ import {
   GrenadeItem,
   HeadsetItem,
   Item,
+  KeyItem,
+  ScopeItem,
   Task,
   WeaponItem,
 } from "@/app/api/types";
@@ -1777,6 +1780,285 @@ export const columnsFaceCovers = [
   }),
 ] as ColumnDef<ArmorsItem>[];
 
+//Columns /face-covers
+const columnHelperKeys = createColumnHelper<KeyItem>();
+export const columnsKeys = [
+  columnHelperKeys.accessor((row) => row.gridImageLink, {
+    id: "icon",
+    header: (info) => <DefaultHeader info={info} name="Icon" />,
+    cell: (info) => {
+      const name = info.getValue();
+      const row = info.row.original;
+
+      return (
+        <Link href={`/item/${row.id}`}>
+          <div className="flex items-center gap-2 h-25">
+            <Image
+              src={row.gridImageLink}
+              alt={name}
+              width={50}
+              height={50}
+              className="aspect-square object-contain"
+            />
+          </div>
+        </Link>
+      );
+    },
+    enableSorting: false,
+    enableColumnFilter: false,
+  }),
+  columnHelperKeys.accessor((row) => row.name, {
+    filterFn: "includesString",
+    id: "name",
+    header: (info) => <DefaultHeader info={info} name="Name" />,
+    cell: (info) => {
+      const name = info.getValue();
+      const row = info.row.original;
+
+      return (
+        <div className="flex items-center gap-2">
+          <Link href={`/item/${row.id}`}>
+            <span className="text-sm truncate hover:text-chart-2 max-w-[30rem] block">
+              {name}
+            </span>
+          </Link>
+        </div>
+      );
+    },
+  }),
+  columnHelperKeys.accessor((row) => row.category?.parent?.name ?? "", {
+    id: "category",
+    header: (info) => <DefaultHeader info={info} name="Category" />,
+    filterFn: (row, _columnId, filterValue) => {
+      const categoryName = row.original.category?.name ?? "";
+      return categoryName === filterValue;
+    },
+    cell: (info) => {
+      const row = info.row.original;
+      const name = row.category?.name;
+      const parentName = row.category?.parent?.name;
+
+      return name ? (
+        <div className="flex flex-col">
+          <span className="text-sm text-muted">{parentName}</span>
+          <span className="text-base font-medium">{name}</span>
+        </div>
+      ) : (
+        <span className="text-muted italic">N/A</span>
+      );
+    },
+  }),
+
+  columnHelperKeys.accessor("avg24hPrice", {
+    id: "avg24hPrice",
+    filterFn: UniversalNumberFormatFn,
+    header: (info) => <DefaultHeader info={info} name="Avg Flea Price (24h)" />,
+    cell: (info) => {
+      const value = info.getValue<number | null | undefined>();
+      return value != null ? (
+        <div className="flex flex-col">
+          <span className="text-sm text-gray-700">Avg</span>
+          <span className="text-base font-medium">
+            {value.toLocaleString("de-DE")}₽
+          </span>
+        </div>
+      ) : (
+        <span className="text-gray-400 italic">N/A</span>
+      );
+    },
+  }),
+
+  columnHelperFaceCovers.accessor((row) => row.wikiLink, {
+    id: "wikiLink",
+    header: (info) => <DefaultHeader info={info} name="Wiki" />,
+    cell: (info) => {
+      const wikiLink = info.getValue();
+
+      return (
+        <div className="max-w-10">
+          <a
+            className="text-chart-2 hover:text-gray-700 underline text-sm  "
+            href={wikiLink}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Wiki
+          </a>
+        </div>
+      );
+    },
+    enableColumnFilter: false,
+  }),
+] as ColumnDef<KeyItem>[];
+
+//Columns /scopes
+const columnHelperScopes = createColumnHelper<ScopeItem>();
+export const columnsScopes = [
+  columnHelperScopes.accessor((row) => row.gridImageLink, {
+    id: "icon",
+    header: (info) => <DefaultHeader info={info} name="Icon" />,
+    cell: (info) => {
+      const name = info.getValue();
+      const row = info.row.original;
+
+      return (
+        <Link href={`/item/${row.id}`}>
+          <div className="flex items-center gap-2 h-25">
+            <Image
+              src={row.gridImageLink}
+              alt={name}
+              width={75}
+              height={75}
+              className="aspect-square object-contain"
+            />
+          </div>
+        </Link>
+      );
+    },
+    enableSorting: false,
+    enableColumnFilter: false,
+  }),
+  columnHelperScopes.accessor((row) => row.name, {
+    filterFn: "includesString",
+    id: "name",
+    header: (info) => <DefaultHeader info={info} name="Name" />,
+    cell: (info) => {
+      const name = info.getValue();
+      const row = info.row.original;
+
+      return (
+        <div className="flex items-center gap-2">
+          <Link href={`/item/${row.id}`}>
+            <span className="text-sm truncate hover:text-chart-2 max-w-[30rem] block">
+              {name}
+            </span>
+          </Link>
+        </div>
+      );
+    },
+  }),
+  columnHelperScopes.accessor("properties.ergonomics", {
+    id: "ergoPenalty",
+    header: (info) => <DefaultHeader info={info} name="Ergo" />,
+    filterFn: universalPenaltyFilter,
+    cell: (info) => {
+      const initialValue = info.getValue<number>();
+
+      if (!Number.isFinite(initialValue)) {
+        return (
+          <span className="text-muted-foreground text-sm italic">N/A</span>
+        );
+      }
+      const style = {
+        color:
+          initialValue < 0 ? "red" : initialValue > 0 ? "green" : "inherit",
+        fontWeight: 500,
+      };
+
+      return (
+        <div className="max-w-20">
+          <span style={style}>{initialValue}</span>
+        </div>
+      );
+    },
+  }),
+
+  columnHelperScopes.accessor("avg24hPrice", {
+    id: "avg24hPrice",
+    filterFn: UniversalNumberFormatFn,
+    header: (info) => <DefaultHeader info={info} name="Avg Flea Price (24h)" />,
+    cell: (info) => {
+      const value = info.getValue<number | null | undefined>();
+      return value != null ? (
+        <div className="flex flex-col">
+          <span className="text-sm text-gray-700">Avg</span>
+          <span className="text-base font-medium">
+            {value.toLocaleString("de-DE")}₽
+          </span>
+        </div>
+      ) : (
+        <span className="text-gray-400 italic">N/A</span>
+      );
+    },
+  }),
+  columnHelperScopes.accessor((row) => row.properties?.sightModes, {
+    id: "sightModes",
+    header: (info) => <DefaultHeader info={info} name="Sight Modes" />,
+    cell: (info) => {
+      const sightModes = info.getValue() as number[] | undefined;
+      const row = info.row.original;
+
+      const display =
+        sightModes && sightModes.length > 0
+          ? Array.from(new Set(sightModes)).join(", ")
+          : "N/A";
+
+      return (
+        <div className="flex items-center gap-2">
+          <span className="text-sm hover:text-chart-2 ">{display}</span>
+        </div>
+      );
+    },
+  }),
+  columnHelperScopes.accessor((row) => row.properties?.zoomLevels, {
+    id: "zoomLevels",
+    header: (info) => <DefaultHeader info={info} name="Zoom Levels" />,
+    cell: (info) => {
+      const zoomLevels = info.getValue() as number[][] | undefined;
+
+      const display =
+        zoomLevels && zoomLevels.length > 0
+          ? zoomLevels
+              .map(([min, max]) => (min === max ? `${min}x` : `${min}–${max}x`))
+              .join(", ")
+          : "N/A";
+
+      return (
+        <div className="flex items-center gap-2">
+          <span className="text-sm hover:text-chart-2">{display}</span>
+        </div>
+      );
+    },
+  }),
+  columnHelperScopes.accessor((row) => row.properties?.sightingRange, {
+    id: "sightingRange",
+    header: (info) => <DefaultHeader info={info} name="Sight Modes" />,
+    cell: (info) => {
+      const sightingRange = info.getValue() as number | undefined;
+
+      return sightingRange ? (
+        <div className="flex items-center gap-2">
+          <span className="text-sm hover:text-chart-2 ">{sightingRange}m</span>
+        </div>
+      ) : (
+        <span className="italic font-gray-600">N/A</span>
+      );
+    },
+  }),
+
+  columnHelperScopes.accessor((row) => row.wikiLink, {
+    id: "wikiLink",
+    header: (info) => <DefaultHeader info={info} name="Wiki" />,
+    cell: (info) => {
+      const wikiLink = info.getValue();
+
+      return (
+        <div className="max-w-10">
+          <a
+            className="text-chart-2 hover:text-gray-700 underline text-sm  "
+            href={wikiLink}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Wiki
+          </a>
+        </div>
+      );
+    },
+    enableColumnFilter: false,
+  }),
+] as ColumnDef<ScopeItem>[];
+
 //Columns /helmets
 const columnHelperHelmets = createColumnHelper<ArmorsItem>();
 export const columnsHelmets = [
@@ -2707,27 +2989,6 @@ export const columnsFlea = [
       return value.toLowerCase().includes(filterValue.toLowerCase());
     },
   }),
-  columnHelperFlea.accessor("wikiLink", {
-    header: (info) => <DefaultHeader info={info} name="Wiki" />,
-    cell: (info) => {
-      const wikiLink = info.getValue();
-      return wikiLink ? (
-        <div className="">
-          <a
-            className="text-chart-1 hover:text-gray-700 underline text-sm flex items-center "
-            href={wikiLink}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Wiki
-          </a>
-        </div>
-      ) : (
-        <span className="text-gray-400 italic">N/A</span>
-      );
-    },
-  }),
-
   columnHelperFlea.accessor("avg24hPrice", {
     header: (info) => <DefaultHeader info={info} name="Avg Price (24h)" />,
     cell: (info) => {
@@ -2842,6 +3103,26 @@ export const columnsFlea = [
       },
     }
   ),
+  columnHelperFlea.accessor("wikiLink", {
+    header: (info) => <DefaultHeader info={info} name="Wiki" />,
+    cell: (info) => {
+      const wikiLink = info.getValue();
+      return wikiLink ? (
+        <div className="">
+          <a
+            className="text-chart-1 hover:text-gray-700 underline text-sm flex items-center "
+            href={wikiLink}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Wiki
+          </a>
+        </div>
+      ) : (
+        <span className="text-gray-400 italic">N/A</span>
+      );
+    },
+  }),
 ] as ColumnDef<BaseItem>[];
 
 //Columns Ammo
@@ -3211,3 +3492,120 @@ export const columnsContainer = [
     }
   ),
 ] as ColumnDef<BaseItem>[];
+
+//Column Barrels | /weapon-mods/vital parts
+const columnHelperBarrels = createColumnHelper<BarrelItem>();
+export const columnsBarrels = [
+  columnHelperBarrels.accessor((row) => row.gridImageLink, {
+    id: "icon",
+    header: (info) => <DefaultHeader info={info} name="Icon" />,
+    cell: (info) => {
+      const name = info.getValue();
+      const row = info.row.original;
+
+      return (
+        <Link href={`/item/${row.id}`}>
+          <div className="flex items-center gap-2 h-25">
+            <Image
+              src={row.gridImageLink}
+              alt={name}
+              width={75}
+              height={75}
+              className="aspect-square object-contain"
+            />
+          </div>
+        </Link>
+      );
+    },
+    enableSorting: false,
+    enableColumnFilter: false,
+  }),
+  columnHelperBarrels.accessor((row) => row.name, {
+    filterFn: "includesString",
+    id: "name",
+    header: (info) => <DefaultHeader info={info} name="Name" />,
+    cell: (info) => {
+      const name = info.getValue();
+      const row = info.row.original;
+
+      return (
+        <div className="flex items-center gap-2">
+          <Link href={`/item/${row.id}`}>
+            <span className="text-sm truncate hover:text-chart-2 max-w-[30rem] block">
+              {name}
+            </span>
+          </Link>
+        </div>
+      );
+    },
+  }),
+  columnHelperBarrels.accessor("properties.ergonomics", {
+    id: "ergoPenalty",
+    header: (info) => <DefaultHeader info={info} name="Ergo Modifier" />,
+    filterFn: universalPenaltyFilter,
+    cell: (info) => {
+      const initialValue = info.getValue<number>();
+
+      if (!Number.isFinite(initialValue)) {
+        return (
+          <span className="text-muted-foreground text-sm italic">N/A</span>
+        );
+      }
+      const style = {
+        color:
+          initialValue < 0 ? "red" : initialValue > 0 ? "green" : "inherit",
+        fontWeight: 500,
+      };
+
+      return (
+        <div className="max-w-20">
+          <span style={style}>{initialValue}</span>
+        </div>
+      );
+    },
+  }),
+
+  columnHelperBarrels.accessor("properties.recoilModifier", {
+    id: "recoilModifier",
+    filterFn: UniversalNumberFormatFn,
+    header: (info) => <DefaultHeader info={info} name="Recoil Modifier" />,
+    cell: (info) => {
+      const recoil = info.getValue();
+      const formatRecoil = Math.round(recoil * 100);
+      const style = {
+        color:
+          formatRecoil < 0 ? "green" : formatRecoil > 0 ? "red" : "inherit",
+        fontWeight: 500,
+      };
+
+      return formatRecoil ? (
+        <div>
+          <span style={style}>{formatRecoil}%</span>
+        </div>
+      ) : (
+        <span>0</span>
+      );
+    },
+  }),
+  columnHelperScopes.accessor((row) => row.wikiLink, {
+    id: "wikiLink",
+    header: (info) => <DefaultHeader info={info} name="Wiki" />,
+    cell: (info) => {
+      const wikiLink = info.getValue();
+
+      return (
+        <div className="max-w-10">
+          <a
+            className="text-chart-2 hover:text-gray-700 underline text-sm  "
+            href={wikiLink}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Wiki
+          </a>
+        </div>
+      );
+    },
+    enableColumnFilter: false,
+  }),
+] as ColumnDef<BarrelItem>[];

@@ -5,6 +5,7 @@ import {
   GET_ARMORS,
   GET_BACKPACK_ID,
   GET_BACKPACKS,
+  GET_BARRELS,
   GET_BARTER_ITEMS,
   GET_BARTERS,
   GET_CONTAINERS_ITEMS,
@@ -23,6 +24,8 @@ import {
   GET_ITEMS,
   GET_ITEMS_CATEGORIES,
   GET_ITEMS_SEARCH_BAR,
+  GET_KEYS,
+  GET_SCOPES,
   GET_TASK_ID_BASE,
   GET_TASK_ID_FAILURE,
   GET_TASK_ID_OBJECTIVES,
@@ -39,6 +42,7 @@ import {
   GetArmors,
   GetBackpackById,
   GetBackpacks,
+  GetBarrels,
   GetBarterItems,
   GetBarters,
   GetContainerItems,
@@ -50,7 +54,9 @@ import {
   GetItems,
   GetItemsSearchBar,
   GetItemTask,
+  GetKeys,
   GetOnlyWeapons,
+  GetScopes,
   GetTasks,
   GetTraders,
   GetWeaponById,
@@ -229,6 +235,18 @@ export const client = {
     return data.items;
   },
 
+  //items/keys
+  async getKeys(): Promise<GetKeys["items"]> {
+    const data = await graphqlClient.request<GetKeys>(GET_KEYS);
+    return data.items;
+  },
+
+  //items/scopes
+  async getScopes(): Promise<GetScopes["items"]> {
+    const data = await graphqlClient.request<GetScopes>(GET_SCOPES);
+    return data.items;
+  },
+
   //items/helmets
   async getHelmets(): Promise<GetHelmets["items"]> {
     const data = await graphqlClient.request<GetHelmets>(GET_HELMETS);
@@ -242,6 +260,12 @@ export const client = {
   //items/headsets
   async getHeadsets(): Promise<GetHeadsets["items"]> {
     const data = await graphqlClient.request<GetHeadsets>(GET_HEADSETS);
+    return data.items;
+  },
+
+  //items/weapons-mod/vital-parts, Barrels
+  async getBarrels(): Promise<GetBarrels["items"]> {
+    const data = await graphqlClient.request<GetBarrels>(GET_BARRELS);
     return data.items;
   },
 

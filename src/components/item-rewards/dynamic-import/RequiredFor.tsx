@@ -1,3 +1,4 @@
+"use client";
 import { client } from "@/app/api/client";
 import { columnsTaskSimple } from "@/components/data-table/columns";
 import { SimpleDataTable } from "@/components/ui/simple-data-table";
