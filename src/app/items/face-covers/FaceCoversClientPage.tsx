@@ -1,94 +1,67 @@
 "use client";
 
-import { client } from "@/app/api/client";
-import { ArmorsItem, Item } from "@/app/api/types";
-import {
-  columnsBarterItems,
-  columnsFaceCovers,
-} from "@/components/data-table/columns";
-import { DataTableClient } from "@/components/data-table/data-table-client";
-import RicochetChanceFormat from "@/components/modules/ricochet-chance-format";
-import UniversalFormat from "@/components/modules/universal-format";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
+import { Button } from "@/components/ui/button";
+import { lazy, Suspense, useState } from "react";
+
+const componentsMap = {
+  faceCovers: lazy(
+    () =>
+      import(
+        "@/components/dynamic-import/face-covers/dynamic-import/FaceCovers"
+      )
+  ),
+  glasses: lazy(
+    () => import("@/components/dynamic-import/eyewear/dynamic-import/Eyewear")
+  ),
+};
 
 const FaceCoversClientPage = () => {
-  const { data } = useSuspenseQuery({
-    queryKey: ["face-covers"],
-    queryFn: () => client.getFaceCovers(),
-  });
+  const [selectedComponent, setSelectedComponent] =
+    useState<keyof typeof componentsMap>("faceCovers");
+  const DynamicComponent = componentsMap[selectedComponent];
 
-  const armorClass = Array.from(
-    new Set(
-      (data as ArmorsItem[])
-        .map((armor) => armor.properties?.class)
-        .filter((lvl): lvl is number => lvl !== undefined)
-    )
-  ).sort((a, b) => a - b);
-
-  const armorMaterial = Array.from(
-    new Set(
-      (data as ArmorsItem[])
-        .map((material) => material.properties?.material?.name)
-        .filter((material): material is string => material !== undefined)
-    )
-  ).sort();
-
-  const ricochetValues = Array.from(
-    new Set(
-      (data as ArmorsItem[])
-        .map((item) => item.properties?.ricochetY)
-        .filter((value): value is number => value !== undefined)
-    )
-  ).sort((a, b) => a - b);
-
-  const ricochetLabels = Array.from(
-    new Set(ricochetValues.map(RicochetChanceFormat))
-  ).sort();
+  const formattedTitle =
+    selectedComponent.charAt(0).toUpperCase() +
+    selectedComponent.slice(1).replace(/([A-Z])/g, " $1");
 
   return (
     <div className="w-full h-full flex-col justify-center items-center p-4 md:p-10">
       <h1 className="scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance">
-        Face Covers
+        {formattedTitle}
       </h1>
-      <DataTableClient
-        columns={columnsFaceCovers}
-        data={data}
-        filters={[
-          {
-            id: "__typename",
-            label: "Type",
-            filterType: "select",
-            options: ["Armored Face Covers"],
-          },
-          {
-            id: "class",
-            label: "Armor Class",
-            filterType: "select",
-            options: armorClass.map(String),
-            formatter: (val) => `Class ${val}`,
-          },
-          {
-            id: "material",
-            label: "Armor Material",
-            filterType: "select",
-            options: armorMaterial.map(String),
-            formatter: UniversalFormat,
-          },
-          {
-            id: "ricochet",
-            label: "Ricochet Chance",
-            filterType: "select",
-            options: ricochetLabels,
-            formatter: UniversalFormat,
-          },
-          {
-            id: "durability",
-            label: "Durability",
-            filterType: "range",
-            formatter: UniversalFormat,
-          },
-        ]}
-      />
+      {/* Table stwitch */}
+      <div className="pt-4 flex gap-2 flex-wrap justify-center">
+        {Object.keys(componentsMap).map((key) => (
+          <Button
+            key={key}
+            onClick={() =>
+              setSelectedComponent(key as keyof typeof componentsMap)
+            }
+            variant={selectedComponent === key ? "default" : "outline"}
+          >
+            {key.charAt(0).toUpperCase() +
+              key.slice(1).replace(/([A-Z])/g, " $1")}
+          </Button>
+        ))}
+      </div>
+      {/* DynamicComponent, lazyload + suspense */}
+      <div>
+        <Suspense
+          fallback={
+            <DataTableSkeleton
+              columnCount={5}
+              filterCount={1}
+              searchCount={1}
+              cellWidths={["6rem", "20rem", "6rem", "6rem", "6rem"]}
+              shrinkZero
+              className="p-0 md:p-0 m-0 md:m-0"
+            />
+          }
+        >
+          <DynamicComponent />
+        </Suspense>
+      </div>
     </div>
   );
 };

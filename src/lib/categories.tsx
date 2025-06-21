@@ -12,7 +12,7 @@ export const itemCategories = [
   {
     href: "/items/face-covers",
     id: "face-covers",
-    name: "Face covers / Glasses",
+    name: "Face covers, Eyewear",
   },
   { href: "/items/grenades", id: "grenades", name: "Grenades" },
   { href: "/items/headsets", id: "headsets", name: "Headsets" },

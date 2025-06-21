@@ -146,13 +146,13 @@ export function DataTableClient<TData, TValue>({
 
           <SheetContent
             side="left"
-            className="[&>button]:hidden w-screen  md:max-h-[31rem] border-1 rounded-md "
+            className="[&>button]:hidden h-auto max-h-fit w-full md:w-auto border rounded-md overflow-y-auto px-2"
           >
             <SheetHeader>
               <div className="flex items-center justify-between p-2 rounded-md">
                 <SheetTitle>Filter by:</SheetTitle>
                 <SheetClose
-                  className="p-2 rounded-md hover:bg-muted transition"
+                  className="p-2 rounded-md hover:bg-accent p-2 transition"
                   aria-label="Close"
                 >
                   Close
@@ -207,15 +207,17 @@ export function DataTableClient<TData, TValue>({
                     );
                   }
                 })}
-                <Button
-                  className="my-4 w-full "
-                  variant="outline"
-                  size="sm"
-                  onClick={handleResetFilters}
-                >
-                  Clear
-                </Button>
               </div>
+            </div>
+            <div className="flex justify-center mb-6">
+              <Button
+                className="px-20 "
+                variant="secondary"
+                size="sm"
+                onClick={handleResetFilters}
+              >
+                Clear
+              </Button>
             </div>
           </SheetContent>
         </Sheet>

@@ -448,6 +448,13 @@ export const GET_BACKPACKS = gql`
       wikiLink
       weight
       gridImageLink
+      category {
+        name
+        parent {
+          name
+        }
+      }
+      avg24hPrice
       properties {
         __typename
         ... on ItemPropertiesBackpack {
@@ -828,6 +835,9 @@ export const GET_CONTAINERS_ITEMS = gql`
       category {
         name
         id
+        parent {
+          name
+        }
       }
       basePrice
       gridImageLink
@@ -869,6 +879,12 @@ export const GET_FACE_COVERS = gql`
       gridImageLink
       avg24hPrice
       weight
+      category {
+        parent {
+          name
+        }
+        name
+      }
       properties {
         __typename
         ... on ItemPropertiesHelmet {
@@ -1503,6 +1519,36 @@ export const GET_AUXILIARIES = gql`
           ergonomics
           recoilModifier
           accuracyModifier
+        }
+      }
+    }
+  }
+`;
+
+//face-covers/ Glasses;
+export const GET_GLASSES = gql`
+  query GetGlasses {
+    items(type: glasses) {
+      id
+      name
+      wikiLink
+      gridImageLink
+      avg24hPrice
+      weight
+      category {
+        parent {
+          name
+        }
+        name
+      }
+      properties {
+        __typename
+        ... on ItemPropertiesGlasses {
+          material {
+            name
+          }
+          blindnessProtection
+          class
         }
       }
     }

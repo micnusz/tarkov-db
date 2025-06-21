@@ -97,6 +97,17 @@ export type ItemPropertiesWeaponMod = BaseItem & {
   };
 };
 
+export type ItemPropertiesGlasses = BaseItem & {
+  properties: {
+    material: {
+      name: string;
+    };
+    blindnessProtection: number;
+    class: number;
+    durability: number;
+  };
+};
+
 export type GrenadeItem = BaseItem & {
   properties: {
     type: string;
@@ -303,6 +314,10 @@ export type GetScopes = {
 
 export type GetItemPropertiesWeaponMod = {
   items: ItemPropertiesWeaponMod[];
+};
+
+export type GetItemPropertiesGlasses = {
+  items: ItemPropertiesGlasses[];
 };
 
 export type GetMagazines = {

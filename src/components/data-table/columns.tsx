@@ -9,6 +9,7 @@ import {
   GrenadeItem,
   HeadsetItem,
   Item,
+  ItemPropertiesGlasses,
   ItemPropertiesWeaponMod,
   KeyItem,
   MagazineItem,
@@ -311,8 +312,8 @@ export const columnsBarterItems = [
               aria-label={`Image of barter: ${row.name}`}
               src={icon}
               alt={`${row.name}`}
-              width={75}
-              height={75}
+              width={72}
+              height={72}
               className="aspect-square object-contain h-25"
             />
           </div>
@@ -340,45 +341,28 @@ export const columnsBarterItems = [
       );
     },
   }),
-  columnHelperBarterItems.accessor((row) => row.category?.name ?? "", {
+  columnHelperBarterItems.accessor((row) => row.category?.parent?.name ?? "", {
     id: "category",
     header: (info) => <DefaultHeader info={info} name="Category" />,
-    filterFn: (row, columnId, filterValue) => {
-      const value = row.original.category?.name ?? "";
-      return value.toLowerCase().includes(filterValue.toLowerCase());
+    filterFn: (row, _columnId, filterValue) => {
+      const categoryName = row.original.category?.name ?? "";
+      return categoryName === filterValue;
     },
     cell: (info) => {
       const row = info.row.original;
       const name = row.category?.name;
+      const parentName = row.category?.parent?.name;
 
       return name ? (
-        <span className="text-sm font-medium">{name}</span>
-      ) : (
-        <span className="text-gray-400 italic">N/A</span>
-      );
-    },
-  }),
-  columnHelperBarterItems.accessor("wikiLink", {
-    header: (info) => <DefaultHeader info={info} name="Wiki" />,
-    cell: (info) => {
-      const wikiLink = info.getValue();
-      return wikiLink ? (
-        <div className="">
-          <a
-            className="text-chart-2 hover:text-chart-4 underline text-sm flex items-center "
-            href={wikiLink}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Wiki
-          </a>
+        <div className="flex flex-col">
+          <span className="text-sm text-muted">{parentName}</span>
+          <span className="text-base font-medium">{name}</span>
         </div>
       ) : (
-        <span className="text-gray-400 italic">N/A</span>
+        <span className="text-muted italic">N/A</span>
       );
     },
   }),
-
   columnHelperBarterItems.accessor("avg24hPrice", {
     header: (info) => <DefaultHeader info={info} name="Avg Price (24h)" />,
     filterFn: UniversalNumberFormatFn,
@@ -439,6 +423,26 @@ export const columnsBarterItems = [
       sortingFn: "basic",
     }
   ),
+  columnHelperBarterItems.accessor("wikiLink", {
+    header: (info) => <DefaultHeader info={info} name="Wiki" />,
+    cell: (info) => {
+      const wikiLink = info.getValue();
+      return wikiLink ? (
+        <div className="">
+          <a
+            className="text-foreground/80 hover:text-foreground underline text-sm "
+            href={wikiLink}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Wiki
+          </a>
+        </div>
+      ) : (
+        <span className="text-gray-400 italic">N/A</span>
+      );
+    },
+  }),
 ] as ColumnDef<Item>[];
 
 //Crafting
@@ -762,13 +766,12 @@ export const columnsBackpacks = [
 
       return (
         <Link href={`/item/${row.id}`}>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 h-25">
             <Image
               src={row.gridImageLink}
               alt={name}
-              width={100}
-              height={100}
-              loading="lazy"
+              width={72}
+              height={72}
               className="aspect-square object-contain"
             />
           </div>
@@ -787,9 +790,9 @@ export const columnsBackpacks = [
       const row = info.row.original;
 
       return (
-        <div className="flex items-center gap-2 max-w-80">
+        <div className="flex items-center gap-2 w-fit">
           <Link href={`/item/${row.id}`}>
-            <span className="text-sm hover:text-chart-2 text-sm truncate hover:text-chart-2 max-w-[14rem] md:max-w-[32rem] block">
+            <span className="text-sm hover:text-chart-2 text-sm truncate max-w-[20rem] block">
               {name}
             </span>
           </Link>
@@ -797,25 +800,29 @@ export const columnsBackpacks = [
       );
     },
   }),
-  columnHelperBackpacks.accessor((row) => row.wikiLink, {
-    id: "wikiLink",
-    header: (info) => <DefaultHeader info={info} name="Wiki" />,
+  columnHelperBackpacks.accessor((row) => row.category?.parent?.name ?? "", {
+    id: "category",
+    header: (info) => <DefaultHeader info={info} name="Category" />,
+    filterFn: (row, _columnId, filterValue) => {
+      const categoryName = row.original.category?.name ?? "";
+      return categoryName === filterValue;
+    },
     cell: (info) => {
-      const wikiLink = info.getValue();
+      const row = info.row.original;
+      const name = row.category?.name;
+      const parentName = row.category?.parent?.name;
 
-      return (
-        <a
-          className="text-chart-2 hover:text-gray-700 underline text-sm flex items-center "
-          href={wikiLink}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Wiki
-        </a>
+      return name ? (
+        <div className="flex flex-col">
+          <span className="text-sm text-muted">{parentName}</span>
+          <span className="text-base font-medium">{name}</span>
+        </div>
+      ) : (
+        <span className="text-muted italic">N/A</span>
       );
     },
-    enableColumnFilter: false,
   }),
+
   columnHelperBackpacks.accessor("properties.grids", {
     header: (info) => <DefaultHeader info={info} name="Grid" />,
     cell: (info) => {
@@ -832,20 +839,82 @@ export const columnsBackpacks = [
     cell: (info) => info.getValue(),
     filterFn: UniversalNumberFormatFn,
   }),
+  columnHelperBackpacks.accessor("properties.ergoPenalty", {
+    id: "ergoPenalty",
+    header: (info) => <DefaultHeader info={info} name="ErgoPen" />,
+    filterFn: UniversalNumberFormatFn,
+    cell: (info) => {
+      const initialValue = info.getValue<number>();
+      const percent = Math.round(initialValue * 100); //
+
+      const className =
+        percent < 0 ? "text-chart-3" : percent > 0 ? "text-chart-2" : "inherit";
+
+      return (
+        <div className="max-w-20">
+          <span className={`${className} font-medium`}>{percent}%</span>
+        </div>
+      );
+    },
+  }),
+  columnHelperBackpacks.accessor("properties.speedPenalty", {
+    id: "speedPenalty",
+    header: (info) => <DefaultHeader info={info} name="MoveSpeedPen" />,
+    filterFn: UniversalNumberFormatFn,
+    cell: (info) => {
+      const value = info.getValue<number>();
+      const percent = Math.round(value * 100);
+
+      const className =
+        percent < 0 ? "text-chart-3" : percent > 0 ? "text-chart-2" : "inherit";
+
+      return (
+        <div className="max-w-20">
+          <span className={`${className} font-medium`}>{percent}%</span>
+        </div>
+      );
+    },
+  }),
+  columnHelperBackpacks.accessor("properties.turnPenalty", {
+    header: (info) => <DefaultHeader info={info} name="TurnPen" />,
+    id: "turnPenalty",
+    filterFn: UniversalNumberFormatFn,
+    cell: (info) => {
+      const value = info.getValue<number>();
+      const percent = Math.round(value * 100);
+
+      const className =
+        percent < 0 ? "text-chart-3" : percent > 0 ? "text-chart-2" : "inherit";
+
+      return (
+        <div className="max-w-20">
+          <span className={`${className} font-medium`}>{percent}%</span>
+        </div>
+      );
+    },
+  }),
+  columnHelperBackpacks.accessor("avg24hPrice", {
+    id: "avg24hPrice",
+    filterFn: UniversalNumberFormatFn,
+    header: (info) => <DefaultHeader info={info} name="Avg Flea Price" />,
+    cell: (info) => {
+      const value = info.getValue<number | null | undefined>();
+      return value != null ? (
+        <div className="flex flex-col">
+          <span className="text-sm text-gray-700">Avg</span>
+          <span className="text-base font-medium">
+            {value.toLocaleString("de-DE")}₽
+          </span>
+        </div>
+      ) : (
+        <span className="text-gray-400 italic">N/A</span>
+      );
+    },
+  }),
   columnHelperBackpacks.accessor("weight", {
     header: (info) => <DefaultHeader info={info} name="Weight" />,
     id: "weight",
-    filterFn: (row, id, filterValue) => {
-      if (!filterValue) return true;
-
-      const cost: number = row.getValue(id);
-      const { min, max } = filterValue;
-
-      if (min !== null && cost < min) return false;
-      if (max !== null && cost > max) return false;
-
-      return true;
-    },
+    filterFn: UniversalNumberFormatFn,
     cell: (info) => {
       return (
         <>
@@ -854,84 +923,24 @@ export const columnsBackpacks = [
       );
     },
   }),
-
-  columnHelperBackpacks.accessor("properties.ergoPenalty", {
-    id: "ergoPenalty",
-    header: (info) => <DefaultHeader info={info} name="ErgoPen" />,
-    filterFn: (row, id, filterValue) => {
-      if (!filterValue) return true;
-      const cost: number = row.getValue(id);
-      const { min, max } = filterValue;
-      const costPercent = cost * 100;
-
-      if (min !== null && costPercent > min) return false;
-      if (max !== null && costPercent < max) return false;
-
-      return true;
-    },
+  columnHelperBackpacks.accessor((row) => row.wikiLink, {
+    id: "wikiLink",
+    header: (info) => <DefaultHeader info={info} name="Wiki" />,
     cell: (info) => {
-      const initialValue = info.getValue<number>();
-      const percent = Math.round(initialValue * 100); //
+      const wikiLink = info.getValue();
 
-      const style = {
-        color: percent < 0 ? "red" : percent > 0 ? "green" : "inherit",
-        fontWeight: 500,
-      };
-
-      return <span style={style}>{percent}%</span>;
+      return (
+        <a
+          className="text-muted-foreground hover:text-foreground underline text-sm "
+          href={wikiLink}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Wiki
+        </a>
+      );
     },
-  }),
-  columnHelperBackpacks.accessor("properties.speedPenalty", {
-    id: "speedPenalty",
-    header: (info) => <DefaultHeader info={info} name="MoveSpeedPen" />,
-    filterFn: (row, id, filterValue) => {
-      if (!filterValue) return true;
-      const cost: number = row.getValue(id);
-      const { min, max } = filterValue;
-      const costPercent = cost * 100;
-
-      if (min !== null && costPercent > min) return false;
-      if (max !== null && costPercent < max) return false;
-
-      return true;
-    },
-    cell: (info) => {
-      const value = info.getValue<number>();
-      const percent = Math.round(value * 100);
-
-      const style = {
-        color: percent < 0 ? "red" : percent > 0 ? "green" : "inherit",
-        fontWeight: 500,
-      };
-
-      return <span style={style}>{percent}%</span>;
-    },
-  }),
-  columnHelperBackpacks.accessor("properties.turnPenalty", {
-    header: (info) => <DefaultHeader info={info} name="TurnPen" />,
-    id: "turnPenalty",
-    filterFn: (row, id, filterValue) => {
-      if (!filterValue) return true;
-      const cost: number = row.getValue(id);
-      const { min, max } = filterValue;
-      const costPercent = cost * 100;
-
-      if (min !== null && costPercent > min) return false;
-      if (max !== null && costPercent < max) return false;
-
-      return true;
-    },
-    cell: (info) => {
-      const value = info.getValue<number>();
-      const percent = Math.round(value * 100);
-
-      const style = {
-        color: percent < 0 ? "red" : percent > 0 ? "green" : "inherit",
-        fontWeight: 500,
-      };
-
-      return <span style={style}>{percent}%</span>;
-    },
+    enableColumnFilter: false,
   }),
 ] as ColumnDef<BackpackItem>[];
 
@@ -1535,7 +1544,7 @@ export const columnsFaceCovers = [
       return (
         <div className="flex items-center gap-2">
           <Link href={`/item/${row.id}`}>
-            <span className="text-sm truncate hover:text-chart-2 max-w-[30rem] block">
+            <span className="text-sm truncate hover:text-chart-2 max-w-[15rem] block">
               {name}
             </span>
           </Link>
@@ -1543,6 +1552,7 @@ export const columnsFaceCovers = [
       );
     },
   }),
+
   columnHelperFaceCovers.accessor((row) => row.properties?.class ?? "", {
     header: (info) => <DefaultHeader info={info} name="Armor Class" />,
     id: "class",
@@ -1554,12 +1564,12 @@ export const columnsFaceCovers = [
 
       return armor > 0 ? (
         <>
-          <div className="w-20">
+          <div className="w-20 text-center">
             <span>{armor}</span>
           </div>
         </>
       ) : (
-        <span className="italic text-gray-400 text-sm">N/A</span>
+        <span className="italic text-muted-foreground text-sm">N/A</span>
       );
     },
   }),
@@ -1599,10 +1609,12 @@ export const columnsFaceCovers = [
       const ricochet: number | null = info.getValue();
 
       if (ricochet == null)
-        return <span className="italic text-gray-400 text-sm">N/A</span>;
+        return (
+          <span className="italic text-muted-foreground text-sm">N/A</span>
+        );
 
       return (
-        <div className="flex items-center gap-2">
+        <div className="">
           <span>{RicochetChanceFormat(ricochet)}</span>
         </div>
       );
@@ -1652,17 +1664,7 @@ export const columnsFaceCovers = [
   columnHelperFaceCovers.accessor("properties.ergoPenalty", {
     id: "ergoPenalty",
     header: (info) => <DefaultHeader info={info} name="ErgoPen" />,
-    filterFn: (row, id, filterValue) => {
-      if (!filterValue) return true;
-      const cost: number = row.getValue(id);
-      const { min, max } = filterValue;
-      const costPercent = cost * 100;
-
-      if (min !== null && costPercent > min) return false;
-      if (max !== null && costPercent < max) return false;
-
-      return true;
-    },
+    filterFn: UniversalNumberFormatFn,
     cell: (info) => {
       const initialValue = info.getValue<number>();
 
@@ -1674,14 +1676,12 @@ export const columnsFaceCovers = [
 
       const percent = Math.round(initialValue * 100);
 
-      const style = {
-        color: percent < 0 ? "red" : percent > 0 ? "green" : "inherit",
-        fontWeight: 500,
-      };
+      const className =
+        percent < 0 ? "text-chart-3" : percent > 0 ? "text-chart-2" : "inherit";
 
       return (
         <div className="max-w-20">
-          <span style={style}>{percent}%</span>
+          <span className={`${className} font-medium`}>{percent}%</span>
         </div>
       );
     },
@@ -1689,17 +1689,7 @@ export const columnsFaceCovers = [
   columnHelperFaceCovers.accessor("properties.speedPenalty", {
     id: "speedPenalty",
     header: (info) => <DefaultHeader info={info} name="SpeedPen" />,
-    filterFn: (row, id, filterValue) => {
-      if (!filterValue) return true;
-      const cost: number = row.getValue(id);
-      const { min, max } = filterValue;
-      const costPercent = cost * 100;
-
-      if (min !== null && costPercent > min) return false;
-      if (max !== null && costPercent < max) return false;
-
-      return true;
-    },
+    filterFn: UniversalNumberFormatFn,
     cell: (info) => {
       const value = info.getValue<number>();
 
@@ -1710,14 +1700,12 @@ export const columnsFaceCovers = [
       }
 
       const percent = Math.round(value * 100);
-      const style = {
-        color: percent < 0 ? "red" : percent > 0 ? "green" : "inherit",
-        fontWeight: 500,
-      };
+      const className =
+        percent < 0 ? "text-chart-3" : percent > 0 ? "text-chart-2" : "inherit";
 
       return (
         <div className="max-w-20">
-          <span style={style}>{percent}%</span>
+          <span className={`${className} font-medium`}>{percent}%</span>
         </div>
       );
     },
@@ -1726,17 +1714,7 @@ export const columnsFaceCovers = [
   columnHelperFaceCovers.accessor("properties.turnPenalty", {
     header: (info) => <DefaultHeader info={info} name="TurnPen" />,
     id: "turnPenalty",
-    filterFn: (row, id, filterValue) => {
-      if (!filterValue) return true;
-      const cost: number = row.getValue(id);
-      const { min, max } = filterValue;
-      const costPercent = cost * 100;
-
-      if (min !== null && costPercent > min) return false;
-      if (max !== null && costPercent < max) return false;
-
-      return true;
-    },
+    filterFn: UniversalNumberFormatFn,
     cell: (info) => {
       const value = info.getValue<number>();
 
@@ -1747,15 +1725,31 @@ export const columnsFaceCovers = [
       }
 
       const percent = Math.round(value * 100);
-      const style = {
-        color: percent < 0 ? "red" : percent > 0 ? "green" : "inherit",
-        fontWeight: 500,
-      };
+      const className =
+        percent < 0 ? "text-chart-3" : percent > 0 ? "text-chart-2" : "inherit";
 
       return (
         <div className="max-w-20">
-          <span style={style}>{percent}%</span>
+          <span className={`${className} font-medium`}>{percent}%</span>
         </div>
+      );
+    },
+  }),
+  columnHelperFaceCovers.accessor("avg24hPrice", {
+    id: "avg24hPrice",
+    filterFn: UniversalNumberFormatFn,
+    header: (info) => <DefaultHeader info={info} name="Avg Flea Price" />,
+    cell: (info) => {
+      const value = info.getValue<number | null | undefined>();
+      return value != null ? (
+        <div className="flex flex-col">
+          <span className="text-sm text-gray-700">Avg</span>
+          <span className="text-base font-medium">
+            {value.toLocaleString("de-DE")}₽
+          </span>
+        </div>
+      ) : (
+        <span className="text-gray-400 italic">N/A</span>
       );
     },
   }),
@@ -1768,7 +1762,7 @@ export const columnsFaceCovers = [
       return (
         <div className="max-w-10">
           <a
-            className="text-chart-1 hover:text-gray-700 underline text-sm  "
+            className="text-muted-foreground hover:text-foreground underline text-sm  "
             href={wikiLink}
             target="_blank"
             rel="noopener noreferrer"
@@ -1782,7 +1776,7 @@ export const columnsFaceCovers = [
   }),
 ] as ColumnDef<ArmorsItem>[];
 
-//Columns /face-covers
+//Columns /Keys
 const columnHelperKeys = createColumnHelper<KeyItem>();
 export const columnsKeys = [
   columnHelperKeys.accessor((row) => row.gridImageLink, {
@@ -1879,7 +1873,7 @@ export const columnsKeys = [
       return (
         <div className="max-w-10">
           <a
-            className="text-chart-2 hover:text-gray-700 underline text-sm  "
+            className="text-foreground/80 hover:text-foreground underline text-sm  "
             href={wikiLink}
             target="_blank"
             rel="noopener noreferrer"
@@ -2239,11 +2233,11 @@ export const columnsHelmets = [
       return (
         <Tooltip>
           <TooltipTrigger asChild>
-            <div className="w-8 flex justify-center cursor-default text-red-600">
+            <div className="w-8 flex justify-center cursor-default text-chart-3">
               {blocksHeadset ? (
                 <X size={20} />
               ) : (
-                <Check size={20} className="text-green-600" />
+                <Check size={20} className="text-chart-2" />
               )}
             </div>
           </TooltipTrigger>
@@ -2285,14 +2279,12 @@ export const columnsHelmets = [
 
       const percent = Math.round(initialValue * 100);
 
-      const style = {
-        color: percent < 0 ? "red" : percent > 0 ? "green" : "inherit",
-        fontWeight: 500,
-      };
+      const className =
+        percent < 0 ? "text-chart-3" : percent > 0 ? "text-chart-2" : "inherit";
 
       return (
         <div className="max-w-20">
-          <span style={style}>{percent}%</span>
+          <span className={`${className} font-medium`}>{percent}%</span>
         </div>
       );
     },
@@ -2311,14 +2303,13 @@ export const columnsHelmets = [
       }
 
       const percent = Math.round(value * 100);
-      const style = {
-        color: percent < 0 ? "red" : percent > 0 ? "green" : "inherit",
-        fontWeight: 500,
-      };
+
+      const className =
+        percent < 0 ? "text-chart-3" : percent > 0 ? "text-chart-2" : "inherit";
 
       return (
         <div className="max-w-20">
-          <span style={style}>{percent}%</span>
+          <span className={`${className} font-medium`}>{percent}%</span>
         </div>
       );
     },
@@ -2338,28 +2329,26 @@ export const columnsHelmets = [
       }
 
       const percent = Math.round(value * 100);
-      const style = {
-        color: percent < 0 ? "red" : percent > 0 ? "green" : "inherit",
-        fontWeight: 500,
-      };
+      const className =
+        percent < 0 ? "text-chart-3" : percent > 0 ? "text-chart-2" : "inherit";
 
       return (
         <div className="max-w-20">
-          <span style={style}>{percent}%</span>
+          <span className={`${className} font-medium`}>{percent}%</span>
         </div>
       );
     },
   }),
   columnHelperHelmets.accessor((row) => row.wikiLink, {
     id: "wikiLink",
-    header: (info) => <DefaultHeader info={info} name="WikiLink" />,
+    header: (info) => <DefaultHeader info={info} name="Wiki" />,
     cell: (info) => {
       const wikiLink = info.getValue();
 
       return (
         <div className="max-w-10">
           <a
-            className="text-chart-2 hover:text-gray-700 underline text-sm  "
+            className="text-foreground/80 hover:text-foreground underline text-sm  "
             href={wikiLink}
             target="_blank"
             rel="noopener noreferrer"
@@ -2505,14 +2494,14 @@ export const columnsGrenades = [
   }),
   columnHelperGrenades.accessor((row) => row.wikiLink, {
     id: "wikiLink",
-    header: (info) => <DefaultHeader info={info} name="WikiLink" />,
+    header: (info) => <DefaultHeader info={info} name="Wiki" />,
     cell: (info) => {
       const wikiLink = info.getValue();
 
       return (
         <div className="max-w-10">
           <a
-            className="text-chart-1 hover:text-gray-700 underline text-sm  "
+            className="text-muted-foreground hover:text-foreground underline text-sm  "
             href={wikiLink}
             target="_blank"
             rel="noopener noreferrer"
@@ -2601,7 +2590,9 @@ export const columnsHeadsets = [
           <>
             <Tooltip>
               <TooltipTrigger>
-                {HeadsetsDistanceFormat(distanceModifier)}
+                <span className="text-chart-2">
+                  {HeadsetsDistanceFormat(distanceModifier)}
+                </span>
               </TooltipTrigger>
               <TooltipContent className="max-w-xs text-sm">
                 Increases the maximum range from which you can hear sounds in
@@ -2629,7 +2620,9 @@ export const columnsHeadsets = [
         <>
           <Tooltip>
             <TooltipTrigger>
-              {HeadsetsDistortionFormat(distortion)}
+              <span className="text-chart-3">
+                {HeadsetsDistortionFormat(distortion)}
+              </span>
             </TooltipTrigger>
             <TooltipContent className="max-w-xs text-sm">
               Indicates how much the audio is distorted by the headset. Lower
@@ -2670,7 +2663,7 @@ export const columnsHeadsets = [
       return (
         <div className="max-w-10">
           <a
-            className="text-chart-1 hover:text-gray-700 underline text-sm  "
+            className="text-muted-foreground hover:text-foreground underline text-sm  "
             href={wikiLink}
             target="_blank"
             rel="noopener noreferrer"
@@ -3402,41 +3395,25 @@ export const columnsContainer = [
       );
     },
   }),
-  columnHelperContainer.accessor((row) => row.category?.name ?? "", {
+  columnHelperContainer.accessor((row) => row.category?.parent?.name ?? "", {
     id: "category",
     header: (info) => <DefaultHeader info={info} name="Category" />,
-    filterFn: (row, columnId, filterValue) => {
-      const value = row.original.category?.name ?? "";
-      return value.toLowerCase().includes(filterValue.toLowerCase());
+    filterFn: (row, _columnId, filterValue) => {
+      const categoryName = row.original.category?.name ?? "";
+      return categoryName === filterValue;
     },
     cell: (info) => {
       const row = info.row.original;
       const name = row.category?.name;
+      const parentName = row.category?.parent?.name;
 
       return name ? (
-        <span className="text-sm font-medium">{name}</span>
-      ) : (
-        <span className="text-muted italic">N/A</span>
-      );
-    },
-  }),
-  columnHelperContainer.accessor("wikiLink", {
-    header: (info) => <DefaultHeader info={info} name="Wiki" />,
-    cell: (info) => {
-      const wikiLink = info.getValue();
-      return wikiLink ? (
-        <div className="">
-          <a
-            className="text-chart-2 hover:text-gray-600 underline text-sm flex items-center "
-            href={wikiLink}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Wiki
-          </a>
+        <div className="flex flex-col">
+          <span className="text-sm text-muted">{parentName}</span>
+          <span className="text-base font-medium">{name}</span>
         </div>
       ) : (
-        <span className="text-gray-600 italic">N/A</span>
+        <span className="text-muted italic">N/A</span>
       );
     },
   }),
@@ -3507,6 +3484,26 @@ export const columnsContainer = [
       },
     }
   ),
+  columnHelperContainer.accessor("wikiLink", {
+    header: (info) => <DefaultHeader info={info} name="Wiki" />,
+    cell: (info) => {
+      const wikiLink = info.getValue();
+      return wikiLink ? (
+        <div className="">
+          <a
+            className="text-foreground/8- hover:text-foreground underline text-sm "
+            href={wikiLink}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Wiki
+          </a>
+        </div>
+      ) : (
+        <span className="text-gray-600 italic">N/A</span>
+      );
+    },
+  }),
 ] as ColumnDef<BaseItem>[];
 
 //Column Barrels | /weapon-mods/vital parts
@@ -3999,7 +3996,7 @@ export const columnsMagazines = [
   }),
 ] as ColumnDef<MagazineItem>[];
 
-//Column ItemPropertiesWeaponMod | /weapon-mods/
+//Column ItemPropertiesWeaponMod
 const ItemPropertiesWeaponMod = createColumnHelper<ItemPropertiesWeaponMod>();
 export const columnsItemPropertiesWeaponMod = [
   ItemPropertiesWeaponMod.accessor((row) => row.gridImageLink, {
@@ -4181,3 +4178,202 @@ export const columnsItemPropertiesWeaponMod = [
     enableColumnFilter: false,
   }),
 ] as ColumnDef<ItemPropertiesWeaponMod>[];
+
+//Column ItemPropertiesGlasses
+const ItemPropertiesGlasses = createColumnHelper<ItemPropertiesGlasses>();
+export const columnsItemPropertiesGlasses = [
+  ItemPropertiesGlasses.accessor((row) => row.gridImageLink, {
+    id: "icon",
+    header: (info) => <DefaultHeader info={info} name="Icon" />,
+    cell: (info) => {
+      const name = info.getValue();
+      const row = info.row.original;
+
+      return (
+        <Link href={`/item/${row.id}`}>
+          <div className="flex items-center gap-2 h-25">
+            <Image
+              src={row.gridImageLink}
+              alt={name}
+              width={75}
+              height={75}
+              className="aspect-square object-contain"
+            />
+          </div>
+        </Link>
+      );
+    },
+    enableSorting: false,
+    enableColumnFilter: false,
+  }),
+  ItemPropertiesGlasses.accessor((row) => row.name, {
+    filterFn: "includesString",
+    id: "name",
+    header: (info) => <DefaultHeader info={info} name="Name" />,
+    cell: (info) => {
+      const name = info.getValue();
+      const row = info.row.original;
+
+      return (
+        <div className="flex items-center gap-2">
+          <Link href={`/item/${row.id}`}>
+            <span className="text-sm truncate hover:text-chart-2 max-w-[15rem] block">
+              {name}
+            </span>
+          </Link>
+        </div>
+      );
+    },
+  }),
+  ItemPropertiesGlasses.accessor((row) => row.category?.parent?.name ?? "", {
+    id: "category",
+    header: (info) => <DefaultHeader info={info} name="Category" />,
+    filterFn: (row, _columnId, filterValue) => {
+      const categoryName = row.original.category?.name ?? "";
+      return categoryName === filterValue;
+    },
+    cell: (info) => {
+      const row = info.row.original;
+      const name = row.category?.name;
+      const parentName = row.category?.parent?.name;
+
+      return name ? (
+        <div className="flex flex-col">
+          <span className="text-sm text-muted">{parentName}</span>
+          <span className="text-base font-medium">{name}</span>
+        </div>
+      ) : (
+        <span className="text-muted italic">N/A</span>
+      );
+    },
+  }),
+  ItemPropertiesGlasses.accessor((row) => row.properties?.class ?? "", {
+    header: (info) => <DefaultHeader info={info} name="Armor Class" />,
+    id: "class",
+    filterFn: (row, columnId, filterValue) =>
+      String(row.getValue(columnId)) === filterValue,
+    cell: (info) => {
+      const armor = info.getValue();
+
+      return armor > 0 ? (
+        <>
+          <div className="w-20 text-center">
+            <span>{armor}</span>
+          </div>
+        </>
+      ) : (
+        <div className="w-20 text-center">
+          <span>0</span>
+        </div>
+      );
+    },
+  }),
+  ItemPropertiesGlasses.accessor("properties.material.name", {
+    header: (info) => <DefaultHeader info={info} name="Material" />,
+    id: "material",
+    filterFn: (row, columnId, filterValue) =>
+      String(row.getValue(columnId)) === filterValue,
+    cell: (info) => {
+      const name = info.getValue();
+      return (
+        <div className="flex grow max-w-40 ">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span className="text-sm truncate cursor-pointer max-w-[300px] block">
+                {name}
+              </span>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{name}</p>
+            </TooltipContent>
+          </Tooltip>
+        </div>
+      );
+    },
+  }),
+
+  ItemPropertiesGlasses.accessor("properties.blindnessProtection", {
+    id: "blindnessProtection",
+    filterFn: UniversalNumberFormatFn,
+    header: (info) => <DefaultHeader info={info} name="Blindness Protection" />,
+    cell: (info) => {
+      const recoil = info.getValue();
+      const formatRecoil = Math.round(recoil * 100);
+      const className =
+        formatRecoil < 0
+          ? "text-chart-2"
+          : formatRecoil > 0
+          ? "text-chart-2"
+          : "inherit";
+
+      return formatRecoil ? (
+        <div>
+          <span className={`${className} font-medium`}>{formatRecoil}%</span>
+        </div>
+      ) : (
+        <span>0</span>
+      );
+    },
+  }),
+  ItemPropertiesGlasses.accessor("weight", {
+    header: (info) => <DefaultHeader info={info} name="Weight" />,
+    id: "weight",
+    filterFn: (row, id, filterValue) => {
+      if (!filterValue) return true;
+
+      const cost: number = row.getValue(id);
+      const { min, max } = filterValue;
+
+      if (min !== null && cost < min) return false;
+      if (max !== null && cost > max) return false;
+
+      return true;
+    },
+    cell: (info) => {
+      return (
+        <>
+          <span>{info.getValue()}kg</span>
+        </>
+      );
+    },
+  }),
+  ItemPropertiesGlasses.accessor("avg24hPrice", {
+    id: "avg24hPrice",
+    filterFn: UniversalNumberFormatFn,
+    header: (info) => <DefaultHeader info={info} name="Avg Flea Price (24h)" />,
+    cell: (info) => {
+      const value = info.getValue<number | null | undefined>();
+      return value != null ? (
+        <div className="flex flex-col">
+          <span className="text-sm text-gray-700">Avg</span>
+          <span className="text-base font-medium">
+            {value.toLocaleString("de-DE")}₽
+          </span>
+        </div>
+      ) : (
+        <span className="text-gray-400 italic">N/A</span>
+      );
+    },
+  }),
+  ItemPropertiesGlasses.accessor((row) => row.wikiLink, {
+    id: "wikiLink",
+    header: (info) => <DefaultHeader info={info} name="Wiki" />,
+    cell: (info) => {
+      const wikiLink = info.getValue();
+
+      return (
+        <div className="max-w-10">
+          <a
+            className="text-foreground/70 hover:text-foreground/80 underline text-sm  "
+            href={wikiLink}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Wiki
+          </a>
+        </div>
+      );
+    },
+    enableColumnFilter: false,
+  }),
+] as ColumnDef<ItemPropertiesGlasses>[];

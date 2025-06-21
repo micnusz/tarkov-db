@@ -16,6 +16,7 @@ import {
   GET_FLASHLIGHTS,
   GET_FOREGRIPS,
   GET_GAS_BLOCKS,
+  GET_GLASSES,
   GET_GRENADES,
   GET_HANDGUARD,
   GET_HEADSETS,
@@ -65,6 +66,7 @@ import {
   GetHelmets,
   GetItemById,
   GetItemCategories,
+  GetItemPropertiesGlasses,
   GetItemPropertiesWeaponMod,
   GetItems,
   GetItemsSearchBar,
@@ -400,6 +402,14 @@ export const client = {
   async getAuxiliaries(): Promise<GetItemPropertiesWeaponMod["items"]> {
     const data = await graphqlClient.request<GetItemPropertiesWeaponMod>(
       GET_AUXILIARIES
+    );
+    return data.items;
+  },
+
+  //items/face-covers/ Glasses
+  async getGlasses(): Promise<GetItemPropertiesGlasses["items"]> {
+    const data = await graphqlClient.request<GetItemPropertiesGlasses>(
+      GET_GLASSES
     );
     return data.items;
   },
