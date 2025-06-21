@@ -5,41 +5,41 @@ import { Button } from "@/components/ui/button";
 import { lazy, Suspense, useState } from "react";
 
 const componentsMap = {
-  barrels: lazy(
+  bipods: lazy(
     () =>
       import(
-        "@/components/weapon-mods/VitalParts/dynamic-import/VitalPartsBarrels"
+        "@/components/weapon-mods/FunctionalMods/dynamic-import/FunctionalModsBipods"
       )
   ),
-  gasBlocks: lazy(
+  foregrips: lazy(
     () =>
       import(
-        "@/components/weapon-mods/VitalParts/dynamic-import/VitalPartsGasBlocks"
+        "@/components/weapon-mods/FunctionalMods/dynamic-import/FunctionalModsForegrips"
       )
   ),
-  handguards: lazy(
+  flashlights: lazy(
     () =>
       import(
-        "@/components/weapon-mods/VitalParts/dynamic-import/VitalPartsHandguards"
+        "@/components/weapon-mods/FunctionalMods/dynamic-import/FunctionalModsFlashlights"
       )
   ),
-  pistolGrips: lazy(
+  tacticalDevices: lazy(
     () =>
       import(
-        "@/components/weapon-mods/VitalParts/dynamic-import/VitalPartsPistolGrips"
+        "@/components/weapon-mods/FunctionalMods/dynamic-import/FunctionalModsTacticalDevices"
       )
   ),
-  receivers: lazy(
+  auxiliary: lazy(
     () =>
       import(
-        "@/components/weapon-mods/VitalParts/dynamic-import/VitalPartsReceiver"
+        "@/components/weapon-mods/FunctionalMods/dynamic-import/FunctionalModsParts"
       )
   ),
 };
 
-const VitalPartsClientPage = () => {
+const FunctionalModsClientPage = () => {
   const [selectedComponent, setSelectedComponent] =
-    useState<keyof typeof componentsMap>("barrels");
+    useState<keyof typeof componentsMap>("bipods");
   const DynamicComponent = componentsMap[selectedComponent];
 
   const formattedTitle =
@@ -49,7 +49,7 @@ const VitalPartsClientPage = () => {
   return (
     <div className="w-full h-full flex-col justify-center items-center p-4 md:p-10">
       <h1 className="scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance">
-        Vital Parts: {formattedTitle}
+        Functional Mods: {formattedTitle}
       </h1>
       {/* Table stwitch */}
       <div className="pt-4 flex gap-2 flex-wrap justify-center">
@@ -87,4 +87,4 @@ const VitalPartsClientPage = () => {
   );
 };
 
-export default VitalPartsClientPage;
+export default FunctionalModsClientPage;

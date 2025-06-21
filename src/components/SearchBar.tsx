@@ -59,7 +59,7 @@ const SearchBar = () => {
         }}
       >
         <DialogTrigger asChild>
-          <div className="flex flex-grow flex-shrink max-w-60 md:w-60 duration-200 ease-in-out rounded-md border-3 border-input bg-muted/20 px-3 py-1 text-sm text-muted-foreground shadow-sm cursor-pointer transition-colors hover:border-chart-1 hover:text-foreground ">
+          <div className="flex flex-grow flex-shrink max-w-60 md:w-60 duration-200 ease-in-out rounded-md border-3 border-input bg-accent px-3 py-1 text-sm text-muted-foreground shadow-sm cursor-pointer transition-colors hover:border-chart-1 hover:text-foreground ">
             <span>Search (Global)</span>
           </div>
         </DialogTrigger>

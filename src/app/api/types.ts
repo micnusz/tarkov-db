@@ -89,14 +89,7 @@ export type ScopeItem = BaseItem & {
   };
 };
 
-export type BarrelItem = BaseItem & {
-  properties: {
-    recoilModifier: number;
-    ergonomics: number;
-  };
-};
-
-export type GasBlock = BaseItem & {
+export type ItemPropertiesWeaponMod = BaseItem & {
   properties: {
     recoilModifier: number;
     ergonomics: number;
@@ -112,6 +105,16 @@ export type GrenadeItem = BaseItem & {
     minExplosionDistance: number;
     maxExplosionDistance: number;
     contusionRadius: number;
+  };
+};
+
+export type MagazineItem = BaseItem & {
+  properties: {
+    capacity: number;
+    ergonomics: number;
+    malfunctionChance: number;
+    loadModifier: number;
+    ammoCheckModifier: number;
   };
 };
 
@@ -298,12 +301,12 @@ export type GetScopes = {
   items: ScopeItem[];
 };
 
-export type GetBarrels = {
-  items: BarrelItem[];
+export type GetItemPropertiesWeaponMod = {
+  items: ItemPropertiesWeaponMod[];
 };
 
-export type GetGasBlocks = {
-  items: GasBlock[];
+export type GetMagazines = {
+  items: MagazineItem[];
 };
 
 export type GetGrenade = {

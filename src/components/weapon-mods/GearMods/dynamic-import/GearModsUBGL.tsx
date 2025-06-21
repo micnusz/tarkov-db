@@ -1,22 +1,26 @@
 "use client";
 
 import { client } from "@/app/api/client";
-import { columnsBarrels } from "@/components/data-table/columns";
+import {
+  columnsGasBlock,
+  columnsItemPropertiesWeaponMod,
+} from "@/components/data-table/columns";
 import { DataTableClient } from "@/components/data-table/data-table-client";
+import UniversalCurrencyFormat from "@/components/modules/universal-currency-format";
 import UniversalFormat from "@/components/modules/universal-format";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
-const VitalPartsBrrels = () => {
-  const { data: itemBarrels } = useSuspenseQuery({
-    queryKey: ["vital-parts-barrels"],
-    queryFn: () => client.getBarrels(),
+const GearModsUBGL = () => {
+  const { data: itemUBGL } = useSuspenseQuery({
+    queryKey: ["gear-mods-ubgl"],
+    queryFn: () => client.getUBGL(),
   });
 
   return (
     <div>
       <DataTableClient
-        data={itemBarrels}
-        columns={columnsBarrels}
+        data={itemUBGL}
+        columns={columnsItemPropertiesWeaponMod}
         filters={[
           {
             id: "ergoPenalty",
@@ -36,10 +40,19 @@ const VitalPartsBrrels = () => {
             step: 0.01,
             formatter: UniversalFormat,
           },
+          {
+            id: "weight",
+            label: "Weight",
+            filterType: "slider",
+            min: 1.35,
+            max: 1.5,
+            step: 0.01,
+            formatter: (val) => `${val}kg`,
+          },
         ]}
       />
     </div>
   );
 };
 
-export default VitalPartsBrrels;
+export default GearModsUBGL;

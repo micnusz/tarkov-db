@@ -2,16 +2,16 @@ import {
   Ammo,
   ArmorsItem,
   BackpackItem,
-  BarrelItem,
   Barter,
   BarterItem,
   BaseItem,
   CraftingProperties,
-  GasBlock,
   GrenadeItem,
   HeadsetItem,
   Item,
+  ItemPropertiesWeaponMod,
   KeyItem,
+  MagazineItem,
   ScopeItem,
   Task,
   WeaponItem,
@@ -34,6 +34,7 @@ import HeadsetsDistortionFormat from "../modules/headsets-distortion-format";
 import { ricochetFilterFn } from "../modules/ricochet-filter-fn";
 import { RangeFilterFormat } from "../modules/range-filter-format";
 import { universalPenaltyFilter } from "../modules/universal-penalty-filter";
+import malfunctionChanceFormat from "../modules/malfunction-chance-format";
 
 //Column Barter
 const columnHelperBarter = createColumnHelper<Barter>();
@@ -1892,7 +1893,7 @@ export const columnsKeys = [
   }),
 ] as ColumnDef<KeyItem>[];
 
-//Columns /scopes
+//Columns /weapon-mods/scopes Scopes
 const columnHelperScopes = createColumnHelper<ScopeItem>();
 export const columnsScopes = [
   columnHelperScopes.accessor((row) => row.gridImageLink, {
@@ -1941,7 +1942,7 @@ export const columnsScopes = [
   columnHelperScopes.accessor("properties.ergonomics", {
     id: "ergoPenalty",
     header: (info) => <DefaultHeader info={info} name="Ergo" />,
-    filterFn: universalPenaltyFilter,
+    filterFn: UniversalNumberFormatFn,
     cell: (info) => {
       const initialValue = info.getValue<number>();
 
@@ -1960,25 +1961,6 @@ export const columnsScopes = [
         <div className="max-w-20">
           <span style={style}>{initialValue}</span>
         </div>
-      );
-    },
-  }),
-
-  columnHelperScopes.accessor("avg24hPrice", {
-    id: "avg24hPrice",
-    filterFn: UniversalNumberFormatFn,
-    header: (info) => <DefaultHeader info={info} name="Avg Flea Price (24h)" />,
-    cell: (info) => {
-      const value = info.getValue<number | null | undefined>();
-      return value != null ? (
-        <div className="flex flex-col">
-          <span className="text-sm text-gray-700">Avg</span>
-          <span className="text-base font-medium">
-            {value.toLocaleString("de-DE")}₽
-          </span>
-        </div>
-      ) : (
-        <span className="text-gray-400 italic">N/A</span>
       );
     },
   }),
@@ -2023,6 +2005,7 @@ export const columnsScopes = [
   }),
   columnHelperScopes.accessor((row) => row.properties?.sightingRange, {
     id: "sightingRange",
+    filterFn: UniversalNumberFormatFn,
     header: (info) => <DefaultHeader info={info} name="Sight Modes" />,
     cell: (info) => {
       const sightingRange = info.getValue() as number | undefined;
@@ -2033,6 +2016,38 @@ export const columnsScopes = [
         </div>
       ) : (
         <span className="italic font-gray-600">N/A</span>
+      );
+    },
+  }),
+  columnHelperScopes.accessor("weight", {
+    header: (info) => <DefaultHeader info={info} name="Weight" />,
+    id: "weight",
+    filterFn: UniversalNumberFormatFn,
+    cell: (info) => {
+      return (
+        <>
+          <div className="w-20">
+            <span>{info.getValue()}kg</span>
+          </div>
+        </>
+      );
+    },
+  }),
+  columnHelperScopes.accessor("avg24hPrice", {
+    id: "avg24hPrice",
+    filterFn: UniversalNumberFormatFn,
+    header: (info) => <DefaultHeader info={info} name="Avg Flea Price (24h)" />,
+    cell: (info) => {
+      const value = info.getValue<number | null | undefined>();
+      return value != null ? (
+        <div className="flex flex-col">
+          <span className="text-sm text-gray-700">Avg</span>
+          <span className="text-base font-medium">
+            {value.toLocaleString("de-DE")}₽
+          </span>
+        </div>
+      ) : (
+        <span className="text-gray-400 italic">N/A</span>
       );
     },
   }),
@@ -3495,7 +3510,7 @@ export const columnsContainer = [
 ] as ColumnDef<BaseItem>[];
 
 //Column Barrels | /weapon-mods/vital parts
-const columnHelperBarrels = createColumnHelper<BarrelItem>();
+const columnHelperBarrels = createColumnHelper<ItemPropertiesWeaponMod>();
 export const columnsBarrels = [
   columnHelperBarrels.accessor((row) => row.gridImageLink, {
     id: "icon",
@@ -3629,10 +3644,10 @@ export const columnsBarrels = [
     },
     enableColumnFilter: false,
   }),
-] as ColumnDef<BarrelItem>[];
+] as ColumnDef<ItemPropertiesWeaponMod>[];
 
 //Column Gas Block | /weapon-mods/vital parts
-const columnHelperGasBlock = createColumnHelper<GasBlock>();
+const columnHelperGasBlock = createColumnHelper<ItemPropertiesWeaponMod>();
 export const columnsGasBlock = [
   columnHelperGasBlock.accessor((row) => row.gridImageLink, {
     id: "icon",
@@ -3730,6 +3745,28 @@ export const columnsGasBlock = [
       );
     },
   }),
+  columnHelperArmors.accessor("weight", {
+    header: (info) => <DefaultHeader info={info} name="Weight" />,
+    id: "weight",
+    filterFn: (row, id, filterValue) => {
+      if (!filterValue) return true;
+
+      const cost: number = row.getValue(id);
+      const { min, max } = filterValue;
+
+      if (min !== null && cost < min) return false;
+      if (max !== null && cost > max) return false;
+
+      return true;
+    },
+    cell: (info) => {
+      return (
+        <>
+          <span>{info.getValue()}kg</span>
+        </>
+      );
+    },
+  }),
   columnHelperScopes.accessor("avg24hPrice", {
     id: "avg24hPrice",
     filterFn: UniversalNumberFormatFn,
@@ -3769,4 +3806,378 @@ export const columnsGasBlock = [
     },
     enableColumnFilter: false,
   }),
-] as ColumnDef<GasBlock>[];
+] as ColumnDef<ItemPropertiesWeaponMod>[];
+
+//Column Magazines | /weapon-mods/gear-mods
+const columnHelperMagazines = createColumnHelper<MagazineItem>();
+export const columnsMagazines = [
+  columnHelperMagazines.accessor((row) => row.gridImageLink, {
+    id: "icon",
+    header: (info) => <DefaultHeader info={info} name="Icon" />,
+    cell: (info) => {
+      const name = info.getValue();
+      const row = info.row.original;
+
+      return (
+        <Link href={`/item/${row.id}`}>
+          <div className="flex items-center gap-2 h-25">
+            <Image
+              src={row.gridImageLink}
+              alt={name}
+              width={75}
+              height={75}
+              className="aspect-square object-contain"
+            />
+          </div>
+        </Link>
+      );
+    },
+    enableSorting: false,
+    enableColumnFilter: false,
+  }),
+  columnHelperMagazines.accessor((row) => row.name, {
+    filterFn: "includesString",
+    id: "name",
+    header: (info) => <DefaultHeader info={info} name="Name" />,
+    cell: (info) => {
+      const name = info.getValue();
+      const row = info.row.original;
+
+      return (
+        <div className="flex items-center gap-2">
+          <Link href={`/item/${row.id}`}>
+            <span className="text-sm truncate hover:text-chart-2 max-w-[20rem] block">
+              {name}
+            </span>
+          </Link>
+        </div>
+      );
+    },
+  }),
+  columnHelperMagazines.accessor((row) => row.properties?.capacity, {
+    filterFn: UniversalNumberFormatFn,
+    id: "capacity",
+    header: (info) => <DefaultHeader info={info} name="Capacity" />,
+    cell: (info) => {
+      const capacity = info.getValue();
+
+      return (
+        <div className="flex items-center gap-2">
+          <span className="text-sm ">{capacity}</span>
+        </div>
+      );
+    },
+  }),
+  columnHelperMagazines.accessor("properties.ergonomics", {
+    id: "ergoPenalty",
+    header: (info) => <DefaultHeader info={info} name="Ergo Modifier" />,
+    filterFn: UniversalNumberFormatFn,
+    cell: (info) => {
+      const initialValue = info.getValue<number>();
+
+      if (!Number.isFinite(initialValue)) {
+        return (
+          <span className="text-muted-foreground text-sm italic">N/A</span>
+        );
+      }
+
+      if (initialValue > 0) {
+        return (
+          <div className="max-w-20">
+            <span className="text-chart-2 font-medium">+{initialValue}</span>
+          </div>
+        );
+      }
+
+      if (initialValue < 0) {
+        return <span className="text-chart-3">{initialValue}</span>;
+      }
+
+      return <span>{initialValue}</span>;
+    },
+  }),
+
+  columnHelperMagazines.accessor("properties.malfunctionChance", {
+    id: "malfunctionChance",
+    filterFn: UniversalNumberFormatFn,
+    header: (info) => <DefaultHeader info={info} name="Malfunction Chance" />,
+    cell: (info) => {
+      const chance = info.getValue();
+      return chance ? (
+        <div>
+          <span>{malfunctionChanceFormat(chance)}</span>
+        </div>
+      ) : (
+        <span className="italic text-gray-600">N/A</span>
+      );
+    },
+  }),
+  columnHelperMagazines.accessor("properties.loadModifier", {
+    id: "loadModifier",
+    filterFn: UniversalNumberFormatFn,
+    header: (info) => <DefaultHeader info={info} name="Loading Modifier" />,
+    cell: (info) => {
+      const recoil = info.getValue();
+      const formatRecoil = Math.round(recoil * 100);
+      const className =
+        formatRecoil < 0
+          ? "text-chart-2"
+          : formatRecoil > 0
+          ? "text-chart-3"
+          : "inherit";
+
+      return formatRecoil ? (
+        <div>
+          <span className={`${className} font-medium`}>{formatRecoil}%</span>
+        </div>
+      ) : (
+        <span>0</span>
+      );
+    },
+  }),
+  columnHelperMagazines.accessor("properties.ammoCheckModifier", {
+    id: "ammoCheckModifier",
+    filterFn: UniversalNumberFormatFn,
+    header: (info) => <DefaultHeader info={info} name="Ammo check Modifier" />,
+    cell: (info) => {
+      const recoil = info.getValue();
+      const formatRecoil = Math.round(recoil * 100);
+      const className =
+        formatRecoil < 0
+          ? "text-chart-2"
+          : formatRecoil > 0
+          ? "text-chart-3"
+          : "inherit";
+
+      return formatRecoil ? (
+        <div>
+          <span className={`${className} font-medium`}>{formatRecoil}%</span>
+        </div>
+      ) : (
+        <span>0</span>
+      );
+    },
+  }),
+  columnHelperMagazines.accessor("avg24hPrice", {
+    id: "avg24hPrice",
+    filterFn: UniversalNumberFormatFn,
+    header: (info) => <DefaultHeader info={info} name="Avg Flea Price (24h)" />,
+    cell: (info) => {
+      const value = info.getValue<number | null | undefined>();
+      return value != null ? (
+        <div className="flex flex-col">
+          <span className="text-sm text-gray-700">Avg</span>
+          <span className="text-base font-medium">
+            {value.toLocaleString("de-DE")}₽
+          </span>
+        </div>
+      ) : (
+        <span className="text-gray-400 italic">N/A</span>
+      );
+    },
+  }),
+  columnHelperMagazines.accessor((row) => row.wikiLink, {
+    id: "wikiLink",
+    header: (info) => <DefaultHeader info={info} name="Wiki" />,
+    cell: (info) => {
+      const wikiLink = info.getValue();
+
+      return (
+        <div className="max-w-10">
+          <a
+            className="text-foreground/70 hover:text-foreground/80 underline text-sm  "
+            href={wikiLink}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Wiki
+          </a>
+        </div>
+      );
+    },
+    enableColumnFilter: false,
+  }),
+] as ColumnDef<MagazineItem>[];
+
+//Column ItemPropertiesWeaponMod | /weapon-mods/
+const ItemPropertiesWeaponMod = createColumnHelper<ItemPropertiesWeaponMod>();
+export const columnsItemPropertiesWeaponMod = [
+  ItemPropertiesWeaponMod.accessor((row) => row.gridImageLink, {
+    id: "icon",
+    header: (info) => <DefaultHeader info={info} name="Icon" />,
+    cell: (info) => {
+      const name = info.getValue();
+      const row = info.row.original;
+
+      return (
+        <Link href={`/item/${row.id}`}>
+          <div className="flex items-center gap-2 h-25">
+            <Image
+              src={row.gridImageLink}
+              alt={name}
+              width={75}
+              height={75}
+              className="aspect-square object-contain"
+            />
+          </div>
+        </Link>
+      );
+    },
+    enableSorting: false,
+    enableColumnFilter: false,
+  }),
+  ItemPropertiesWeaponMod.accessor((row) => row.name, {
+    filterFn: "includesString",
+    id: "name",
+    header: (info) => <DefaultHeader info={info} name="Name" />,
+    cell: (info) => {
+      const name = info.getValue();
+      const row = info.row.original;
+
+      return (
+        <div className="flex items-center gap-2">
+          <Link href={`/item/${row.id}`}>
+            <span className="text-sm truncate hover:text-chart-2 max-w-[30rem] block">
+              {name}
+            </span>
+          </Link>
+        </div>
+      );
+    },
+  }),
+  ItemPropertiesWeaponMod.accessor((row) => row.category?.parent?.name ?? "", {
+    id: "category",
+    header: (info) => <DefaultHeader info={info} name="Category" />,
+    filterFn: (row, _columnId, filterValue) => {
+      const categoryName = row.original.category?.name ?? "";
+      return categoryName === filterValue;
+    },
+    cell: (info) => {
+      const row = info.row.original;
+      const name = row.category?.name;
+      const parentName = row.category?.parent?.name;
+
+      return name ? (
+        <div className="flex flex-col">
+          <span className="text-sm text-muted">{parentName}</span>
+          <span className="text-base font-medium">{name}</span>
+        </div>
+      ) : (
+        <span className="text-muted italic">N/A</span>
+      );
+    },
+  }),
+  ItemPropertiesWeaponMod.accessor("properties.ergonomics", {
+    id: "ergoPenalty",
+    header: (info) => <DefaultHeader info={info} name="Ergo Modifier" />,
+    filterFn: UniversalNumberFormatFn,
+    cell: (info) => {
+      const initialValue = info.getValue<number>();
+
+      if (!Number.isFinite(initialValue)) {
+        return (
+          <span className="text-muted-foreground text-sm italic">N/A</span>
+        );
+      }
+
+      if (initialValue > 0) {
+        return (
+          <div className="max-w-20">
+            <span className="text-chart-2 font-medium">+{initialValue}</span>
+          </div>
+        );
+      }
+
+      if (initialValue < 0) {
+        return <span className="text-chart-3">{initialValue}</span>;
+      }
+
+      return <span>{initialValue}</span>;
+    },
+  }),
+
+  ItemPropertiesWeaponMod.accessor("properties.recoilModifier", {
+    id: "recoilModifier",
+    filterFn: UniversalNumberFormatFn,
+    header: (info) => <DefaultHeader info={info} name="Recoil Modifier" />,
+    cell: (info) => {
+      const recoil = info.getValue();
+      const formatRecoil = Math.round(recoil * 100);
+      const className =
+        formatRecoil < 0
+          ? "text-chart-2"
+          : formatRecoil > 0
+          ? "text-chart-2"
+          : "inherit";
+
+      return formatRecoil ? (
+        <div>
+          <span className={`${className} font-medium`}>{formatRecoil}%</span>
+        </div>
+      ) : (
+        <span>0</span>
+      );
+    },
+  }),
+  ItemPropertiesWeaponMod.accessor("weight", {
+    header: (info) => <DefaultHeader info={info} name="Weight" />,
+    id: "weight",
+    filterFn: (row, id, filterValue) => {
+      if (!filterValue) return true;
+
+      const cost: number = row.getValue(id);
+      const { min, max } = filterValue;
+
+      if (min !== null && cost < min) return false;
+      if (max !== null && cost > max) return false;
+
+      return true;
+    },
+    cell: (info) => {
+      return (
+        <>
+          <span>{info.getValue()}kg</span>
+        </>
+      );
+    },
+  }),
+  ItemPropertiesWeaponMod.accessor("avg24hPrice", {
+    id: "avg24hPrice",
+    filterFn: UniversalNumberFormatFn,
+    header: (info) => <DefaultHeader info={info} name="Avg Flea Price (24h)" />,
+    cell: (info) => {
+      const value = info.getValue<number | null | undefined>();
+      return value != null ? (
+        <div className="flex flex-col">
+          <span className="text-sm text-gray-700">Avg</span>
+          <span className="text-base font-medium">
+            {value.toLocaleString("de-DE")}₽
+          </span>
+        </div>
+      ) : (
+        <span className="text-gray-400 italic">N/A</span>
+      );
+    },
+  }),
+  ItemPropertiesWeaponMod.accessor((row) => row.wikiLink, {
+    id: "wikiLink",
+    header: (info) => <DefaultHeader info={info} name="Wiki" />,
+    cell: (info) => {
+      const wikiLink = info.getValue();
+
+      return (
+        <div className="max-w-10">
+          <a
+            className="text-foreground/70 hover:text-foreground/80 underline text-sm  "
+            href={wikiLink}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Wiki
+          </a>
+        </div>
+      );
+    },
+    enableColumnFilter: false,
+  }),
+] as ColumnDef<ItemPropertiesWeaponMod>[];

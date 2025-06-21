@@ -1,8 +1,9 @@
 "use client";
 
 import { client } from "@/app/api/client";
-import { columnsGasBlock } from "@/components/data-table/columns";
+import { columnsItemPropertiesWeaponMod } from "@/components/data-table/columns";
 import { DataTableClient } from "@/components/data-table/data-table-client";
+import UniversalCurrencyFormat from "@/components/modules/universal-currency-format";
 import UniversalFormat from "@/components/modules/universal-format";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
@@ -16,7 +17,7 @@ const VitalPartsHandguards = () => {
     <div>
       <DataTableClient
         data={itemHandguards}
-        columns={columnsGasBlock}
+        columns={columnsItemPropertiesWeaponMod}
         filters={[
           {
             id: "ergoPenalty",
@@ -35,6 +36,24 @@ const VitalPartsHandguards = () => {
             max: 0,
             step: 0.01,
             formatter: UniversalFormat,
+          },
+          {
+            id: "weight",
+            label: "Weight",
+            filterType: "slider",
+            min: 0.03,
+            max: 0.89,
+            step: 0.01,
+            formatter: (val) => `${val}kg`,
+          },
+          {
+            id: "avg24hPrice",
+            label: "Avg Flea Price",
+            filterType: "slider",
+            min: 0,
+            max: 208000,
+            step: 1000,
+            formatter: UniversalCurrencyFormat,
           },
         ]}
       />

@@ -5,41 +5,35 @@ import { Button } from "@/components/ui/button";
 import { lazy, Suspense, useState } from "react";
 
 const componentsMap = {
-  barrels: lazy(
+  chargingHandles: lazy(
     () =>
       import(
-        "@/components/weapon-mods/VitalParts/dynamic-import/VitalPartsBarrels"
+        "@/components/weapon-mods/GearMods/dynamic-import/GearModsChargingHandles"
       )
   ),
-  gasBlocks: lazy(
+  magazines: lazy(
     () =>
       import(
-        "@/components/weapon-mods/VitalParts/dynamic-import/VitalPartsGasBlocks"
+        "@/components/weapon-mods/GearMods/dynamic-import/GearModsMagazines"
       )
   ),
-  handguards: lazy(
+  mounts: lazy(
     () =>
-      import(
-        "@/components/weapon-mods/VitalParts/dynamic-import/VitalPartsHandguards"
-      )
+      import("@/components/weapon-mods/GearMods/dynamic-import/GearModsMounts")
   ),
-  pistolGrips: lazy(
+  stocks: lazy(
     () =>
-      import(
-        "@/components/weapon-mods/VitalParts/dynamic-import/VitalPartsPistolGrips"
-      )
+      import("@/components/weapon-mods/GearMods/dynamic-import/GearModsStocks")
   ),
-  receivers: lazy(
+  underbarrelGrenadeLauncher: lazy(
     () =>
-      import(
-        "@/components/weapon-mods/VitalParts/dynamic-import/VitalPartsReceiver"
-      )
+      import("@/components/weapon-mods/GearMods/dynamic-import/GearModsUBGL")
   ),
 };
 
-const VitalPartsClientPage = () => {
+const GearModsClientPage = () => {
   const [selectedComponent, setSelectedComponent] =
-    useState<keyof typeof componentsMap>("barrels");
+    useState<keyof typeof componentsMap>("chargingHandles");
   const DynamicComponent = componentsMap[selectedComponent];
 
   const formattedTitle =
@@ -49,7 +43,7 @@ const VitalPartsClientPage = () => {
   return (
     <div className="w-full h-full flex-col justify-center items-center p-4 md:p-10">
       <h1 className="scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance">
-        Vital Parts: {formattedTitle}
+        Gear Mods: {formattedTitle}
       </h1>
       {/* Table stwitch */}
       <div className="pt-4 flex gap-2 flex-wrap justify-center">
@@ -87,4 +81,4 @@ const VitalPartsClientPage = () => {
   );
 };
 
-export default VitalPartsClientPage;
+export default GearModsClientPage;

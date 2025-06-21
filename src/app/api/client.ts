@@ -3,13 +3,18 @@ import {
   GET_AMMO,
   GET_ARMOR_PLATES,
   GET_ARMORS,
+  GET_AUXILIARIES,
   GET_BACKPACK_ID,
   GET_BACKPACKS,
   GET_BARRELS,
   GET_BARTER_ITEMS,
   GET_BARTERS,
+  GET_BIPODS,
+  GET_CHARGING_HANDLES,
   GET_CONTAINERS_ITEMS,
   GET_FACE_COVERS,
+  GET_FLASHLIGHTS,
+  GET_FOREGRIPS,
   GET_GAS_BLOCKS,
   GET_GRENADES,
   GET_HANDGUARD,
@@ -27,8 +32,14 @@ import {
   GET_ITEMS_CATEGORIES,
   GET_ITEMS_SEARCH_BAR,
   GET_KEYS,
+  GET_MAGAZINES,
+  GET_MOUNTS,
+  GET_MUZZLE_DEVICES,
   GET_PISTOL_GRIPS,
+  GET_RECEIVERS,
   GET_SCOPES,
+  GET_STOCKS,
+  GET_TACTICAL_DEVICES,
   GET_TASK_ID_BASE,
   GET_TASK_ID_FAILURE,
   GET_TASK_ID_OBJECTIVES,
@@ -38,6 +49,7 @@ import {
   GET_TASK_ID_TRADERS,
   GET_TASKS,
   GET_TRADERS,
+  GET_UBGL,
   GET_WEAPON_ID,
 } from "@/lib/queries";
 import {
@@ -45,20 +57,20 @@ import {
   GetArmors,
   GetBackpackById,
   GetBackpacks,
-  GetBarrels,
   GetBarterItems,
   GetBarters,
   GetContainerItems,
-  GetGasBlocks,
   GetGrenade,
   GetHeadsets,
   GetHelmets,
   GetItemById,
   GetItemCategories,
+  GetItemPropertiesWeaponMod,
   GetItems,
   GetItemsSearchBar,
   GetItemTask,
   GetKeys,
+  GetMagazines,
   GetOnlyWeapons,
   GetScopes,
   GetTasks,
@@ -268,28 +280,130 @@ export const client = {
   },
 
   //items/weapons-mod/vital-parts, Barrels
-  async getBarrels(): Promise<GetBarrels["items"]> {
-    const data = await graphqlClient.request<GetBarrels>(GET_BARRELS);
+  async getBarrels(): Promise<GetItemPropertiesWeaponMod["items"]> {
+    const data = await graphqlClient.request<GetItemPropertiesWeaponMod>(
+      GET_BARRELS
+    );
     return data.items;
   },
 
   //items/weapons-mod/vital-parts, Gas Blocks
-  async getGasBlocks(): Promise<GetGasBlocks["items"]> {
-    const data = await graphqlClient.request<GetGasBlocks>(GET_GAS_BLOCKS);
+  async getGasBlocks(): Promise<GetItemPropertiesWeaponMod["items"]> {
+    const data = await graphqlClient.request<GetItemPropertiesWeaponMod>(
+      GET_GAS_BLOCKS
+    );
     return data.items;
   },
 
   //items/weapons-mod/vital-parts, Handguards
-  async getHandguards(): Promise<GetGasBlocks["items"]> {
-    const data = await graphqlClient.request<GetGasBlocks>(GET_HANDGUARD);
+  async getHandguards(): Promise<GetItemPropertiesWeaponMod["items"]> {
+    const data = await graphqlClient.request<GetItemPropertiesWeaponMod>(
+      GET_HANDGUARD
+    );
     return data.items;
   },
 
   //items/weapons-mod/vital-parts, Pistol Grips
-  async getPistolGrips(): Promise<GetGasBlocks["items"]> {
-    const data = await graphqlClient.request<GetGasBlocks>(GET_PISTOL_GRIPS);
+  async getPistolGrips(): Promise<GetItemPropertiesWeaponMod["items"]> {
+    const data = await graphqlClient.request<GetItemPropertiesWeaponMod>(
+      GET_PISTOL_GRIPS
+    );
     return data.items;
   },
+  //items/weapons-mod/vital-parts, Receivers
+  async getReceivers(): Promise<GetItemPropertiesWeaponMod["items"]> {
+    const data = await graphqlClient.request<GetItemPropertiesWeaponMod>(
+      GET_RECEIVERS
+    );
+    return data.items;
+  },
+
+  //items/weapons-mod/gear-mods, Charging handles
+  async getChargingHandles(): Promise<GetItemPropertiesWeaponMod["items"]> {
+    const data = await graphqlClient.request<GetItemPropertiesWeaponMod>(
+      GET_CHARGING_HANDLES
+    );
+    return data.items;
+  },
+
+  //items/weapons-mod/gear-mods, Magazines
+  async getMagazines(): Promise<GetMagazines["items"]> {
+    const data = await graphqlClient.request<GetMagazines>(GET_MAGAZINES);
+    return data.items;
+  },
+
+  //items/weapons-mod/gear-mods, Mounts
+  async getMounts(): Promise<GetItemPropertiesWeaponMod["items"]> {
+    const data = await graphqlClient.request<GetItemPropertiesWeaponMod>(
+      GET_MOUNTS
+    );
+    return data.items;
+  },
+
+  //items/weapons-mod/gear-mods, Stocks
+  async getStocks(): Promise<GetItemPropertiesWeaponMod["items"]> {
+    const data = await graphqlClient.request<GetItemPropertiesWeaponMod>(
+      GET_STOCKS
+    );
+    return data.items;
+  },
+
+  //items/weapons-mod/gear-mods, Stocks
+  async getUBGL(): Promise<GetItemPropertiesWeaponMod["items"]> {
+    const data = await graphqlClient.request<GetItemPropertiesWeaponMod>(
+      GET_UBGL
+    );
+    return data.items;
+  },
+
+  //items/weapons-mod/muzzle-devices, Muzzle-devices
+  async getMuzzleDevices(): Promise<GetItemPropertiesWeaponMod["items"]> {
+    const data = await graphqlClient.request<GetItemPropertiesWeaponMod>(
+      GET_MUZZLE_DEVICES
+    );
+    return data.items;
+  },
+
+  //items/weapons-mod/functional-mods, Bipods
+  async getBipods(): Promise<GetItemPropertiesWeaponMod["items"]> {
+    const data = await graphqlClient.request<GetItemPropertiesWeaponMod>(
+      GET_BIPODS
+    );
+    return data.items;
+  },
+
+  //items/weapons-mod/functional-mods, Foregrips
+  async getForegrips(): Promise<GetItemPropertiesWeaponMod["items"]> {
+    const data = await graphqlClient.request<GetItemPropertiesWeaponMod>(
+      GET_FOREGRIPS
+    );
+    return data.items;
+  },
+
+  //items/weapons-mod/functional-mods, Flashlights
+  async getFlashlights(): Promise<GetItemPropertiesWeaponMod["items"]> {
+    const data = await graphqlClient.request<GetItemPropertiesWeaponMod>(
+      GET_FLASHLIGHTS
+    );
+    return data.items;
+  },
+
+  //items/weapons-mod/functional-mods, TacticalDevices
+  async getTacticalDevices(): Promise<GetItemPropertiesWeaponMod["items"]> {
+    const data = await graphqlClient.request<GetItemPropertiesWeaponMod>(
+      GET_TACTICAL_DEVICES
+    );
+    return data.items;
+  },
+
+  //items/weapons-mod/functional-mods, TacticalDevices
+  async getAuxiliaries(): Promise<GetItemPropertiesWeaponMod["items"]> {
+    const data = await graphqlClient.request<GetItemPropertiesWeaponMod>(
+      GET_AUXILIARIES
+    );
+    return data.items;
+  },
+
   async getBackpack(id: string): Promise<GetBackpackById["items"]> {
     const data = await graphqlClient.request<GetBackpackById>(GET_BACKPACK_ID, {
       ids: [id],
@@ -301,12 +415,7 @@ export const client = {
     const data = await graphqlClient.request<GetTasks>(GET_TASKS);
     return data.tasks;
   },
-  async getTask(id: string): Promise<GetTasks["task"]> {
-    const data = await graphqlClient.request<GetTasks>(GET_TASK_ID, {
-      id: id,
-    });
-    return data.task;
-  },
+
   //task/[id], Task Base
   async getTaskIdBase(id: string): Promise<GetTasks["task"]> {
     const data = await graphqlClient.request<GetTasks>(GET_TASK_ID_BASE, {

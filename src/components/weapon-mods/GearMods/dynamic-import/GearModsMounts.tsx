@@ -2,24 +2,25 @@
 
 import { client } from "@/app/api/client";
 import {
-  columnsBarrels,
   columnsGasBlock,
+  columnsItemPropertiesWeaponMod,
 } from "@/components/data-table/columns";
 import { DataTableClient } from "@/components/data-table/data-table-client";
+import UniversalCurrencyFormat from "@/components/modules/universal-currency-format";
 import UniversalFormat from "@/components/modules/universal-format";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
-const VitalPartsGasBlocks = () => {
-  const { data: itemGasBlocks } = useSuspenseQuery({
-    queryKey: ["vital-parts-gas-blocks"],
-    queryFn: () => client.getGasBlocks(),
+const GearModsMounts = () => {
+  const { data: itemMounts } = useSuspenseQuery({
+    queryKey: ["gear-mods-mounts"],
+    queryFn: () => client.getMounts(),
   });
 
   return (
     <div>
       <DataTableClient
-        data={itemGasBlocks}
-        columns={columnsGasBlock}
+        data={itemMounts}
+        columns={columnsItemPropertiesWeaponMod}
         filters={[
           {
             id: "ergoPenalty",
@@ -39,10 +40,28 @@ const VitalPartsGasBlocks = () => {
             step: 0.01,
             formatter: UniversalFormat,
           },
+          {
+            id: "weight",
+            label: "Weight",
+            filterType: "slider",
+            min: 0.006,
+            max: 0.5,
+            step: 0.01,
+            formatter: (val) => `${val}kg`,
+          },
+          {
+            id: "avg24hPrice",
+            label: "Avg Flea Price",
+            filterType: "slider",
+            min: 0,
+            max: 260000,
+            step: 1000,
+            formatter: UniversalCurrencyFormat,
+          },
         ]}
       />
     </div>
   );
 };
 
-export default VitalPartsGasBlocks;
+export default GearModsMounts;

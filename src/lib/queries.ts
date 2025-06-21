@@ -1044,7 +1044,7 @@ export const GET_KEYS = gql`
   }
 `;
 
-//items /scopes
+//weapon-mods/scopes, Scopes
 export const GET_SCOPES = gql`
   query GetScopes {
     items(categoryNames: Scope) {
@@ -1053,6 +1053,7 @@ export const GET_SCOPES = gql`
       wikiLink
       gridImageLink
       avg24hPrice
+      weight
       properties {
         __typename
         ... on ItemPropertiesScope {
@@ -1075,8 +1076,12 @@ export const GET_BARRELS = gql`
       wikiLink
       gridImageLink
       avg24hPrice
+      weight
       category {
         name
+        parent {
+          name
+        }
       }
       properties {
         __typename
@@ -1097,6 +1102,13 @@ export const GET_GAS_BLOCKS = gql`
       wikiLink
       gridImageLink
       avg24hPrice
+      weight
+      category {
+        name
+        parent {
+          name
+        }
+      }
       properties {
         __typename
         ... on ItemPropertiesWeaponMod {
@@ -1117,6 +1129,13 @@ export const GET_HANDGUARD = gql`
       wikiLink
       gridImageLink
       avg24hPrice
+      weight
+      category {
+        name
+        parent {
+          name
+        }
+      }
       properties {
         __typename
         ... on ItemPropertiesWeaponMod {
@@ -1138,11 +1157,351 @@ export const GET_PISTOL_GRIPS = gql`
       wikiLink
       gridImageLink
       avg24hPrice
+      weight
+      category {
+        name
+        parent {
+          name
+        }
+      }
       properties {
         __typename
         ... on ItemPropertiesWeaponMod {
           recoilModifier
           ergonomics
+          accuracyModifier
+        }
+      }
+    }
+  }
+`;
+
+//weapon-mods/vital-parts, Receivers
+export const GET_RECEIVERS = gql`
+  query GetReceivers {
+    items(types: [mods], categoryNames: Receiver) {
+      id
+      name
+      wikiLink
+      gridImageLink
+      avg24hPrice
+      weight
+      category {
+        name
+        parent {
+          name
+        }
+      }
+      properties {
+        __typename
+        ... on ItemPropertiesWeaponMod {
+          recoilModifier
+          ergonomics
+          accuracyModifier
+        }
+      }
+    }
+  }
+`;
+
+//weapon-mods/gear-mods, Charging Handles
+export const GET_CHARGING_HANDLES = gql`
+  query GetChargingHandles {
+    items(types: [mods], categoryNames: [ChargingHandle]) {
+      id
+      name
+      wikiLink
+      gridImageLink
+      weight
+      category {
+        name
+        parent {
+          name
+        }
+      }
+      avg24hPrice
+      properties {
+        __typename
+        ... on ItemPropertiesWeaponMod {
+          recoilModifier
+          ergonomics
+        }
+      }
+    }
+  }
+`;
+//weapon-mods/gear-mods, Magazines
+export const GET_MAGAZINES = gql`
+  query GetMagazines {
+    items(types: [mods], categoryNames: [Magazine]) {
+      id
+      name
+      wikiLink
+      gridImageLink
+      avg24hPrice
+      weight
+      category {
+        name
+        parent {
+          name
+        }
+      }
+      properties {
+        __typename
+        ... on ItemPropertiesMagazine {
+          capacity
+          ergonomics
+          malfunctionChance
+          loadModifier
+          ammoCheckModifier
+        }
+      }
+    }
+  }
+`;
+
+//weapon-mods/gear-mods, Mounts
+export const GET_MOUNTS = gql`
+  query GetMounts {
+    items(types: [mods], categoryNames: [Mount]) {
+      id
+      name
+      wikiLink
+      gridImageLink
+      avg24hPrice
+      weight
+      category {
+        name
+        parent {
+          name
+        }
+      }
+      properties {
+        __typename
+        ... on ItemPropertiesWeaponMod {
+          ergonomics
+          recoilModifier
+        }
+      }
+    }
+  }
+`;
+
+//weapon-mods/gear-mods, Stocks
+export const GET_STOCKS = gql`
+  query GetStocks {
+    items(types: [mods], categoryNames: [Stock]) {
+      id
+      name
+      wikiLink
+      gridImageLink
+      avg24hPrice
+      weight
+      category {
+        name
+        parent {
+          name
+        }
+      }
+      properties {
+        __typename
+        ... on ItemPropertiesWeaponMod {
+          ergonomics
+          recoilModifier
+        }
+      }
+    }
+  }
+`;
+
+//weapon-mods/gear-mods, UBGL;
+export const GET_UBGL = gql`
+  query GetUBGL {
+    items(types: [mods], categoryNames: [UBGL]) {
+      id
+      name
+      wikiLink
+      gridImageLink
+      avg24hPrice
+      weight
+      category {
+        name
+        parent {
+          name
+        }
+      }
+      properties {
+        __typename
+        ... on ItemPropertiesWeaponMod {
+          ergonomics
+          recoilModifier
+        }
+      }
+    }
+  }
+`;
+
+//weapon-mods/muzzle-devices, muzzleDevices;
+export const GET_MUZZLE_DEVICES = gql`
+  query GetMuzzleDevices {
+    items(types: [mods], categoryNames: [MuzzleDevice]) {
+      id
+      name
+      wikiLink
+      gridImageLink
+      avg24hPrice
+      weight
+      category {
+        name
+        parent {
+          name
+        }
+      }
+      properties {
+        __typename
+        ... on ItemPropertiesWeaponMod {
+          ergonomics
+          recoilModifier
+          accuracyModifier
+        }
+      }
+    }
+  }
+`;
+
+//weapon-mods/functional-mods, Bipods;
+export const GET_BIPODS = gql`
+  query GetBipods {
+    items(types: [mods], categoryNames: [Bipod]) {
+      id
+      name
+      wikiLink
+      gridImageLink
+      avg24hPrice
+      weight
+      category {
+        parent {
+          name
+        }
+        name
+      }
+      properties {
+        __typename
+        ... on ItemPropertiesWeaponMod {
+          ergonomics
+          recoilModifier
+          accuracyModifier
+        }
+      }
+    }
+  }
+`;
+
+//weapon-mods/functional-mods, Foregrips;
+export const GET_FOREGRIPS = gql`
+  query GetForegrips {
+    items(types: [mods], categoryNames: [Foregrip]) {
+      id
+      name
+      wikiLink
+      gridImageLink
+      avg24hPrice
+      weight
+      category {
+        parent {
+          name
+        }
+        name
+      }
+      properties {
+        __typename
+        ... on ItemPropertiesWeaponMod {
+          ergonomics
+          recoilModifier
+          accuracyModifier
+        }
+      }
+    }
+  }
+`;
+
+//weapon-mods/functional-mods, Flashlights;
+export const GET_FLASHLIGHTS = gql`
+  query GetFlashlights {
+    items(types: [mods], categoryNames: [Flashlight]) {
+      id
+      name
+      wikiLink
+      gridImageLink
+      avg24hPrice
+      weight
+      category {
+        parent {
+          name
+        }
+        name
+      }
+      properties {
+        __typename
+        ... on ItemPropertiesWeaponMod {
+          ergonomics
+          recoilModifier
+          accuracyModifier
+        }
+      }
+    }
+  }
+`;
+
+//weapon-mods/functional-mods, TacticalDevices;
+export const GET_TACTICAL_DEVICES = gql`
+  query GetTacticalDevice {
+    items(types: [mods], categoryNames: [CombTactDevice]) {
+      id
+      name
+      wikiLink
+      gridImageLink
+      avg24hPrice
+      weight
+      category {
+        parent {
+          name
+        }
+        name
+      }
+      properties {
+        __typename
+        ... on ItemPropertiesWeaponMod {
+          ergonomics
+          recoilModifier
+          accuracyModifier
+        }
+      }
+    }
+  }
+`;
+
+//weapon-mods/functional-mods, Auxiliaries;
+export const GET_AUXILIARIES = gql`
+  query GetAuxiliaries {
+    items(types: [mods], categoryNames: [AuxiliaryMod]) {
+      id
+      name
+      wikiLink
+      gridImageLink
+      avg24hPrice
+      weight
+      category {
+        parent {
+          name
+        }
+        name
+      }
+      properties {
+        __typename
+        ... on ItemPropertiesWeaponMod {
+          ergonomics
+          recoilModifier
           accuracyModifier
         }
       }
