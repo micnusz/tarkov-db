@@ -2,8 +2,8 @@
 import { getQueryClient } from "@/lib/get-query-client";
 import { client } from "../api/client";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-import TasksClient from "@/components/TasksClient";
 import { Metadata } from "next";
+import TasksClientPage from "./TasksClientPage";
 
 export const generateMetadata = async (): Promise<Metadata> => {
   return {
@@ -20,7 +20,7 @@ const TasksServer = async () => {
   });
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <TasksClient />
+      <TasksClientPage />
     </HydrationBoundary>
   );
 };

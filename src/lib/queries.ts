@@ -380,50 +380,7 @@ export const GET_ALL_WEAPONS = gql`
   }
 `;
 
-export const GET_WEAPON_ID = gql`
-  query GetWeaponById($ids: [ID]) {
-    items(ids: $ids, types: [gun]) {
-      id
-      name
-      shortName
-      description
-      category {
-        name
-        id
-      }
-      wikiLink
-      types
-      basePrice
-      image8xLink
-      buyFor {
-        vendor {
-          name
-        }
-        price
-        priceRUB
-      }
-      sellFor {
-        vendor {
-          name
-        }
-        price
-        priceRUB
-      }
-      properties {
-        __typename
-        ... on ItemPropertiesWeapon {
-          caliber
-          fireRate
-          recoilVertical
-          recoilHorizontal
-          ergonomics
-          effectiveDistance
-        }
-      }
-    }
-  }
-`;
-
+//Traders
 export const GET_TRADERS = gql`
   query GetTraders {
     traders {
@@ -543,51 +500,6 @@ export const GET_ARMOR_PLATES = gql`
           speedPenalty
           turnPenalty
           ergoPenalty
-        }
-      }
-    }
-  }
-`;
-
-export const GET_BACKPACK_ID = gql`
-  query GetBackpackById($ids: [ID]) {
-    items(type: backpack, ids: $ids) {
-      id
-      name
-      shortName
-      description
-      wikiLink
-      types
-      basePrice
-      weight
-      image8xLink
-      iconLink
-      gridImageLink
-      buyFor {
-        vendor {
-          name
-        }
-        price
-        priceRUB
-      }
-      sellFor {
-        vendor {
-          name
-        }
-        price
-        priceRUB
-      }
-      properties {
-        __typename
-        ... on ItemPropertiesBackpack {
-          turnPenalty
-          ergoPenalty
-          speedPenalty
-          capacity
-          grids {
-            width
-            height
-          }
         }
       }
     }

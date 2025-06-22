@@ -2,12 +2,12 @@
 
 import { client } from "@/app/api/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { columnsBarter } from "./data-table/columns";
+import { columnsBarter } from "../../components/data-table/columns";
 import { Barter } from "@/app/api/types";
-import { DataTableClient } from "./data-table/data-table-client";
-import formatCurrency from "./modules/currency-format";
+import { DataTableClient } from "../../components/data-table/data-table-client";
+import formatCurrency from "../../components/modules/currency-format";
 
-const BartersClient = () => {
+const BartersClientPage = () => {
   const { data } = useSuspenseQuery({
     queryKey: ["barters"],
     queryFn: () => client.getBarters(),
@@ -75,4 +75,4 @@ const BartersClient = () => {
   );
 };
 
-export default BartersClient;
+export default BartersClientPage;

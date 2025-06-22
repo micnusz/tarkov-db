@@ -2,14 +2,14 @@
 
 import { client } from "@/app/api/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { columnsContainer } from "./data-table/columns";
-import { DataTableClient } from "./data-table/data-table-client";
+import { columnsBarterItems } from "../../../components/data-table/columns";
+import { DataTableClient } from "../../../components/data-table/data-table-client";
 import { Item } from "@/app/api/types";
-import UniversalFormat from "./modules/universal-format";
+import UniversalFormat from "../../../components/modules/universal-format";
 
-const ContainersClient = () => {
+const BarterItemsClientPage = () => {
   const { data } = useSuspenseQuery({
-    queryKey: ["containers"],
+    queryKey: ["barter-items"],
     queryFn: () => client.getBarterItems(),
   });
 
@@ -20,10 +20,10 @@ const ContainersClient = () => {
   return (
     <div className="w-full h-full flex-col justify-center items-center p-4 md:p-10">
       <h1 className="scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance">
-        Containers
+        Barter Items
       </h1>
       <DataTableClient
-        columns={columnsContainer}
+        columns={columnsBarterItems}
         data={data}
         filters={[
           {
@@ -31,12 +31,6 @@ const ContainersClient = () => {
             label: "Category",
             filterType: "select",
             options: categories.map(String),
-            formatter: UniversalFormat,
-          },
-          {
-            id: "capacity",
-            label: "Capacity",
-            filterType: "range",
             formatter: UniversalFormat,
           },
           {
@@ -51,4 +45,4 @@ const ContainersClient = () => {
   );
 };
 
-export default ContainersClient;
+export default BarterItemsClientPage;

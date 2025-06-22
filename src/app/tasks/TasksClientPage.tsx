@@ -2,12 +2,13 @@
 
 import { client } from "@/app/api/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { columnsTaskAdvanced } from "./data-table/columns";
-import { Task } from "@/app/api/types";
-import { DataTableClient } from "./data-table/data-table-client";
-import UniversalFormat from "./modules/universal-format";
 
-const TasksClient = () => {
+import { Task } from "@/app/api/types";
+import { DataTableClient } from "@/components/data-table/data-table-client";
+import { columnsTaskAdvanced } from "@/components/data-table/columns";
+import UniversalFormat from "@/components/modules/universal-format";
+
+const TasksClientPage = () => {
   const { data } = useSuspenseQuery({
     queryKey: ["tasks"],
     queryFn: () => client.getTasks(),
@@ -67,4 +68,4 @@ const TasksClient = () => {
   );
 };
 
-export default TasksClient;
+export default TasksClientPage;

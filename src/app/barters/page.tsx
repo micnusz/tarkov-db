@@ -4,11 +4,11 @@ import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { Metadata } from "next";
 import React from "react";
 import { client } from "../api/client";
-import BartersClient from "@/components/BartersClient";
+import BartersClientPage from "@/app/barters/BartersClientPage";
 
 export const generateMetadata = async (): Promise<Metadata> => {
   return {
-    title: "Barter - Tarkov.db",
+    title: "Barters - Tarkov.db",
     description: "Tarkov.db, Barters",
   };
 };
@@ -21,7 +21,7 @@ export default async function BartersServer() {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <BartersClient />
+      <BartersClientPage />
     </HydrationBoundary>
   );
 }

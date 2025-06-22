@@ -1,16 +1,16 @@
 import { client } from "@/app/api/client";
-import BarterItemsClient from "@/components/BarterItemsClient";
+import BarterItemsClientPage from "@/app/items/barter-items/BarterItemsClientPage";
 import { getQueryClient } from "@/lib/get-query-client";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import React from "react";
 
 export const generateMetadata = () => {
   return {
-    title: "Barter-Items - Tarkov.db",
-    description: "Tarkov.db, Barter-Items",
+    title: "Barter Items - Tarkov.db",
+    description: "Tarkov.db, Barter Items",
   };
 };
-const BarterItemsServer = async () => {
+const BarterItemsServerPage = async () => {
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({
     queryKey: ["barter-items"],
@@ -19,9 +19,9 @@ const BarterItemsServer = async () => {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <BarterItemsClient />
+      <BarterItemsClientPage />
     </HydrationBoundary>
   );
 };
 
-export default BarterItemsServer;
+export default BarterItemsServerPage;

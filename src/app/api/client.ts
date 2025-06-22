@@ -5,7 +5,6 @@ import {
   GET_ARMORED_RIGS,
   GET_ARMORED_VESTS,
   GET_AUXILIARIES,
-  GET_BACKPACK_ID,
   GET_BACKPACKS,
   GET_BARRELS,
   GET_BARTER_ITEMS,
@@ -57,7 +56,6 @@ import {
   GET_TASKS,
   GET_TRADERS,
   GET_UBGL,
-  GET_WEAPON_ID,
 } from "@/lib/queries";
 import {
   GetAmmoCaliber,
@@ -91,7 +89,7 @@ import {
 import { graphqlClient } from "@/lib/graphql-client";
 
 export const client = {
-  //server side
+  //Flea market, server-side
   async getItems(
     limit: number,
     offset: number,
@@ -119,7 +117,7 @@ export const client = {
     const data = await graphqlClient.request<GetItems>(GET_ITEMS, variables);
     return data.items;
   },
-
+  //Flea market, server-side, categories
   async getItemCategories(): Promise<GetItemCategories["itemCategories"]> {
     const data = await graphqlClient.request<GetItemCategories>(
       GET_ITEMS_CATEGORIES
@@ -128,6 +126,7 @@ export const client = {
     return data.itemCategories;
   },
 
+  //item/[id], Base Item
   async getItem(id: string): Promise<GetItemById["item"]> {
     const data = await graphqlClient.request<GetItemById>(GET_ITEM_BASE_ID, {
       id: id,
@@ -200,6 +199,7 @@ export const client = {
     return data.item;
   },
 
+  //item/[id], page title
   async getItemIdName(id: string): Promise<GetItemById["item"]> {
     const data = await graphqlClient.request<GetItemById>(GET_ITEM_ID_NAME, {
       ids: [id],
@@ -207,6 +207,7 @@ export const client = {
     return data.item;
   },
 
+  // Global search bar
   async getItemsSearchBar(name: string): Promise<GetItemsSearchBar["items"]> {
     const data = await graphqlClient.request<GetItemsSearchBar>(
       GET_ITEMS_SEARCH_BAR,
@@ -217,28 +218,24 @@ export const client = {
     return data.items;
   },
 
+  //ammo
   async getAmmo(): Promise<GetAmmoCaliber["ammo"]> {
     const data = await graphqlClient.request<GetAmmoCaliber>(GET_AMMO);
     return data.ammo;
   },
 
+  //weapons
   async getWeapons(): Promise<GetOnlyWeapons["items"]> {
     const data = await graphqlClient.request<GetOnlyWeapons>(GET_ALL_WEAPONS);
     return data.items;
   },
-
-  async getWeapon(id: string): Promise<GetWeaponById["items"]> {
-    const data = await graphqlClient.request<GetWeaponById>(GET_WEAPON_ID, {
-      ids: [id],
-    });
-    return data.items;
-  },
-
+  //traders
   async getTraders(): Promise<GetTraders["traders"]> {
     const data = await graphqlClient.request<GetTraders>(GET_TRADERS);
     return data.traders;
   },
 
+  //backpacks
   async getBackpacks(): Promise<GetBackpacks["items"]> {
     const data = await graphqlClient.request<GetBackpacks>(GET_BACKPACKS);
     return data.items;
@@ -459,13 +456,7 @@ export const client = {
     return data.items;
   },
 
-  async getBackpack(id: string): Promise<GetBackpackById["items"]> {
-    const data = await graphqlClient.request<GetBackpackById>(GET_BACKPACK_ID, {
-      ids: [id],
-    });
-    return data.items;
-  },
-
+  //tasks
   async getTasks(): Promise<GetTasks["tasks"]> {
     const data = await graphqlClient.request<GetTasks>(GET_TASKS);
     return data.tasks;
@@ -517,11 +508,13 @@ export const client = {
     return data.task;
   },
 
+  //barter-items
   async getBarterItems(): Promise<GetBarterItems["items"]> {
     const data = await graphqlClient.request<GetBarterItems>(GET_BARTER_ITEMS);
     return data.items;
   },
 
+  //containers
   async getContainersItems(): Promise<GetContainerItems["items"]> {
     const data = await graphqlClient.request<GetContainerItems>(
       GET_CONTAINERS_ITEMS
@@ -529,6 +522,7 @@ export const client = {
     return data.items;
   },
 
+  //barters
   async getBarters(): Promise<GetBarters["barters"]> {
     const data = await graphqlClient.request<GetBarters>(GET_BARTERS);
     return data.barters;

@@ -1,7 +1,7 @@
 "use server";
 
 import { client } from "@/app/api/client";
-import ContainersClient from "@/components/ContainersClient";
+import ContainersClientPage from "@/app/items/containers/ContainersClientPage";
 import { getQueryClient } from "@/lib/get-query-client";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
@@ -14,7 +14,7 @@ const ContainersServer = async () => {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <ContainersClient />
+      <ContainersClientPage />
     </HydrationBoundary>
   );
 };
