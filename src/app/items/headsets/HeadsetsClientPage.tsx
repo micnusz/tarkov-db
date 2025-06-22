@@ -7,7 +7,7 @@ import {
   columnsHeadsets,
 } from "@/components/data-table/columns";
 import { DataTableClient } from "@/components/data-table/data-table-client";
-import UniversalFormat from "@/components/modules/universal-format";
+import UniversalPercentFormat from "@/components/modules/universal-percent-format";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 const HeadsetsClientPage = () => {
@@ -29,14 +29,10 @@ const HeadsetsClientPage = () => {
             id: "distanceModifier",
             label: "Distance Modifier",
             filterType: "slider",
-            min: 1,
+            min: 0,
             max: 1.14,
             step: 0.01,
-            formatter: (val) => {
-              const percent = (val - 1) * 100;
-              const sign = percent >= 0 ? "+" : "";
-              return `${sign}${percent.toFixed(1)}%`;
-            },
+            formatter: (val) => `${val}%`,
           },
           {
             id: "distortion",
@@ -45,7 +41,7 @@ const HeadsetsClientPage = () => {
             min: 0,
             max: 0.15,
             step: 0.01,
-            formatter: (val) => `${(val * 100).toFixed(1)}%`,
+            formatter: UniversalPercentFormat,
           },
           {
             id: "weight",

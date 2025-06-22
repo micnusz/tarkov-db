@@ -1,14 +1,13 @@
 "use client";
 
 import { client } from "@/app/api/client";
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { DataTableFleaMarket } from "./data-table/data-table-flea";
 import { columnsFlea } from "./data-table/columns";
 import { useEffect, useMemo, useState } from "react";
 import debounce from "lodash.debounce";
 import { BaseItem } from "@/app/api/types";
 import { DataTablePagination } from "./data-table/data-table-pagination";
-import Spinner from "@/lib/Spinner";
 
 const FleaMarketClient = () => {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 20 });
@@ -56,9 +55,7 @@ const FleaMarketClient = () => {
   });
 
   //Filtering items to only displaying flea available ones
-  const fleaItems = data?.filter((item) =>
-    item.buyFor?.some((offer) => offer.vendor.name === "Flea Market")
-  );
+  const fleaItems = data?.filter((item) => item.avg24hPrice !== null);
 
   //Pagination
   const totalCount = 3980;

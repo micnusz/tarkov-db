@@ -2,7 +2,8 @@ import {
   GET_ALL_WEAPONS,
   GET_AMMO,
   GET_ARMOR_PLATES,
-  GET_ARMORS,
+  GET_ARMORED_RIGS,
+  GET_ARMORED_VESTS,
   GET_AUXILIARIES,
   GET_BACKPACK_ID,
   GET_BACKPACKS,
@@ -11,9 +12,12 @@ import {
   GET_BARTERS,
   GET_BIPODS,
   GET_CHARGING_HANDLES,
+  GET_CHEST_RIGS,
   GET_CONTAINERS_ITEMS,
+  GET_DRINK,
   GET_FACE_COVERS,
   GET_FLASHLIGHTS,
+  GET_FOOD,
   GET_FOREGRIPS,
   GET_GAS_BLOCKS,
   GET_GLASSES,
@@ -34,6 +38,8 @@ import {
   GET_ITEMS_SEARCH_BAR,
   GET_KEYS,
   GET_MAGAZINES,
+  GET_MEDICAL_ITEMS,
+  GET_MEDKITS,
   GET_MOUNTS,
   GET_MUZZLE_DEVICES,
   GET_PISTOL_GRIPS,
@@ -73,7 +79,10 @@ import {
   GetItemTask,
   GetKeys,
   GetMagazines,
+  GetMedicalItem,
+  GetMedkits,
   GetOnlyWeapons,
+  GetProvisions,
   GetScopes,
   GetTasks,
   GetTraders,
@@ -235,9 +244,21 @@ export const client = {
     return data.items;
   },
 
-  //items/armors
-  async getArmors(): Promise<GetArmors["items"]> {
-    const data = await graphqlClient.request<GetArmors>(GET_ARMORS);
+  //items/body-armors, Armored Vests
+  async getArmoredVests(): Promise<GetArmors["items"]> {
+    const data = await graphqlClient.request<GetArmors>(GET_ARMORED_VESTS);
+    return data.items;
+  },
+
+  //items/body-armors, Armored Rigs
+  async getArmoredRigs(): Promise<GetArmors["items"]> {
+    const data = await graphqlClient.request<GetArmors>(GET_ARMORED_RIGS);
+    return data.items;
+  },
+
+  //items/chest-rigs, Chest Rigs
+  async getChestRigs(): Promise<GetArmors["items"]> {
+    const data = await graphqlClient.request<GetArmors>(GET_CHEST_RIGS);
     return data.items;
   },
 
@@ -256,6 +277,18 @@ export const client = {
   //items/keys
   async getKeys(): Promise<GetKeys["items"]> {
     const data = await graphqlClient.request<GetKeys>(GET_KEYS);
+    return data.items;
+  },
+
+  //items/medical  | Medkits
+  async getMedkits(): Promise<GetMedkits["items"]> {
+    const data = await graphqlClient.request<GetMedkits>(GET_MEDKITS);
+    return data.items;
+  },
+
+  //items/medical  | Medicalitems
+  async getMedicalItems(): Promise<GetMedicalItem["items"]> {
+    const data = await graphqlClient.request<GetMedicalItem>(GET_MEDICAL_ITEMS);
     return data.items;
   },
 
@@ -278,6 +311,18 @@ export const client = {
   //items/headsets
   async getHeadsets(): Promise<GetHeadsets["items"]> {
     const data = await graphqlClient.request<GetHeadsets>(GET_HEADSETS);
+    return data.items;
+  },
+
+  //items/provisions | Drink
+  async getDrink(): Promise<GetProvisions["items"]> {
+    const data = await graphqlClient.request<GetProvisions>(GET_DRINK);
+    return data.items;
+  },
+
+  //items/provisions | Food
+  async getFood(): Promise<GetProvisions["items"]> {
+    const data = await graphqlClient.request<GetProvisions>(GET_FOOD);
     return data.items;
   },
 

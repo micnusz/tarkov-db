@@ -16,7 +16,7 @@ const componentsMap = {
   ),
 };
 
-const FaceCoversClientPage = () => {
+const FacewearClientPage = () => {
   const [selectedComponent, setSelectedComponent] =
     useState<keyof typeof componentsMap>("faceCovers");
   const DynamicComponent = componentsMap[selectedComponent];
@@ -28,7 +28,7 @@ const FaceCoversClientPage = () => {
   return (
     <div className="w-full h-full flex-col justify-center items-center p-4 md:p-10">
       <h1 className="scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance">
-        {formattedTitle}
+        Facewear: {formattedTitle}
       </h1>
       {/* Table stwitch */}
       <div className="pt-4 flex gap-2 flex-wrap justify-center">
@@ -66,4 +66,4 @@ const FaceCoversClientPage = () => {
   );
 };
 
-export default FaceCoversClientPage;
+export default FacewearClientPage;

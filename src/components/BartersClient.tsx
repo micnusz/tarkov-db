@@ -21,7 +21,7 @@ const BartersClient = () => {
   const categories = Array.from(
     new Set(
       (data as Barter[])
-        .map((barter) => barter.rewardItems?.[0]?.item?.category?.name)
+        .map((barter) => barter.rewardItems?.[0]?.item?.category?.parent?.name)
         .filter((name): name is string => Boolean(name))
     )
   );
@@ -64,7 +64,10 @@ const BartersClient = () => {
           {
             id: "barterCost",
             label: "Barter Cost",
-            filterType: "range",
+            filterType: "slider",
+            min: 0,
+            max: 15500000,
+            step: 1000,
             formatter: (val) => formatCurrency("roubles", val),
           },
         ]}

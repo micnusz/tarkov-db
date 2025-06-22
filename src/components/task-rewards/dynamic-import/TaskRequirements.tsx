@@ -17,7 +17,7 @@ const TaskRequirements = ({ taskId }: Props) => {
   return (
     <>
       {taskData.taskRequirements.length > 0 ? (
-        <ScrollArea className="rounded-md border">
+        <ScrollArea className="rounded-md border ">
           <ul>
             {taskData.taskRequirements.map((req) => (
               <li key={req.task.id} className="text-sm md:text-base mt-4">

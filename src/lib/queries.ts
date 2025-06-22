@@ -21,18 +21,10 @@ export const GET_ITEMS = gql`
       category {
         parent {
           name
-          id
         }
         name
-        id
       }
-      buyFor {
-        vendor {
-          name
-        }
-        priceRUB
-        price
-      }
+
       sellFor {
         vendor {
           name
@@ -350,7 +342,7 @@ export const GET_AMMO = gql`
     }
   }
 `;
-
+//items/weapons, Weapons
 export const GET_ALL_WEAPONS = gql`
   query GetWeapons {
     items(type: preset, categoryNames: Weapon) {
@@ -358,7 +350,9 @@ export const GET_ALL_WEAPONS = gql`
       name
       category {
         name
-        id
+        parent {
+          name
+        }
       }
       types
       gridImageLink
@@ -471,14 +465,43 @@ export const GET_BACKPACKS = gql`
     }
   }
 `;
-// Items/Armors
-export const GET_ARMORS = gql`
-  query GetArmors {
-    items(types: armor) {
+
+// Items/body-armors | Armored vests
+export const GET_ARMORED_VESTS = gql`
+  query GetArmorVests {
+    items(categoryNames: ArmoredEquipment, type: armor) {
       id
       name
       weight
       wikiLink
+      gridImageLink
+      properties {
+        __typename
+        ... on ItemPropertiesArmor {
+          speedPenalty
+          class
+          ergoPenalty
+          material {
+            name
+          }
+          durability
+          turnPenalty
+          armorType
+        }
+      }
+    }
+  }
+`;
+
+// Items/body-armors | Armored Chest Rigs
+export const GET_ARMORED_RIGS = gql`
+  query GetArmoredRigs {
+    items(categoryNames: ChestRig, type: armor) {
+      id
+      name
+      weight
+      wikiLink
+      types
       gridImageLink
       properties {
         __typename
@@ -494,22 +517,11 @@ export const GET_ARMORS = gql`
           turnPenalty
           armorType
         }
-        ... on ItemPropertiesArmor {
-          zones
-          speedPenalty
-          class
-          ergoPenalty
-          material {
-            name
-          }
-          durability
-          turnPenalty
-          armorType
-        }
       }
     }
   }
 `;
+
 // Items/armor-plates
 export const GET_ARMOR_PLATES = gql`
   query GetArmorPlates {
@@ -927,7 +939,6 @@ export const GET_BARTERS = gql`
               name
             }
           }
-          image8xLink
           gridImageLink
           name
           id
@@ -946,7 +957,6 @@ export const GET_BARTERS = gql`
               name
             }
           }
-          image8xLink
           gridImageLink
           name
           id
@@ -1549,6 +1559,171 @@ export const GET_GLASSES = gql`
           }
           blindnessProtection
           class
+        }
+      }
+    }
+  }
+`;
+
+//medical, Medical Items
+export const GET_MEDICAL_ITEMS = gql`
+  query GetMedicalItem {
+    items(type: meds, categoryNames: MedicalItem) {
+      id
+      name
+      weight
+      wikiLink
+      types
+      category {
+        name
+        parent {
+          name
+        }
+      }
+      gridImageLink
+      properties {
+        __typename
+        ... on ItemPropertiesSurgicalKit {
+          useTime
+          uses
+          cures
+        }
+      }
+      properties {
+        __typename
+        ... on ItemPropertiesMedicalItem {
+          useTime
+          uses
+          cures
+        }
+      }
+    }
+  }
+`;
+
+//medical, Medkits
+export const GET_MEDKITS = gql`
+  query GetMedkits {
+    items(type: meds, categoryNames: Medikit) {
+      id
+      name
+      weight
+      wikiLink
+      types
+      category {
+        name
+        parent {
+          name
+        }
+      }
+      gridImageLink
+      properties {
+        __typename
+        ... on ItemPropertiesMedKit {
+          useTime
+          hitpoints
+          cures
+          maxHealPerUse
+          hpCostLightBleeding
+          hpCostHeavyBleeding
+        }
+      }
+    }
+  }
+`;
+
+//provisions, Food
+export const GET_FOOD = gql`
+  query GetFood {
+    items(type: provisions, categoryNames: Food) {
+      id
+      name
+      weight
+      wikiLink
+      types
+      category {
+        name
+        parent {
+          name
+        }
+      }
+      gridImageLink
+      properties {
+        __typename
+        ... on ItemPropertiesFoodDrink {
+          energy
+          hydration
+          stimEffects {
+            skillName
+            duration
+          }
+          units
+        }
+      }
+    }
+  }
+`;
+
+//provisions, Drink
+export const GET_DRINK = gql`
+  query GetDrink {
+    items(type: provisions, categoryNames: Drink) {
+      id
+      name
+      weight
+      wikiLink
+      types
+      category {
+        name
+        parent {
+          name
+        }
+      }
+      gridImageLink
+      properties {
+        __typename
+        ... on ItemPropertiesFoodDrink {
+          energy
+          hydration
+          stimEffects {
+            skillName
+            duration
+          }
+          units
+        }
+      }
+    }
+  }
+`;
+
+//chest-rigs, Chest Rigs
+export const GET_CHEST_RIGS = gql`
+  query GetChestRigs {
+    items(categoryNames: ChestRig, type: rig) {
+      id
+      name
+      weight
+      wikiLink
+      types
+      category {
+        name
+        parent {
+          name
+        }
+      }
+      gridImageLink
+      properties {
+        __typename
+        ... on ItemPropertiesChestRig {
+          speedPenalty
+          ergoPenalty
+          material {
+            name
+            id
+          }
+          durability
+          turnPenalty
+          armorType
         }
       }
     }

@@ -7,6 +7,7 @@ import {
 } from "@/components/data-table/columns";
 import { DataTableClient } from "@/components/data-table/data-table-client";
 import UniversalFormat from "@/components/modules/universal-format";
+import UniversalPercentFormat from "@/components/modules/universal-percent-format";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 const ArmorPlatesPageClient = () => {
@@ -53,21 +54,30 @@ const ArmorPlatesPageClient = () => {
           },
           {
             id: "ergoPenalty",
-            label: "Ergo Penalty",
-            filterType: "range",
-            formatter: UniversalFormat,
+            label: "Ergo. Penalty",
+            filterType: "slider",
+            min: -0.02,
+            max: 0,
+            step: 0.01,
+            formatter: UniversalPercentFormat,
           },
           {
             id: "speedPenalty",
-            label: "Speed Penalty",
-            filterType: "range",
-            formatter: UniversalFormat,
+            label: "Speed. Modifier",
+            filterType: "slider",
+            min: -0.03,
+            max: 0,
+            step: 0.01,
+            formatter: UniversalPercentFormat,
           },
           {
             id: "turnPenalty",
             label: "Turn Penalty",
-            filterType: "range",
-            formatter: UniversalFormat,
+            filterType: "slider",
+            min: -0.02,
+            max: 0,
+            step: 0.01,
+            formatter: UniversalPercentFormat,
           },
         ]}
       />

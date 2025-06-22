@@ -3,26 +3,26 @@ import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { getQueryClient } from "@/lib/get-query-client";
 import { client } from "@/app/api/client";
 import { Metadata } from "next";
-import FaceCoversClientPage from "./FaceCoversClientPage";
+import MedicalClientPage from "./MedicalClientPage";
 
 export const generateMetadata = async (): Promise<Metadata> => {
   return {
-    title: "Face Covers - Tarkov.db",
-    description: "Tarkov.db, Face Covers",
+    title: "Medical - Tarkov.db",
+    description: "Tarkov.db, Medical",
   };
 };
-const FaceCoversServerPage = async () => {
+const MedicalServerPage = async () => {
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({
-    queryKey: ["face-covers"],
-    queryFn: () => client.getFaceCovers(),
+    queryKey: ["medical-medical-items"],
+    queryFn: () => client.getMedicalItems(),
   });
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <FaceCoversClientPage />
+      <MedicalClientPage />
     </HydrationBoundary>
   );
 };
 
-export default FaceCoversServerPage;
+export default MedicalServerPage;

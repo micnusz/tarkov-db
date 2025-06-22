@@ -13,7 +13,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 
 const Eyewear = () => {
   const { data: itemGlasses } = useSuspenseQuery({
-    queryKey: ["glasses"],
+    queryKey: ["facewear-eyewear"],
     queryFn: () => client.getGlasses(),
   });
 

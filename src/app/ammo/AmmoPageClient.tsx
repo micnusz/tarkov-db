@@ -5,8 +5,8 @@ import { columnsAmmo } from "@/components/data-table/columns";
 import { DataTableClient } from "@/components/data-table/data-table-client";
 import CaliberFormat from "@/components/modules/ammo-format";
 import { Ammo } from "../api/types";
-import { RangeFilterFormat } from "@/components/modules/range-filter-format";
 import UniversalFormat from "@/components/modules/universal-format";
+import UniversalPercentFormat from "@/components/modules/universal-percent-format";
 
 const AmmoPageClient = () => {
   const { data } = useSuspenseQuery({
@@ -38,50 +38,74 @@ const AmmoPageClient = () => {
             {
               id: "penetrationPower",
               label: "Pen. Power",
-              filterType: "range",
+              filterType: "slider",
+              min: 0,
+              max: 97,
+              step: 1,
               formatter: UniversalFormat,
             },
             {
               id: "damage",
               label: "Damage",
-              filterType: "range",
+              filterType: "slider",
+              min: 0,
+              max: 265,
+              step: 1,
               formatter: UniversalFormat,
             },
             {
               id: "armorDamage",
               label: "Armor Damage",
-              filterType: "range",
+              filterType: "slider",
+              min: 0,
+              max: 95,
+              step: 1,
               formatter: UniversalFormat,
             },
             {
               id: "accuracyModifier",
               label: "Accuracy Modifier",
-              filterType: "range",
-              formatter: UniversalFormat,
+              filterType: "slider",
+              min: -0.22,
+              max: 1.7,
+              step: 0.1,
+              formatter: UniversalPercentFormat,
             },
             {
               id: "recoilModifier",
               label: "Recoil Modifier",
-              filterType: "range",
-              formatter: UniversalFormat,
+              filterType: "slider",
+              min: -0.3,
+              max: 1.15,
+              step: 0.1,
+              formatter: UniversalPercentFormat,
             },
             {
               id: "fragmentationChance",
               label: "Frag. Chance",
-              filterType: "range",
-              formatter: UniversalFormat,
+              filterType: "slider",
+              min: 0,
+              max: 100,
+              step: 10,
+              formatter: (val) => `${val}%`,
             },
             {
               id: "initialSpeed",
               label: "Initial Speed",
-              filterType: "range",
-              formatter: UniversalFormat,
+              filterType: "slider",
+              min: 20,
+              max: 1013,
+              step: 10,
+              formatter: (val) => `${val}m/s`,
             },
             {
               id: "ricochetChance",
               label: "Ricochet Chance",
-              filterType: "range",
-              formatter: UniversalFormat,
+              filterType: "slider",
+              min: 0,
+              max: 100,
+              step: 10,
+              formatter: (val) => `${val}%`,
             },
           ]}
         />

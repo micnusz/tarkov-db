@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/tooltip";
 import { Briefcase, TowerControl } from "lucide-react";
 import { lazy, Suspense } from "react";
-import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 import Spinner from "@/lib/Spinner";

@@ -108,6 +108,44 @@ export type ItemPropertiesGlasses = BaseItem & {
   };
 };
 
+export type ItemPropertiesMedKit = BaseItem & {
+  properties: {
+    useTime: number;
+    hitpoints: number;
+    cures: string[];
+    maxHealPerUse: number;
+    hpCostLightBleeding: number;
+    hpCostHeavyBleeding: number;
+  };
+};
+
+export type ItemPropertiesMedicalItem = BaseItem & {
+  properties: {
+    useTime: number;
+    uses: number;
+    cures: string[];
+  };
+};
+
+export type ItemPropertiesFoodDrink = BaseItem & {
+  properties: {
+    energy: number;
+    hydration: number;
+    units: number;
+    stimEffects: {
+      skill: {
+        id: string;
+      };
+      skillName: string;
+      duration: number;
+      percent: boolean;
+      delay: number;
+      value: number;
+      chance: number;
+    }[];
+  };
+};
+
 export type GrenadeItem = BaseItem & {
   properties: {
     type: string;
@@ -298,6 +336,18 @@ export type GetBackpacks = {
 
 export type GetArmors = {
   items: ArmorsItem[];
+};
+
+export type GetMedkits = {
+  items: ItemPropertiesMedKit[];
+};
+
+export type GetMedicalItem = {
+  items: ItemPropertiesMedicalItem[];
+};
+
+export type GetProvisions = {
+  items: ItemPropertiesFoodDrink[];
 };
 
 export type GetHelmets = {

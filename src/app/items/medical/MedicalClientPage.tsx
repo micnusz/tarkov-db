@@ -5,23 +5,23 @@ import { Button } from "@/components/ui/button";
 import { lazy, Suspense, useState } from "react";
 
 const componentsMap = {
-  armoredVests: lazy(
+  medicalItems: lazy(
     () =>
       import(
-        "@/components/dynamic-import/body-armors/dynamic-import/BodyArmorsArmoredVests"
+        "@/components/dynamic-import/medical/dynamic-import/MedicalMedicalItems"
       )
   ),
-  armoredChestRigs: lazy(
+  medkits: lazy(
     () =>
       import(
-        "@/components/dynamic-import/body-armors/dynamic-import/BodyArmorsArmoredRigs"
+        "@/components/dynamic-import/medical/dynamic-import/MedicalMedkits"
       )
   ),
 };
 
-const ArmorsPageClient = () => {
+const MedicalClientPage = () => {
   const [selectedComponent, setSelectedComponent] =
-    useState<keyof typeof componentsMap>("armoredVests");
+    useState<keyof typeof componentsMap>("medicalItems");
   const DynamicComponent = componentsMap[selectedComponent];
 
   const formattedTitle =
@@ -31,7 +31,7 @@ const ArmorsPageClient = () => {
   return (
     <div className="w-full h-full flex-col justify-center items-center p-4 md:p-10">
       <h1 className="scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance">
-        Body Armor: {formattedTitle}
+        Medical: {formattedTitle}
       </h1>
       {/* Table stwitch */}
       <div className="pt-4 flex gap-2 flex-wrap justify-center">
@@ -53,10 +53,18 @@ const ArmorsPageClient = () => {
         <Suspense
           fallback={
             <DataTableSkeleton
-              columnCount={5}
+              columnCount={7}
               filterCount={1}
               searchCount={1}
-              cellWidths={["6rem", "20rem", "6rem", "6rem", "6rem"]}
+              cellWidths={[
+                "6rem",
+                "20rem",
+                "6rem",
+                "6rem",
+                "6rem",
+                "6rem",
+                "6rem",
+              ]}
               shrinkZero
               className="p-0 md:p-0 m-0 md:m-0"
             />
@@ -69,4 +77,4 @@ const ArmorsPageClient = () => {
   );
 };
 
-export default ArmorsPageClient;
+export default MedicalClientPage;

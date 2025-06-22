@@ -7,11 +7,12 @@ import { DataTableClient } from "@/components/data-table/data-table-client";
 import RicochetChanceFormat from "@/components/modules/ricochet-chance-format";
 import UniversalCurrencyFormat from "@/components/modules/universal-currency-format";
 import UniversalFormat from "@/components/modules/universal-format";
+import UniversalPercentFormat from "@/components/modules/universal-percent-format";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 const FaceCovers = () => {
   const { data } = useSuspenseQuery({
-    queryKey: ["face-covers"],
+    queryKey: ["facewear-face-covers"],
     queryFn: () => client.getFaceCovers(),
   });
 
@@ -89,7 +90,7 @@ const FaceCovers = () => {
             min: -0.05,
             max: 0,
             step: 0.01,
-            formatter: (val) => `${val}%`,
+            formatter: UniversalPercentFormat,
           },
           {
             id: "speedPenalty",
@@ -98,7 +99,7 @@ const FaceCovers = () => {
             min: -0.01,
             max: 0,
             step: 0.01,
-            formatter: (val) => `${val}%`,
+            formatter: UniversalPercentFormat,
           },
           {
             id: "turnPenalty",
@@ -107,7 +108,7 @@ const FaceCovers = () => {
             min: -0.03,
             max: 0,
             step: 0.01,
-            formatter: (val) => `${val}%`,
+            formatter: UniversalPercentFormat,
           },
           {
             id: "weight",

@@ -43,7 +43,10 @@ const TasksClient = () => {
           {
             id: "minPlayerLevel",
             label: "Min. Player Level",
-            filterType: "range",
+            filterType: "slider",
+            min: 0,
+            max: 65,
+            step: 1,
             formatter: UniversalFormat,
           },
           {

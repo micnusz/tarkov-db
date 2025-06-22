@@ -10,9 +10,9 @@ export const itemCategories = [
   { href: "/items/barter-items", id: "barter-items", name: "Barter items" },
   { href: "/items/containers", id: "containers", name: "Containers" },
   {
-    href: "/items/face-covers",
-    id: "face-covers",
-    name: "Face covers, Eyewear",
+    href: "/items/facewear",
+    id: "facewear",
+    name: "Facewear",
   },
   { href: "/items/grenades", id: "grenades", name: "Grenades" },
   { href: "/items/headsets", id: "headsets", name: "Headsets" },
@@ -25,7 +25,7 @@ export const itemCategories = [
   },
   { href: "/items/medical", id: "medical", name: "Medical" },
   { href: "/items/provisions", id: "provisions", name: "Provisions" },
-  { href: "/items/rigs", id: "rigs", name: "Rigs" },
+  { href: "/items/chest-rigs", id: "chest-rigs", name: "Chest Rigs" },
   { href: "/items/weapons", id: "weapons", name: "Weapons" },
 ];
 
