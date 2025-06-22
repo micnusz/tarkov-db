@@ -2,7 +2,6 @@
 
 import { client } from "@/app/api/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { DataTableContainers } from "./data-table/data-table-containers";
 import { columnsContainer } from "./data-table/columns";
 import { DataTableClient } from "./data-table/data-table-client";
 import { Item } from "@/app/api/types";

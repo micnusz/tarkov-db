@@ -2,7 +2,6 @@
 
 import { client } from "@/app/api/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { DataTableBarters } from "./data-table/data-table-barters";
 import { columnsBarter } from "./data-table/columns";
 import { Barter } from "@/app/api/types";
 import { DataTableClient } from "./data-table/data-table-client";
@@ -68,7 +67,7 @@ const BartersClient = () => {
             min: 0,
             max: 15500000,
             step: 1000,
-            formatter: (val) => formatCurrency("roubles", val),
+            formatter: (val) => formatCurrency("roubles", val as number),
           },
         ]}
       />

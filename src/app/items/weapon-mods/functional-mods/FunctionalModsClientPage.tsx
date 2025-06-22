@@ -8,31 +8,31 @@ const componentsMap = {
   bipods: lazy(
     () =>
       import(
-        "@/components/weapon-mods/FunctionalMods/dynamic-import/FunctionalModsBipods"
+        "@/components/dynamic-import/weapon-mods/FunctionalMods/dynamic-import/FunctionalModsBipods"
       )
   ),
   foregrips: lazy(
     () =>
       import(
-        "@/components/weapon-mods/FunctionalMods/dynamic-import/FunctionalModsForegrips"
+        "@/components/dynamic-import/weapon-mods/FunctionalMods/dynamic-import/FunctionalModsForegrips"
       )
   ),
   flashlights: lazy(
     () =>
       import(
-        "@/components/weapon-mods/FunctionalMods/dynamic-import/FunctionalModsFlashlights"
+        "@/components/dynamic-import/weapon-mods/FunctionalMods/dynamic-import/FunctionalModsFlashlights"
       )
   ),
   tacticalDevices: lazy(
     () =>
       import(
-        "@/components/weapon-mods/FunctionalMods/dynamic-import/FunctionalModsTacticalDevices"
+        "@/components/dynamic-import/weapon-mods/FunctionalMods/dynamic-import/FunctionalModsTacticalDevices"
       )
   ),
   auxiliary: lazy(
     () =>
       import(
-        "@/components/weapon-mods/FunctionalMods/dynamic-import/FunctionalModsParts"
+        "@/components/dynamic-import/weapon-mods/FunctionalMods/dynamic-import/FunctionalModsParts"
       )
   ),
 };

@@ -8,26 +8,32 @@ const componentsMap = {
   chargingHandles: lazy(
     () =>
       import(
-        "@/components/weapon-mods/GearMods/dynamic-import/GearModsChargingHandles"
+        "@/components/dynamic-import/weapon-mods/GearMods/dynamic-import/GearModsChargingHandles"
       )
   ),
   magazines: lazy(
     () =>
       import(
-        "@/components/weapon-mods/GearMods/dynamic-import/GearModsMagazines"
+        "@/components/dynamic-import/weapon-mods/GearMods/dynamic-import/GearModsMagazines"
       )
   ),
   mounts: lazy(
     () =>
-      import("@/components/weapon-mods/GearMods/dynamic-import/GearModsMounts")
+      import(
+        "@/components/dynamic-import/weapon-mods/GearMods/dynamic-import/GearModsMounts"
+      )
   ),
   stocks: lazy(
     () =>
-      import("@/components/weapon-mods/GearMods/dynamic-import/GearModsStocks")
+      import(
+        "@/components/dynamic-import/weapon-mods/GearMods/dynamic-import/GearModsStocks"
+      )
   ),
   underbarrelGrenadeLauncher: lazy(
     () =>
-      import("@/components/weapon-mods/GearMods/dynamic-import/GearModsUBGL")
+      import(
+        "@/components/dynamic-import/weapon-mods/GearMods/dynamic-import/GearModsUBGL"
+      )
   ),
 };
 

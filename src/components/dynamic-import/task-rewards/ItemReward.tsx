@@ -1,8 +1,8 @@
 "use client";
 import React from "react";
-import formatCurrency from "../modules/currency-format";
 import Link from "next/link";
 import { RewardItem } from "@/app/api/types";
+import formatCurrency from "@/components/modules/currency-format";
 
 type Props = {
   items: RewardItem[];

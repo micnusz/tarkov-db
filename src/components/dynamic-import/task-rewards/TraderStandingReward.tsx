@@ -1,5 +1,5 @@
+import traderStandingFormat from "@/components/modules/trader-standing-format";
 import React from "react";
-import traderStandingFormat from "../modules/trader-standing-format";
 
 type Props = {
   traderStanding?: {

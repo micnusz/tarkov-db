@@ -14,21 +14,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import React, { Suspense } from "react";
+import React from "react";
 import { Input } from "../ui/input";
-import { DataTablePagination } from "./data-table-pagination";
 import { BaseItem, Category } from "@/app/api/types";
 import { DataTableSkeleton } from "./data-table-skeleton";
 import { Button } from "../ui/button";
 import CategoryNameFormat from "../modules/category-name-format";
-
 import Spinner from "@/lib/Spinner";
 import PopoverFilter from "../popover-filter";
-
-type Pagination = {
-  pageIndex: number;
-  pageSize: number;
-};
 
 interface DataTableFleaMarketProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -58,11 +51,7 @@ export function DataTableFleaMarket<TData extends BaseItem, TValue>({
     getCoreRowModel: getCoreRowModel(),
   });
 
-  const parentMap = new Map<
-    string,
-    { id: string; name: string; children: { id: string; name: string }[] }
-  >();
-
+  const parentMap = new Map();
   categories.forEach((category) => {
     if (category.parent && !parentMap.has(category.parent.id)) {
       parentMap.set(category.parent.id, category.parent);
@@ -141,12 +130,20 @@ export function DataTableFleaMarket<TData extends BaseItem, TValue>({
             <TableRow>
               <TableCell colSpan={columns.length} className="p-0">
                 <DataTableSkeleton
-                  columnCount={6}
+                  columnCount={7}
                   filterCount={0}
                   searchCount={0}
-                  cellWidths={["3rem", "10rem", "6rem", "3rem", "3rem", "3rem"]}
+                  cellWidths={[
+                    "3rem",
+                    "8rem",
+                    "3rem",
+                    "3rem",
+                    "3rem",
+                    "3rem",
+                    "3rem",
+                  ]}
                   shrinkZero
-                  className="p-0 md:p-0 md:mt-0 t-0"
+                  className="p-0 md:p-0 md:mt-0 m-0"
                 />
               </TableCell>
             </TableRow>

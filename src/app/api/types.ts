@@ -13,7 +13,14 @@ export type VendorPrice = {
 export type Category = {
   id: string;
   name: string;
-  parent?: Category | null;
+  parent?: {
+    name: string;
+    id: string;
+  };
+  children?: {
+    name: string;
+    id: string;
+  };
 };
 
 // Items
@@ -39,6 +46,7 @@ export type BaseItem = {
   properties: {
     __typename: string;
     baseItem: BaseItem;
+    presets: string;
   };
 };
 
@@ -212,7 +220,7 @@ export type GetItemsSearchBar = {
   items: Pick<Item, "id" | "name">[];
 };
 
-export type GetItemById = {
+export type GetItemById = BaseItem & {
   item: Item & {
     shortName: string;
     description: string;

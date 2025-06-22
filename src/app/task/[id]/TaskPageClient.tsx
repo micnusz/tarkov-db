@@ -34,19 +34,34 @@ const TaskPageClient = ({ id }: TaskPageClientProps) => {
     return <Loading />;
   }
   const TaskRequirements = lazy(
-    () => import("@/components/task-rewards/dynamic-import/TaskRequirements")
+    () =>
+      import(
+        "@/components/dynamic-import/task-rewards/dynamic-import/TaskRequirements"
+      )
   );
   const TaskObjectives = lazy(
-    () => import("@/components/task-rewards/dynamic-import/TaskObjectives")
+    () =>
+      import(
+        "@/components/dynamic-import/task-rewards/dynamic-import/TaskObjectives"
+      )
   );
   const TaskStartRewards = lazy(
-    () => import("@/components/task-rewards/dynamic-import/TaskStartRewards")
+    () =>
+      import(
+        "@/components/dynamic-import/task-rewards/dynamic-import/TaskStartRewards"
+      )
   );
   const TaskFinishRewards = lazy(
-    () => import("@/components/task-rewards/dynamic-import/TaskFinishRewards")
+    () =>
+      import(
+        "@/components/dynamic-import/task-rewards/dynamic-import/TaskFinishRewards"
+      )
   );
   const TaskFailure = lazy(
-    () => import("@/components/task-rewards/dynamic-import/TaskFailure")
+    () =>
+      import(
+        "@/components/dynamic-import/task-rewards/dynamic-import/TaskFailure"
+      )
   );
 
   return (

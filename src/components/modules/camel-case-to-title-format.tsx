@@ -13,7 +13,7 @@ export function safeCamelCaseToTitle(
     | undefined
 ): string {
   if (typeof value === "string") {
-    return camelCaseToTitleFormat(value); // 👈 upewnij się, że to nie wywołuje samej siebie!
+    return camelCaseToTitleFormat(value);
   }
 
   if (typeof value === "number") {

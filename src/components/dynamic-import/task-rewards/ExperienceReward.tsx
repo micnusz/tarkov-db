@@ -1,6 +1,6 @@
 "use client";
 
-import formatExperience from "../modules/experience-format";
+import formatExperience from "@/components/modules/experience-format";
 
 type Props = {
   experience: number;

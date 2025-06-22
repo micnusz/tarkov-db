@@ -32,7 +32,7 @@ import CaliberFormat from "../modules/ammo-format";
 import formatCurrency from "../modules/currency-format";
 import { UniversalStringFilterFn } from "../modules/universal-string-filterfn";
 import RicochetChanceFormat from "../modules/ricochet-chance-format";
-import { UniversalNumberFormatFn } from "../modules/universal-number-filterfn";
+import { UniversalNumberFormatFn } from "../modules/universal-number-format-fn";
 import HeadsetsDistanceFormat from "../modules/headsets-distance-format";
 import HeadsetsDistortionFormat from "../modules/headsets-distortion-format";
 import { ricochetFilterFn } from "../modules/ricochet-filter-fn";

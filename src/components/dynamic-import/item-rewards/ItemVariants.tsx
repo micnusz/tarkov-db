@@ -1,13 +1,14 @@
 "use client";
 
-import Link from "next/link";
+import { GetItemById } from "@/app/api/types";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "../ui/accordion";
-import { ScrollArea } from "../ui/scroll-area";
+} from "@/components/ui/accordion";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import Link from "next/link";
 
 const ItemVariants = ({ itemData }) => {
   const isPreset = itemData.properties?.__typename === "ItemPropertiesPreset";

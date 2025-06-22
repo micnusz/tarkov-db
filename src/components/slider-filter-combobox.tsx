@@ -1,4 +1,3 @@
-// components/filters/RangeSliderFilterCombobox.tsx
 import {
   Popover,
   PopoverContent,
@@ -7,12 +6,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { useState } from "react";
-import { UniversalNumberRange } from "./modules/universal-number-filterfn";
+import { UniversalNumberFormatFnValue } from "./modules/universal-number-format-fn";
 
 interface SliderFilterComboboxProps {
   label: string;
-  value: UniversalNumberRange;
-  onChange: (val: UniversalNumberRange) => void;
+  value: UniversalNumberFormatFnValue;
+  onChange: (val: UniversalNumberFormatFnValue) => void;
   min: number;
   max: number;
   step?: number;

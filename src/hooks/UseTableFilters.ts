@@ -1,4 +1,4 @@
-import React, { useReducer } from "react";
+import React from "react";
 
 type RangeFilterValue = { min: number | null; max: number | null };
 

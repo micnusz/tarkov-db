@@ -1,7 +1,12 @@
+import { OfferUnlock } from "@/app/api/types";
 import Link from "next/link";
 import React from "react";
 
-const BarterUnlockReward = ({ offerUnlock }) => {
+type BarterUnlockRewardProps = {
+  offerUnlock: OfferUnlock[];
+};
+
+const BarterUnlockReward = ({ offerUnlock }: BarterUnlockRewardProps) => {
   return (
     <>
       {/* Barter Unlocks */}

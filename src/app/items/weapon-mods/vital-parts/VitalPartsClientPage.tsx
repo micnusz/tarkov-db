@@ -8,31 +8,31 @@ const componentsMap = {
   barrels: lazy(
     () =>
       import(
-        "@/components/weapon-mods/VitalParts/dynamic-import/VitalPartsBarrels"
+        "@/components/dynamic-import/weapon-mods/VitalParts/dynamic-import/VitalPartsBarrels"
       )
   ),
   gasBlocks: lazy(
     () =>
       import(
-        "@/components/weapon-mods/VitalParts/dynamic-import/VitalPartsGasBlocks"
+        "@/components/dynamic-import/weapon-mods/VitalParts/dynamic-import/VitalPartsGasBlocks"
       )
   ),
   handguards: lazy(
     () =>
       import(
-        "@/components/weapon-mods/VitalParts/dynamic-import/VitalPartsHandguards"
+        "@/components/dynamic-import/weapon-mods/VitalParts/dynamic-import/VitalPartsHandguards"
       )
   ),
   pistolGrips: lazy(
     () =>
       import(
-        "@/components/weapon-mods/VitalParts/dynamic-import/VitalPartsPistolGrips"
+        "@/components/dynamic-import/weapon-mods/VitalParts/dynamic-import/VitalPartsPistolGrips"
       )
   ),
   receivers: lazy(
     () =>
       import(
-        "@/components/weapon-mods/VitalParts/dynamic-import/VitalPartsReceiver"
+        "@/components/dynamic-import/weapon-mods/VitalParts/dynamic-import/VitalPartsReceiver"
       )
   ),
 };

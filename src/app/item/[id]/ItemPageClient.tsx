@@ -29,25 +29,44 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
   }
 
   const TaskRewards = lazy(
-    () => import("@/components/item-rewards/dynamic-import/TaskRewards")
+    () =>
+      import(
+        "@/components/dynamic-import/item-rewards/dynamic-import/TaskRewards"
+      )
   );
   const DataTableBuy = lazy(
-    () => import("@/components/item-rewards/dynamic-import/DataTableBuy")
+    () =>
+      import(
+        "@/components/dynamic-import/item-rewards/dynamic-import/DataTableBuy"
+      )
   );
   const DataTableSell = lazy(
-    () => import("@/components/item-rewards/dynamic-import/DataTableSell")
+    () =>
+      import(
+        "@/components/dynamic-import/item-rewards/dynamic-import/DataTableSell"
+      )
   );
   const RequiredFor = lazy(
-    () => import("@/components/item-rewards/dynamic-import/RequiredFor")
+    () =>
+      import(
+        "@/components/dynamic-import/item-rewards/dynamic-import/RequiredFor"
+      )
   );
   const DataTableBarters = lazy(
-    () => import("@/components/item-rewards/dynamic-import/DataTableBarters")
+    () =>
+      import(
+        "@/components/dynamic-import/item-rewards/dynamic-import/DataTableBarters"
+      )
   );
   const DataTableCraftings = lazy(
-    () => import("@/components/item-rewards/dynamic-import/DataTableCraftings")
+    () =>
+      import(
+        "@/components/dynamic-import/item-rewards/dynamic-import/DataTableCraftings"
+      )
   );
   const Variants = lazy(
-    () => import("@/components/item-rewards/dynamic-import/Variants")
+    () =>
+      import("@/components/dynamic-import/item-rewards/dynamic-import/Variants")
   );
 
   return (

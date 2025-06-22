@@ -129,7 +129,7 @@ export const client = {
   },
 
   async getItem(id: string): Promise<GetItemById["item"]> {
-    const data = await graphqlClient.request<GetItemById>(GET_ITEM_ID, {
+    const data = await graphqlClient.request<GetItemById>(GET_ITEM_BASE_ID, {
       id: id,
     });
     return data.item;
