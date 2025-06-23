@@ -60,7 +60,6 @@ import {
 import {
   GetAmmoCaliber,
   GetArmors,
-  GetBackpackById,
   GetBackpacks,
   GetBarterItems,
   GetBarters,
@@ -84,7 +83,6 @@ import {
   GetScopes,
   GetTasks,
   GetTraders,
-  GetWeaponById,
 } from "./types";
 import { graphqlClient } from "@/lib/graphql-client";
 

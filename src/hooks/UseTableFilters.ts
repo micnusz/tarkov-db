@@ -2,7 +2,7 @@ import React from "react";
 
 type RangeFilterValue = { min: number | null; max: number | null };
 
-type FilterValue = string | null | RangeFilterValue;
+type FilterValue = string | number | RangeFilterValue | null | undefined;
 
 type FilterState = Record<string, FilterValue>;
 

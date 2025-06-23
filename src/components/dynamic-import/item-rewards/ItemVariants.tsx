@@ -1,6 +1,5 @@
 "use client";
 
-import { GetItemById } from "@/app/api/types";
 import {
   Accordion,
   AccordionContent,
@@ -9,16 +8,49 @@ import {
 } from "@/components/ui/accordion";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Link from "next/link";
+import React from "react";
 
-const ItemVariants = ({ itemData }) => {
-  const isPreset = itemData.properties?.__typename === "ItemPropertiesPreset";
+interface Variant {
+  id: string;
+  name: string;
+  isOriginalWeapon?: boolean;
+}
 
-  const presetVariants =
+interface ItemPropertiesPreset {
+  __typename?: string;
+  presets?: Variant[] | string;
+  baseItem?: {
+    id: string;
+    name: string;
+    properties?: {
+      presets?: Variant[] | string;
+    };
+  };
+}
+
+interface ItemData {
+  id: string;
+  name: string;
+  properties?: ItemPropertiesPreset;
+}
+
+interface ItemVariantsProps {
+  itemData: ItemData;
+}
+
+const ItemVariants: React.FC<ItemVariantsProps> = ({ itemData }) => {
+  const presetVariantsRaw =
     itemData.properties?.presets ??
     itemData.properties?.baseItem?.properties?.presets ??
     [];
 
-  if (!presetVariants || presetVariants.length === 0) return null;
+  const presetVariants = Array.isArray(presetVariantsRaw)
+    ? presetVariantsRaw
+    : [];
+
+  if (presetVariants.length === 0) return null;
+
+  const isPreset = itemData.properties?.__typename === "ItemPropertiesPreset";
 
   const baseWeapon =
     isPreset && itemData.properties?.baseItem
@@ -51,7 +83,7 @@ const ItemVariants = ({ itemData }) => {
                     <span className="text-chart-2 hover:text-foreground/80">
                       <Link href={`/item/${variant.id}`}>
                         {variant.name}
-                        {variant.isOriginalWeapon}
+                        {variant.isOriginalWeapon && " (base)"}
                       </Link>
                     </span>
                   )}

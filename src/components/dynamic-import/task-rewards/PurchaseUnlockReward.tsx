@@ -1,8 +1,13 @@
 "use client";
 
+import { OfferUnlock } from "@/app/api/types";
 import Link from "next/link";
 
-const PurchaseRewardUnlock = ({ offerUnlock }) => {
+type PurchaseRewardUnlockProps = {
+  offerUnlock: OfferUnlock[];
+};
+
+const PurchaseRewardUnlock = ({ offerUnlock }: PurchaseRewardUnlockProps) => {
   return (
     <>
       {/* Purchase Unlocks */}

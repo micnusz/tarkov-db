@@ -2,9 +2,8 @@
 
 import { client } from "@/app/api/client";
 import { KeyItem } from "@/app/api/types";
-import { columnsGrenades, columnsKeys } from "@/components/data-table/columns";
+import { columnsKeys } from "@/components/data-table/columns";
 import { DataTableClient } from "@/components/data-table/data-table-client";
-import formatCurrency from "@/components/modules/currency-format";
 import UniversalCurrencyFormat from "@/components/modules/universal-currency-format";
 import UniversalFormat from "@/components/modules/universal-format";
 import { useSuspenseQuery } from "@tanstack/react-query";

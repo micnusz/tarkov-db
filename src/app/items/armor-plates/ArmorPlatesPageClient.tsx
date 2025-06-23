@@ -1,10 +1,7 @@
 "use client";
 import { client } from "@/app/api/client";
 import { ArmorsItem } from "@/app/api/types";
-import {
-  columnsArmorPlates,
-  columnsArmors,
-} from "@/components/data-table/columns";
+import { columnsArmorPlates } from "@/components/data-table/columns";
 import { DataTableClient } from "@/components/data-table/data-table-client";
 import UniversalFormat from "@/components/modules/universal-format";
 import UniversalPercentFormat from "@/components/modules/universal-percent-format";

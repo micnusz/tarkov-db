@@ -5,7 +5,6 @@ import { ItemPropertiesMedicalItem } from "@/app/api/types";
 import { columnsMedicalItems } from "@/components/data-table/columns";
 import { DataTableClient } from "@/components/data-table/data-table-client";
 import { safeCamelCaseToTitle } from "@/components/modules/camel-case-to-title-format";
-import UniversalCurrencyFormat from "@/components/modules/universal-currency-format";
 import UniversalPercentFormat from "@/components/modules/universal-percent-format";
 import { useSuspenseQuery } from "@tanstack/react-query";
 

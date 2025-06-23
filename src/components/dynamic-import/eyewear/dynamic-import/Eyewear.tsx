@@ -2,10 +2,7 @@
 
 import { client } from "@/app/api/client";
 import { ItemPropertiesGlasses } from "@/app/api/types";
-import {
-  columnsItemPropertiesGlasses,
-  columnsItemPropertiesWeaponMod,
-} from "@/components/data-table/columns";
+import { columnsItemPropertiesGlasses } from "@/components/data-table/columns";
 import { DataTableClient } from "@/components/data-table/data-table-client";
 import UniversalCurrencyFormat from "@/components/modules/universal-currency-format";
 import UniversalFormat from "@/components/modules/universal-format";

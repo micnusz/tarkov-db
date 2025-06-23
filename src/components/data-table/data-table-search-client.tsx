@@ -1,7 +1,14 @@
 import React from "react";
 import { Input } from "../ui/input";
+import { Table } from "@tanstack/react-table";
 
-const DataTableSearchClient = ({ table }) => {
+interface DataTableSearchClientProps<TData> {
+  table: Table<TData>;
+}
+
+const DataTableSearchClient = <TData,>({
+  table,
+}: DataTableSearchClientProps<TData>) => {
   return (
     <Input
       placeholder="Search"

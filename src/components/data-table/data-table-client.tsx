@@ -19,34 +19,28 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import React, { Dispatch, SetStateAction } from "react";
+import React from "react";
 import { Button } from "../ui/button";
 import DataTableSearchClient from "./data-table-search-client";
 import { DataTablePaginationClient } from "./data-table-pagination-client";
 import PopoverFilter from "../popover-filter";
 import { useTableFilters } from "@/hooks/UseTableFilters";
 import { SliderFilterCombobox } from "../slider-filter-combobox";
-import RangeFilter from "../range-filter";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
 import {
   Sheet,
   SheetClose,
   SheetContent,
-  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "../ui/sheet";
-import { X } from "lucide-react";
+
 type FilterValue =
   | string
   | number
+  | { min: number | null; max: number | null }
   | null
-  | { min: number | null; max: number | null };
+  | undefined;
 
 interface FilterConfig {
   id?: string;
@@ -65,6 +59,7 @@ interface FilterConfig {
   min?: number;
   max?: number;
   step?: number;
+  showClear?: boolean;
 }
 
 interface DataTableClientProps<TData, TValue> {
@@ -172,7 +167,13 @@ export function DataTableClient<TData, TValue>({
                         max={filter.max ?? 100}
                         step={filter.step ?? 1}
                         value={
-                          filterState[filter.id!] ?? { min: null, max: null }
+                          typeof filterState[filter.id!] === "object" &&
+                          filterState[filter.id!] !== null
+                            ? (filterState[filter.id!] as {
+                                min: number | null;
+                                max: number | null;
+                              })
+                            : { min: null, max: null }
                         }
                         formatter={filter.formatter}
                         onChange={(val) => handleFilterChange(filter.id!, val)}
@@ -185,24 +186,18 @@ export function DataTableClient<TData, TValue>({
                         key={filter.id}
                         label={filter.label!}
                         options={filter.options ?? []}
-                        value={filterState[filter.id!] ?? null}
-                        onChange={(val) => handleFilterChange(filter.id!, val)}
-                        formatter={filter.formatter}
-                      />
-                    );
-                  } else if (filter.filterType === "range") {
-                    return (
-                      <RangeFilter
-                        key={filter.id}
-                        label={filter.label ?? ""}
-                        min={filter.min ?? 0}
-                        max={filter.max ?? 100}
-                        formatter={filter.formatter}
                         value={
-                          filterState[filter.id] ?? { min: null, max: null }
+                          typeof filterState[filter.id!] === "string" ||
+                          typeof filterState[filter.id!] === "number" ||
+                          filterState[filter.id!] === null
+                            ? (filterState[filter.id!] as
+                                | string
+                                | number
+                                | null)
+                            : null
                         }
                         onChange={(val) => handleFilterChange(filter.id!, val)}
-                        showClear={true}
+                        formatter={filter.formatter}
                       />
                     );
                   }

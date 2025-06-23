@@ -2,10 +2,7 @@
 
 import { client } from "@/app/api/client";
 import { ArmorsItem } from "@/app/api/types";
-import {
-  columnsHeadsets,
-  columnsHelmets,
-} from "@/components/data-table/columns";
+import { columnsHelmets } from "@/components/data-table/columns";
 import { DataTableClient } from "@/components/data-table/data-table-client";
 import RicochetChanceFormat from "@/components/modules/ricochet-chance-format";
 import UniversalFormat from "@/components/modules/universal-format";
@@ -53,8 +50,6 @@ const HelmetsClientPage = () => {
         .map((val) => (val ? "Blocks" : "Allows"))
     )
   ).sort();
-
-  console.log(blocksHeadset);
 
   return (
     <div className="w-full h-full flex-col justify-center items-center p-4 md:p-10">

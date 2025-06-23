@@ -1,0 +1,11 @@
+# *
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /internal/
+
+# Host
+Host: https://tarkov-db.vercel.app
+
+# Sitemaps
+Sitemap: https://tarkov-db.vercel.app/sitemap.xml

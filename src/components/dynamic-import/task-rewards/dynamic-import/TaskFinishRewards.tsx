@@ -3,11 +3,11 @@ import ExperienceReward from "../ExperienceReward";
 import SkillLevelReward from "../SkillLevelReward";
 import TraderStandingReward from "../TraderStandingReward";
 import ItemReward from "../ItemReward";
-import TraderUnlockReward from "../TraderUnlockReward";
 import PurchaseRewardUnlock from "../PurchaseUnlockReward";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { client } from "@/app/api/client";
 import BarterUnlockReward from "../BarterUnlockReward";
+import { TraderUnlockReward } from "../TraderUnlockReward";
 
 type TaskFinishRewardsProps = {
   taskId: string;
@@ -31,7 +31,7 @@ const TaskFinishRewards = ({ taskId, experience }: TaskFinishRewardsProps) => {
           <TraderStandingReward
             traderStanding={taskData.finishRewards.traderStanding}
           />
-          <ItemReward items={taskData.finishRewards.items} />
+          <ItemReward items={taskData.finishRewards.items ?? []} />
           <TraderUnlockReward
             traderUnlock={taskData.finishRewards.traderUnlock}
           />
@@ -39,7 +39,7 @@ const TaskFinishRewards = ({ taskId, experience }: TaskFinishRewardsProps) => {
             offerUnlock={taskData.finishRewards.offerUnlock ?? []}
           />
           <PurchaseRewardUnlock
-            offerUnlock={taskData.finishRewards.offerUnlock}
+            offerUnlock={taskData.finishRewards.offerUnlock ?? []}
           />
         </ul>
       ) : (

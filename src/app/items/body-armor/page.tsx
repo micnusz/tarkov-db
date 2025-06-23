@@ -6,15 +6,15 @@ import { Metadata } from "next";
 import ArmorsPageClient from "./ArmorsPageClient";
 export const generateMetadata = async (): Promise<Metadata> => {
   return {
-    title: "Armors - Tarkov.db",
-    description: "Tarkov.db, Armors",
+    title: "Body Armors - Tarkov.db",
+    description: "Tarkov.db, Body Armors",
   };
 };
 const ArmorsPageServer = async () => {
   const queryClient = getQueryClient();
   await queryClient.prefetchQuery({
-    queryKey: ["armors"],
-    queryFn: () => client.getArmors(),
+    queryKey: ["body-armors-armored-vests"],
+    queryFn: () => client.getArmoredVests(),
   });
 
   return (

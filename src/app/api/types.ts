@@ -156,6 +156,10 @@ export type ItemPropertiesFoodDrink = BaseItem & {
     }[];
   };
 };
+export type ItemPropertiesPreset = BaseItem & {
+  __typename?: string;
+};
+
 // grenades
 export type GrenadeItem = BaseItem & {
   properties: {

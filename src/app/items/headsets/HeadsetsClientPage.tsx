@@ -1,11 +1,7 @@
 "use client";
 
 import { client } from "@/app/api/client";
-import { GrenadeItem, HeadsetItem } from "@/app/api/types";
-import {
-  columnsGrenades,
-  columnsHeadsets,
-} from "@/components/data-table/columns";
+import { columnsHeadsets } from "@/components/data-table/columns";
 import { DataTableClient } from "@/components/data-table/data-table-client";
 import UniversalPercentFormat from "@/components/modules/universal-percent-format";
 import { useSuspenseQuery } from "@tanstack/react-query";

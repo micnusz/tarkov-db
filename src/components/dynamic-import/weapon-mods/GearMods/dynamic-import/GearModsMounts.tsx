@@ -1,10 +1,7 @@
 "use client";
 
 import { client } from "@/app/api/client";
-import {
-  columnsGasBlock,
-  columnsItemPropertiesWeaponMod,
-} from "@/components/data-table/columns";
+import { columnsItemPropertiesWeaponMod } from "@/components/data-table/columns";
 import { DataTableClient } from "@/components/data-table/data-table-client";
 import UniversalCurrencyFormat from "@/components/modules/universal-currency-format";
 import UniversalFormat from "@/components/modules/universal-format";

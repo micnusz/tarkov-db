@@ -1,4 +1,4 @@
-import {
+import type {
   Ammo,
   ArmorsItem,
   BackpackItem,
@@ -2529,7 +2529,6 @@ export const columnsScopes = [
     header: (info) => <DefaultHeader info={info} name="Sight Modes" />,
     cell: (info) => {
       const sightModes = info.getValue() as number[] | undefined;
-      const row = info.row.original;
 
       const display =
         sightModes && sightModes.length > 0

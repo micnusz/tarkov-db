@@ -3,7 +3,6 @@
 import { client } from "@/app/api/client";
 import { columnsProvisions } from "@/components/data-table/columns";
 import { DataTableClient } from "@/components/data-table/data-table-client";
-import { safeCamelCaseToTitle } from "@/components/modules/camel-case-to-title-format";
 import UniversalFormat from "@/components/modules/universal-format";
 import { useSuspenseQuery } from "@tanstack/react-query";
 

@@ -1,10 +1,8 @@
 "use client";
 
 import { client } from "@/app/api/client";
-import { ItemPropertiesWeaponMod, MagazineItem } from "@/app/api/types";
 import { columnsMagazines } from "@/components/data-table/columns";
 import { DataTableClient } from "@/components/data-table/data-table-client";
-import malfunctionChanceFormat from "@/components/modules/malfunction-chance-format";
 import UniversalCurrencyFormat from "@/components/modules/universal-currency-format";
 import UniversalFormat from "@/components/modules/universal-format";
 import { useSuspenseQuery } from "@tanstack/react-query";

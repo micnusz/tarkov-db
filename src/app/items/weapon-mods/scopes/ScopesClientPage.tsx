@@ -1,7 +1,6 @@
 "use client";
 
 import { client } from "@/app/api/client";
-import { ScopeItem } from "@/app/api/types";
 import { columnsScopes } from "@/components/data-table/columns";
 import { DataTableClient } from "@/components/data-table/data-table-client";
 import UniversalCurrencyFormat from "@/components/modules/universal-currency-format";
@@ -14,13 +13,6 @@ const ScopesClientPage = () => {
     queryFn: () => client.getScopes(),
   });
 
-  const categories = Array.from(
-    new Set(
-      (data as ScopeItem[])
-        .map((key) => key.category?.name)
-        .filter((val): val is string => val !== undefined)
-    )
-  ).sort();
   return (
     <div className="w-full h-full flex-col justify-center items-center p-4 md:p-10">
       <h1 className="scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance">
