@@ -106,11 +106,14 @@ export function DataTableClient<TData, TValue>({
 
   const handleFilterChange = (id: string, value: FilterValue) => {
     dispatch({ type: "SET_FILTER", id, value });
-    setColumnFilters((prev) =>
-      value === null
-        ? prev.filter((f) => f.id !== id)
-        : [...prev.filter((f) => f.id !== id), { id, value }]
-    );
+    setColumnFilters((prev) => {
+      const newFilters =
+        value === null
+          ? prev.filter((f) => f.id !== id)
+          : [...prev.filter((f) => f.id !== id), { id, value }];
+
+      return newFilters;
+    });
   };
 
   const handleResetFilters = () => {
@@ -118,7 +121,6 @@ export function DataTableClient<TData, TValue>({
     setColumnFilters([]);
   };
 
-  console.log(`test ${columnFilters}`);
   return (
     <>
       <div className="w-full flex flex-col gap-4">

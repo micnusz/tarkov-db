@@ -3418,7 +3418,7 @@ export const columnsTaskAdvanced = [
   }),
   columnHelper.accessor((row) => row.map?.name ?? "", {
     id: "map.name",
-    filterFn: "equals",
+    filterFn: "includesString",
     header: (info) => <DefaultHeader info={info} name="Map" />,
     cell: (info) => {
       const mapName = info.getValue();
