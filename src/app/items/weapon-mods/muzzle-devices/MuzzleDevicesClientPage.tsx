@@ -23,7 +23,7 @@ const MuzzleDevicesClientPage = () => {
   ).sort();
   return (
     <div className="w-full h-full flex-col justify-center items-center p-4 md:p-10">
-      <h1 className="scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance">
+      <h1 className="scroll-m-20 text-center text-2xl md:text-4xl font-extrabold tracking-tight text-balance">
         Muzzle Devices
       </h1>
       <DataTableClient

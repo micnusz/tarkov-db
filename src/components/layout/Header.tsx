@@ -36,7 +36,7 @@ export const Header = () => {
     <header className="bg-chart-5 border-b">
       <div className="max-w-screen mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
         {/* Logo */}
-        <Link aria-label="Home" href="/" className="text-2xl font-bold px-6">
+        <Link aria-label="Home" href="/" className="text-xl font-bold px-6">
           Tarkov.db
         </Link>
 
@@ -49,7 +49,7 @@ export const Header = () => {
             <NavigationMenuList className="flex space-x-4">
               {navLinks.map((link) => (
                 <NavigationMenuItem key={link.title}>
-                  <NavigationMenuLink asChild className="text-lg">
+                  <NavigationMenuLink asChild className="text-md">
                     <Link
                       prefetch={true}
                       href={link.href}

@@ -42,7 +42,7 @@ export function DataTableSkeleton({
             ? Array.from({ length: searchCount }).map((_, i) => (
                 <Skeleton
                   key={i}
-                  className="h-[2.5rem] w-[12rem] md:w-[25rem] border-dashed mb-2"
+                  className="mt-4 h-[2rem] w-full md:w-[25rem] border-dashed mb-2"
                 />
               ))
             : null}
@@ -54,32 +54,48 @@ export function DataTableSkeleton({
             ? Array.from({ length: filterCount }).map((_, i) => (
                 <Skeleton
                   key={i}
-                  className="w-screen h-[2.5rem] w-[8rem] md:w-[10rem] border-dashed mb-2"
+                  className="w-screen h-[2rem] w-[8rem] md:w-[10rem] border-dashed mb-2"
                 />
               ))
             : null}
         </div>
       </div>
       <div className="">
-        <Table>
-          <TableBody>
-            {Array.from({ length: rowCount }).map((_, i) => (
-              <TableRow key={i} className="hover:bg-transparent">
-                {Array.from({ length: columnCount }).map((_, j) => (
-                  <TableCell
-                    key={j}
-                    style={{
-                      width: cozyCellWidths[j],
-                      minWidth: shrinkZero ? cozyCellWidths[j] : "auto",
-                    }}
-                  >
-                    <Skeleton className="h-16 w-full" />
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+        {/* Desktop view (md and up) */}
+        <div className="hidden md:block">
+          <Table>
+            <TableBody>
+              {Array.from({ length: rowCount }).map((_, i) => (
+                <TableRow key={i} className="hover:bg-transparent">
+                  {Array.from({ length: columnCount }).map((_, j) => (
+                    <TableCell
+                      key={j}
+                      style={{
+                        width: cozyCellWidths[j],
+                        minWidth: shrinkZero ? cozyCellWidths[j] : "auto",
+                      }}
+                    >
+                      <Skeleton className="h-16 w-full" />
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+
+        {/* Mobile view (sm and down) */}
+        <div className="md:hidden space-y-4 w-full">
+          {Array.from({ length: rowCount }).map((_, i) => (
+            <div key={i} className="border rounded-md p-4 shadow-sm space-y-2">
+              {Array.from({ length: columnCount }).map((_, j) => (
+                <div key={j}>
+                  <Skeleton className="h-16 w-full mb-1" />
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
       </div>
       {withPagination ? (
         <div className="flex w-full items-center justify-between gap-4 overflow-auto p-1 sm:gap-8">

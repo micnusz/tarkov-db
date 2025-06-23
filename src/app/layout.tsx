@@ -25,7 +25,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${robotoMono.className} antialiased`}>
+      <body className={`${robotoMono.className} antialiased `}>
         <QueryProvider>
           <Header />
           {children}

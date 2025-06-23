@@ -79,8 +79,6 @@ export function DataTableClient<TData, TValue>({
   const table = useReactTable({
     columns,
     data,
-    onSortingChange: setSorting,
-    getSortedRowModel: getSortedRowModel(),
     state: {
       sorting,
       columnFilters,
@@ -94,8 +92,10 @@ export function DataTableClient<TData, TValue>({
         __typename: false,
       },
     },
-    getCoreRowModel: getCoreRowModel(),
+    onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
+    getSortedRowModel: getSortedRowModel(),
+    getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });
@@ -118,6 +118,7 @@ export function DataTableClient<TData, TValue>({
     setColumnFilters([]);
   };
 
+  console.log(`test ${columnFilters}`);
   return (
     <>
       <div className="w-full flex flex-col gap-4">
@@ -217,7 +218,7 @@ export function DataTableClient<TData, TValue>({
           </SheetContent>
         </Sheet>
 
-        <Table>
+        <Table className="hidden sm:table">
           <TableHeader className="sticky top-0 z-10 bg-background shadow-md">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -262,6 +263,84 @@ export function DataTableClient<TData, TValue>({
             )}
           </TableBody>
         </Table>
+
+        {/* Mobile view */}
+        <div className="sm:hidden space-y-4">
+          {table.getRowModel().rows.length ? (
+            table.getRowModel().rows.map((row) => (
+              <div key={row.id} className="border rounded-md p-4 shadow-sm">
+                {(() => {
+                  const cells = row.getVisibleCells();
+                  const iconCell = cells.find(
+                    (cell) => cell.column.id === "icon"
+                  );
+                  const nameCell = cells.find(
+                    (cell) => cell.column.id === "name"
+                  );
+
+                  return (
+                    <>
+                      {/* Ikona + nazwa */}
+                      {iconCell && nameCell && (
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="w-20 h-20 shrink-0">
+                            {flexRender(
+                              iconCell.column.columnDef.cell,
+                              iconCell.getContext()
+                            )}
+                          </div>
+                          <div className="text-sm font-medium">
+                            {flexRender(
+                              nameCell.column.columnDef.cell,
+                              nameCell.getContext()
+                            )}
+                          </div>
+                        </div>
+                      )}
+                      <div className="grid grid-cols-2 gap-4">
+                        {cells
+                          .filter((cell) => cell.column.id !== "icon")
+                          .map((cell) => {
+                            const header = table
+                              .getHeaderGroups()
+                              .flatMap((hg) => hg.headers)
+                              .find((h) => h.column.id === cell.column.id);
+
+                            return (
+                              <div
+                                key={cell.id}
+                                className="py-2 border-b border-b-1"
+                              >
+                                <div className="text-xs font-semibold uppercase tracking-wide mb-1">
+                                  {typeof cell.column.columnDef.header ===
+                                  "function"
+                                    ? cell.column.columnDef.header(
+                                        header!.getContext()
+                                      )
+                                    : cell.column.columnDef.header}
+                                </div>
+                                <div className="text-sm ">
+                                  {flexRender(
+                                    cell.column.columnDef.cell,
+                                    cell.getContext()
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })}
+                      </div>
+                    </>
+                  );
+                })()}
+              </div>
+            ))
+          ) : (
+            <div className="text-center p-4 text-muted-foreground">
+              No results.
+            </div>
+          )}
+        </div>
+
         <DataTablePaginationClient table={table} />
       </div>
     </>

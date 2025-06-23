@@ -60,8 +60,8 @@ export const columnsBarter = [
           <Image
             src={trader.imageLink}
             alt={trader.name}
-            width={75}
-            height={75}
+            width={50}
+            height={50}
             loading="lazy"
             className="object-contain h-25"
           />
@@ -81,8 +81,10 @@ export const columnsBarter = [
     header: "Trader Level",
     cell: (info) => <span>{info.getValue()}</span>,
   }),
+
   columnHelperBarter.accessor((row) => row.rewardItems?.[0]?.item?.name ?? "", {
     id: "name",
+    enableHiding: false,
     header: (info) => <DefaultHeader info={info} name="Reward" />,
     cell: (info) => {
       const reward = info.row.original.rewardItems?.[0];
@@ -90,18 +92,21 @@ export const columnsBarter = [
       const amount = reward?.count ?? reward?.quantity;
 
       if (!item || !item.id) {
-        return <span className="text-gray-400 italic">N/A</span>;
+        return <span className="text-muted-foreground italic">N/A</span>;
       }
 
+      // Obcinamy tekst do połowy długości
+      const halfName = item.name.slice(0, Math.ceil(item.name.length / 2));
+
       return (
-        <div className="flex items-center gap-3 min-w-0">
-          <div className="relative shrink-0 ">
+        <div className="flex items-center gap-3">
+          <div className="relative shrink-0">
             {item.gridImageLink && (
               <Image
                 src={item.gridImageLink}
                 alt={item.name}
-                width={75}
-                height={75}
+                width={50}
+                height={50}
                 loading="lazy"
                 className="object-contain h-25"
               />
@@ -112,14 +117,15 @@ export const columnsBarter = [
               </Badge>
             )}
           </div>
-          <Link href={`/item/${item.id}`}>
-            <span className="text-sm truncate hover:text-chart-2 max-w-[300px] block">
-              {item.name}
-            </span>
-          </Link>
+          <div className="flex flex-col">
+            <Link href={`/item/${item.id}`}>
+              <span className="text-xs hover:text-chart-2 ">{halfName}…</span>
+            </Link>
+          </div>
         </div>
       );
     },
+
     filterFn: "includesString",
   }),
   columnHelperBarter.accessor(
@@ -183,9 +189,9 @@ export const columnsBarter = [
                     </Badge>
                   )}
                 </div>
-                <div className="flex flex-col">
+                <div className="flex flex-col w-fit">
                   <Link href={`/item/${item.id}`}>
-                    <span className="text-sm  hover:text-chart-2 ">
+                    <span className="text-sm hover:text-chart-2 ">
                       {item.name}
                     </span>
                   </Link>
@@ -1129,7 +1135,7 @@ export const columnsArmors = [
   }),
   columnHelperArmors.accessor((row) => row.wikiLink, {
     id: "wikiLink",
-    header: (info) => <DefaultHeader info={info} name="WikiLink" />,
+    header: (info) => <DefaultHeader info={info} name="Wiki" />,
     cell: (info) => {
       const wikiLink = info.getValue();
 
@@ -3300,7 +3306,7 @@ export const columnsTaskSimple = [
         const hasAny = kappa || lightkeeper;
 
         return hasAny ? (
-          <div className="flex items-center gap-2">
+          <div className="flex  gap-2">
             {kappa && (
               <Tooltip>
                 <TooltipTrigger>
