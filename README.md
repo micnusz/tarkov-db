@@ -1,7 +1,7 @@
 
 # Tarkov.db
 
-**Tarkov.db** is a web application designed to provide *Escape from Tarkov* players with easy access to detailed information about in-game items and quests. The app offers a user-friendly interface for quick searches and exploration of game data.
+[Tarkov.db](https://tarkov-db.vercel.app/) is a web application designed to provide *Escape from Tarkov* players with easy access to detailed information about in-game items and quests. The app offers a user-friendly interface for quick searches and exploration of game data.
 
 ## Features
 
