@@ -30,9 +30,9 @@ const TaskPageClient = ({ id }: TaskPageClientProps) => {
     queryFn: () => client.getTaskIdBase(id),
     enabled: !!id,
   });
-  if (!taskData) {
-    return <Loading />;
-  }
+  if (taskData === undefined) return <Loading />;
+  if (taskData === null) return <div>Task not found.</div>;
+
   const TaskRequirements = lazy(
     () =>
       import(
@@ -65,15 +65,25 @@ const TaskPageClient = ({ id }: TaskPageClientProps) => {
   );
 
   return (
-    <div key={taskData.id} className="flex flex-col p-4 md:p-10">
+    <div
+      key={taskData.id}
+      role="region"
+      aria-labelledby="task-title"
+      className="flex flex-col p-4 md:p-10"
+    >
       <div className="mb-6 flex flex-col md:flex-row gap-6">
         <div className="flex-1">
           <div>
-            <h1 className="text-left text-4xl font-extrabold tracking-tight">
+            <h1
+              className="text-left text-4xl font-extrabold tracking-tight"
+              id="task-title"
+            >
               {taskData?.name}
             </h1>
             <div className="mt-2 flex flex-col text-sm md:text-base gap-1">
-              <p className="">Given by: {taskData.trader?.name}</p>
+              <p aria-label={`Task given by ${taskData.trader?.name}`}>
+                Given by: {taskData.trader?.name}
+              </p>
               {taskData.map ? (
                 <p>Location: {taskData.map?.name}</p>
               ) : (
@@ -81,7 +91,11 @@ const TaskPageClient = ({ id }: TaskPageClientProps) => {
                   Location: <span className="text-gray-400">Any</span>
                 </p>
               )}
-              <div className="flex flex-row gap-3 items-center">
+              <div
+                className="flex flex-row gap-3 items-center"
+                role="group"
+                aria-label="Required for"
+              >
                 <span>Required for:</span>
 
                 {!taskData.kappaRequired && !taskData.lightkeeperRequired ? (
@@ -92,10 +106,10 @@ const TaskPageClient = ({ id }: TaskPageClientProps) => {
                   <>
                     {taskData.kappaRequired && (
                       <Tooltip>
-                        <TooltipTrigger>
+                        <TooltipTrigger aria-label="Required for Kappa">
                           <Briefcase
                             className="w-5 h-5 object-contain"
-                            aria-label="Icon of kappa container"
+                            aria-hidden="true"
                           />
                         </TooltipTrigger>
                         <TooltipContent>
@@ -106,10 +120,10 @@ const TaskPageClient = ({ id }: TaskPageClientProps) => {
 
                     {taskData.lightkeeperRequired && (
                       <Tooltip>
-                        <TooltipTrigger>
+                        <TooltipTrigger aria-label="Required for Lightkeeper">
                           <TowerControl
                             className="w-5 h-5 object-contain"
-                            aria-label="Icon of lighthouse"
+                            aria-hidden="true"
                           />
                         </TooltipTrigger>
                         <TooltipContent>
@@ -128,6 +142,7 @@ const TaskPageClient = ({ id }: TaskPageClientProps) => {
             className="text-chart-2 hover:text-foreground/80 mt-2 inline-block"
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="Open task wiki in a new tab"
           >
             Wiki
           </a>
@@ -138,7 +153,7 @@ const TaskPageClient = ({ id }: TaskPageClientProps) => {
             <Image
               aria-label={`Image of task: ${taskData.name}`}
               src={taskData.taskImageLink}
-              alt={taskData.name}
+              alt={`Image of task: ${taskData.name}`}
               width={300}
               height={300}
               className="object-contain"
@@ -148,11 +163,13 @@ const TaskPageClient = ({ id }: TaskPageClientProps) => {
               <Badge
                 variant="default"
                 className="flex items-center gap-2 px-1 py-1 text-sm shadow-md bg-chart-1"
+                role="img"
+                aria-label={`Badge with trader ${taskData.trader.name}`}
               >
                 <Image
                   aria-label={`Icon of trader: ${taskData.trader.name}`}
                   src={taskData.trader.imageLink}
-                  alt={taskData.trader.name}
+                  alt={`Trader icon: ${taskData.trader.name}`}
                   width={30}
                   height={30}
                   className="object-contain"
@@ -164,38 +181,80 @@ const TaskPageClient = ({ id }: TaskPageClientProps) => {
         </div>
       </div>
       <Accordion type="single" className="w-full" collapsible>
-        <AccordionItem value="item-1">
-          <AccordionTrigger className="text-lg">Requirements:</AccordionTrigger>
-          <AccordionContent className="flex flex-col gap-4 text-balance">
-            {/* Task requirements */}
+        <AccordionItem value="requirements">
+          <AccordionTrigger
+            className="text-lg"
+            id="requirements-trigger"
+            aria-controls="requirements-content"
+          >
+            Requirements:
+          </AccordionTrigger>
+          <AccordionContent
+            className="flex flex-col gap-4 text-balance"
+            id="requirements-content"
+            aria-labelledby="requirements-trigger"
+            role="region"
+          >
             <Suspense fallback={<Spinner />}>
               <TaskRequirements taskId={taskData.id} />
             </Suspense>
           </AccordionContent>
         </AccordionItem>
-        <AccordionItem value="item-2">
-          <AccordionTrigger className="text-lg">Objectives:</AccordionTrigger>
-          <AccordionContent className="flex flex-col gap-4 text-balance">
-            {/* TaskObjectives */}
+
+        <AccordionItem value="objectives">
+          <AccordionTrigger
+            className="text-lg"
+            id="objectives-trigger"
+            aria-controls="objectives-content"
+          >
+            Objectives:
+          </AccordionTrigger>
+          <AccordionContent
+            className="flex flex-col gap-4 text-balance"
+            id="objectives-content"
+            aria-labelledby="objectives-trigger"
+            role="region"
+          >
             <Suspense fallback={<Spinner />}>
               <TaskObjectives taskId={taskData.id} />
             </Suspense>
           </AccordionContent>
         </AccordionItem>
 
-        <AccordionItem value="item-3">
-          <AccordionTrigger className="text-lg">
+        <AccordionItem value="initial-equipment">
+          <AccordionTrigger
+            className="text-lg"
+            id="initial-equipment-trigger"
+            aria-controls="initial-equipment-content"
+          >
             Initial Equipment:
           </AccordionTrigger>
-          <AccordionContent className="flex flex-col gap-4 text-balance">
+          <AccordionContent
+            className="flex flex-col gap-4 text-balance"
+            id="initial-equipment-content"
+            aria-labelledby="initial-equipment-trigger"
+            role="region"
+          >
             <Suspense fallback={<Spinner />}>
               <TaskStartRewards taskId={taskData.id} />
             </Suspense>
           </AccordionContent>
         </AccordionItem>
-        <AccordionItem value="item-4">
-          <AccordionTrigger className="text-lg">Rewards:</AccordionTrigger>
-          <AccordionContent className="flex flex-col gap-4 text-balance">
+
+        <AccordionItem value="rewards">
+          <AccordionTrigger
+            className="text-lg"
+            id="rewards-trigger"
+            aria-controls="rewards-content"
+          >
+            Rewards:
+          </AccordionTrigger>
+          <AccordionContent
+            className="flex flex-col gap-4 text-balance"
+            id="rewards-content"
+            aria-labelledby="rewards-trigger"
+            role="region"
+          >
             <ScrollArea className="rounded-md border">
               <Suspense fallback={<Spinner />}>
                 <TaskFinishRewards
@@ -207,11 +266,20 @@ const TaskPageClient = ({ id }: TaskPageClientProps) => {
           </AccordionContent>
         </AccordionItem>
 
-        <AccordionItem value="item-5">
-          <AccordionTrigger className="text-lg">
+        <AccordionItem value="failure-penalty">
+          <AccordionTrigger
+            className="text-lg"
+            id="failure-penalty-trigger"
+            aria-controls="failure-penalty-content"
+          >
             Failure Penalty:
           </AccordionTrigger>
-          <AccordionContent className="flex flex-col gap-4 text-balance">
+          <AccordionContent
+            className="flex flex-col gap-4 text-balance"
+            id="failure-penalty-content"
+            aria-labelledby="failure-penalty-trigger"
+            role="region"
+          >
             <Suspense fallback={<Spinner />}>
               <TaskFailure taskId={taskData.id} />
             </Suspense>

@@ -9,10 +9,9 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import Loading from "./loading";
 import Image from "next/image";
-import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
 import Spinner from "@/lib/Spinner";
+import Loading from "./loading";
 
 type ItemPageClientProps = {
   id: string;
@@ -24,9 +23,9 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
     queryFn: () => client.getItemBaseId(id),
     enabled: !!id,
   });
-  if (!itemData) {
-    return <Loading />;
-  }
+
+  if (itemData === undefined) return <Loading />;
+  if (itemData === null) return <div>Item not found.</div>;
 
   const TaskRewards = lazy(
     () =>
@@ -70,16 +69,27 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
   );
 
   return (
-    <div key={itemData.id} className="flex flex-col p-4 md:p-10">
+    <div
+      key={itemData.id}
+      className="flex flex-col p-4 md:p-10"
+      role="main"
+      aria-labelledby="item-title"
+    >
       <div className="mb-6 flex flex-col md:flex-row gap-6">
         <div className="flex-1">
           {/* Item Title */}
-          <h1 className="text-left text-4xl font-extrabold tracking-tight">
+          <h1
+            className="text-left text-4xl font-extrabold tracking-tight"
+            id="item-title"
+            tabIndex={-1}
+          >
             {itemData.name}
           </h1>
           {/* Item Description */}
           {itemData.description && itemData.description.length > 0 ? (
-            <p className="leading-7 mt-2">{itemData.description}</p>
+            <p id="item-description" className="leading-7 mt-2">
+              {itemData.description}
+            </p>
           ) : null}
           {/* Item WikiLink */}
           <a
@@ -87,18 +97,22 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
             className="text-chart-1 hover:text-muted mt-2 inline-block"
             target="_blank"
             rel="noopener noreferrer"
+            aria-describedby="item-description"
           >
             Wiki
           </a>
           {/* Item Variants   */}
-          <div>
+          <section aria-label="Item variants">
             <Suspense fallback={<Spinner />}>
               <Variants itemId={itemData.id} />
             </Suspense>
-          </div>
+          </section>
         </div>
         {/* Item Image */}
-        <div className="flex justify-center items-center md:w-1/2 mx-auto">
+        <figure
+          className="flex justify-center items-center md:w-1/2 mx-auto"
+          aria-label={`Image of ${itemData.name}`}
+        >
           <div className="relative w-[15.625rem] h-[15.625rem]">
             <Image
               src={itemData.image512pxLink}
@@ -109,24 +123,43 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
               style={{ objectPosition: "center" }}
             />
           </div>
-        </div>
+        </figure>
       </div>
       <Accordion type="single" className="w-full" collapsible>
         <AccordionItem value="item-1">
-          <AccordionTrigger className="text-lg">
+          <AccordionTrigger
+            id="obtained-from-trigger"
+            aria-controls="obtained-from-content"
+            className="text-lg"
+          >
             Obtained From:
           </AccordionTrigger>
-          <AccordionContent className="flex flex-col gap-4 text-balance">
-            {/* Task rewards, lazy-laod and suspense */}
+          <AccordionContent
+            id="obtained-from-content"
+            aria-labelledby="obtained-from-trigger"
+            role="region"
+            className="flex flex-col gap-4 text-balance"
+          >
             <Suspense fallback={<Spinner />}>
               <TaskRewards itemId={itemData.id} />
             </Suspense>
           </AccordionContent>
         </AccordionItem>
+
         <AccordionItem value="item-2">
-          <AccordionTrigger className="text-lg">Required For:</AccordionTrigger>
-          <AccordionContent className="flex flex-col gap-4 text-balance">
-            {/* Required For, lazy-laod and suspense */}
+          <AccordionTrigger
+            id="required-for-trigger"
+            aria-controls="required-for-content"
+            className="text-lg"
+          >
+            Required For:
+          </AccordionTrigger>
+          <AccordionContent
+            id="required-for-content"
+            aria-labelledby="required-for-trigger"
+            role="region"
+            className="flex flex-col gap-4 text-balance"
+          >
             <Suspense fallback={<Spinner />}>
               <RequiredFor itemId={itemData.id} />
             </Suspense>
@@ -134,18 +167,39 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
         </AccordionItem>
 
         <AccordionItem value="item-3">
-          <AccordionTrigger className="text-lg">Buy Price:</AccordionTrigger>
-          <AccordionContent className="flex flex-col gap-4 text-balance">
-            {/* Trader Buy, lazy-laod and suspense */}
+          <AccordionTrigger
+            id="buy-price-trigger"
+            aria-controls="buy-price-content"
+            className="text-lg"
+          >
+            Buy Price:
+          </AccordionTrigger>
+          <AccordionContent
+            id="buy-price-content"
+            aria-labelledby="buy-price-trigger"
+            role="region"
+            className="flex flex-col gap-4 text-balance"
+          >
             <Suspense fallback={<Spinner />}>
               <DataTableBuy itemId={itemData.id} />
             </Suspense>
           </AccordionContent>
         </AccordionItem>
+
         <AccordionItem value="item-4">
-          <AccordionTrigger className="text-lg">Sell Price:</AccordionTrigger>
-          <AccordionContent className="flex flex-col gap-4 text-balance">
-            {/* Trader Sell, lazy-laod and suspense */}
+          <AccordionTrigger
+            id="sell-price-trigger"
+            aria-controls="sell-price-content"
+            className="text-lg"
+          >
+            Sell Price:
+          </AccordionTrigger>
+          <AccordionContent
+            id="sell-price-content"
+            aria-labelledby="sell-price-trigger"
+            role="region"
+            className="flex flex-col gap-4 text-balance"
+          >
             <Suspense fallback={<Spinner />}>
               <DataTableSell itemId={itemData.id} />
             </Suspense>
@@ -153,18 +207,39 @@ const ItemPageClient = ({ id }: ItemPageClientProps) => {
         </AccordionItem>
 
         <AccordionItem value="item-5">
-          <AccordionTrigger className="text-lg">Barters:</AccordionTrigger>
-          <AccordionContent className="flex flex-col gap-4 text-balance">
-            {/* Barters, lazy-laod and suspense */}
+          <AccordionTrigger
+            id="barters-trigger"
+            aria-controls="barters-content"
+            className="text-lg"
+          >
+            Barters:
+          </AccordionTrigger>
+          <AccordionContent
+            id="barters-content"
+            aria-labelledby="barters-trigger"
+            role="region"
+            className="flex flex-col gap-4 text-balance"
+          >
             <Suspense fallback={<Spinner />}>
               <DataTableBarters itemId={itemData.id} />
             </Suspense>
           </AccordionContent>
         </AccordionItem>
+
         <AccordionItem value="item-6">
-          <AccordionTrigger className="text-lg">Crafted With:</AccordionTrigger>
-          <AccordionContent className="flex flex-col gap-4 text-balance">
-            {/* Craftings, lazy-laod and suspense */}
+          <AccordionTrigger
+            id="crafted-with-trigger"
+            aria-controls="crafted-with-content"
+            className="text-lg"
+          >
+            Crafted With:
+          </AccordionTrigger>
+          <AccordionContent
+            id="crafted-with-content"
+            aria-labelledby="crafted-with-trigger"
+            role="region"
+            className="flex flex-col gap-4 text-balance"
+          >
             <Suspense fallback={<Spinner />}>
               <DataTableCraftings itemId={itemData.id} />
             </Suspense>

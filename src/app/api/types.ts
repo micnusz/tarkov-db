@@ -50,6 +50,7 @@ export type BaseItem = {
   };
 };
 
+// Backpack
 export type BackpackItem = BaseItem & {
   properties: {
     __typename: string;
@@ -64,6 +65,7 @@ export type BackpackItem = BaseItem & {
   };
 };
 
+// Body Armors
 export type ArmorsItem = BaseItem & {
   properties: {
     zones: string[];
@@ -97,6 +99,7 @@ export type ScopeItem = BaseItem & {
   };
 };
 
+// ItemPropertiesWeaponMod
 export type ItemPropertiesWeaponMod = BaseItem & {
   properties: {
     recoilModifier: number;
@@ -104,7 +107,7 @@ export type ItemPropertiesWeaponMod = BaseItem & {
     accuracyModifier: number;
   };
 };
-
+// ItemPropertiesGlasses
 export type ItemPropertiesGlasses = BaseItem & {
   properties: {
     material: {
@@ -115,7 +118,7 @@ export type ItemPropertiesGlasses = BaseItem & {
     durability: number;
   };
 };
-
+// ItemPropertiesMedKit
 export type ItemPropertiesMedKit = BaseItem & {
   properties: {
     useTime: number;
@@ -126,7 +129,7 @@ export type ItemPropertiesMedKit = BaseItem & {
     hpCostHeavyBleeding: number;
   };
 };
-
+// ItemPropertiesMedicalItem
 export type ItemPropertiesMedicalItem = BaseItem & {
   properties: {
     useTime: number;
@@ -134,7 +137,7 @@ export type ItemPropertiesMedicalItem = BaseItem & {
     cures: string[];
   };
 };
-
+// ItemPropertiesFoodDrink
 export type ItemPropertiesFoodDrink = BaseItem & {
   properties: {
     energy: number;
@@ -153,7 +156,7 @@ export type ItemPropertiesFoodDrink = BaseItem & {
     }[];
   };
 };
-
+// grenades
 export type GrenadeItem = BaseItem & {
   properties: {
     type: string;
@@ -164,7 +167,7 @@ export type GrenadeItem = BaseItem & {
     contusionRadius: number;
   };
 };
-
+// magazines
 export type MagazineItem = BaseItem & {
   properties: {
     capacity: number;
@@ -174,7 +177,7 @@ export type MagazineItem = BaseItem & {
     ammoCheckModifier: number;
   };
 };
-
+// headsets
 export type HeadsetItem = BaseItem & {
   properties: {
     ambientVolume: number;

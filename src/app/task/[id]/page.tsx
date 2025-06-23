@@ -4,15 +4,16 @@ import { getQueryClient } from "@/lib/get-query-client";
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import TaskPageClient from "./TaskPageClient";
 import { Metadata } from "next";
+import { notFound } from "next/navigation";
 
 type Props = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
 export const generateMetadata = async ({
   params,
 }: Props): Promise<Metadata> => {
-  const { id } = params;
+  const { id } = await params;
   const task = await client.getTaskIdTitle(id);
   const name = task?.name ?? "Default title";
   return {
@@ -22,7 +23,7 @@ export const generateMetadata = async ({
 };
 
 const TaskPageServer = async ({ params }: Props) => {
-  const resolvedParams = params;
+  const resolvedParams = await params;
   const { id } = resolvedParams;
 
   const queryClient = getQueryClient();
@@ -30,6 +31,10 @@ const TaskPageServer = async ({ params }: Props) => {
     queryKey: ["task", id],
     queryFn: () => client.getTaskIdBase(id),
   });
+  const task = queryClient.getQueryData(["task", id]);
+  if (!task) {
+    notFound();
+  }
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

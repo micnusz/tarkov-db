@@ -126,14 +126,6 @@ export const client = {
     return data.itemCategories;
   },
 
-  //item/[id], Base Item
-  async getItem(id: string): Promise<GetItemById["item"]> {
-    const data = await graphqlClient.request<GetItemById>(GET_ITEM_BASE_ID, {
-      id: id,
-    });
-    return data.item;
-  },
-
   //added for dynamic title: item/[id]
   async getItemIdTitle(id: string): Promise<GetItemById["item"]> {
     const data = await graphqlClient.request<GetItemById>(GET_ITEM_ID_TITLE, {

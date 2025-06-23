@@ -1,5 +1,4 @@
-import { Separator } from "@/components/ui/separator";
-import Link from "next/link";
+"use server";
 
 export default async function NotFound() {
   return (

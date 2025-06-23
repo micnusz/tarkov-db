@@ -13,7 +13,8 @@ const robotoMono = Roboto_Mono({
 
 export const metadata: Metadata = {
   title: "Tarkov.db",
-  description: "Database for video game - Escape from Tarkov",
+  description:
+    "Tarkov.db - An open-source project focused on collecting all the key info related to the game Escape from Tarkov.",
 };
 
 export default function RootLayout({

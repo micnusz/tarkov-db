@@ -30,8 +30,11 @@ export function DataTablePagination({
     <div className="flex items-center justify-between px-2">
       <div className="flex items-center space-x-6 lg:space-x-8">
         <div className="flex items-center space-x-2">
-          <p className="text-sm font-medium">Rows per page</p>
+          <label htmlFor="rows-per-page" className="text-sm font-medium">
+            Rows per page
+          </label>
           <select
+            id="rows-per-page"
             className="h-8 rounded border border-gray-300"
             value={pageSize}
             onChange={(e) => onPageSizeChange(Number(e.target.value))}
@@ -44,7 +47,11 @@ export function DataTablePagination({
           </select>
         </div>
 
-        <div className="flex items-center space-x-2">
+        <nav
+          role="navigation"
+          aria-label="Pagination navigation"
+          className="flex items-center space-x-2"
+        >
           <Button
             variant="outline"
             size="icon"
@@ -84,7 +91,7 @@ export function DataTablePagination({
           >
             <ChevronsRight />
           </Button>
-        </div>
+        </nav>
       </div>
     </div>
   );
