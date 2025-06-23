@@ -4,6 +4,7 @@ import "./globals.css";
 import QueryProvider from "@/lib/query-provider";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/footer";
+import { Analytics } from "@vercel/analytics/next";
 
 const robotoMono = Roboto_Mono({
   variable: "--font-roboto-mono",
@@ -28,6 +29,7 @@ export default function RootLayout({
         <QueryProvider>
           <Header />
           {children}
+          <Analytics />
           <Footer />
         </QueryProvider>
       </body>
