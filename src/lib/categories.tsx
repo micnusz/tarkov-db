@@ -21,7 +21,7 @@ export const itemCategories = [
   {
     href: "/items/weapon-mods",
     id: "weapon-mods",
-    name: "Weapon mods, (categories)",
+    name: "Weapon mods  ",
   },
   { href: "/items/medical", id: "medical", name: "Medical" },
   { href: "/items/provisions", id: "provisions", name: "Provisions" },

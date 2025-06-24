@@ -1,23 +1,17 @@
 "use server";
 
-import ItemCategoryCard from "@/components/ui/item-category-card";
-import { itemCategories } from "@/lib/categories";
-import Link from "next/link";
-const ItemsPage = () => {
-  return (
-    <main className="p-4 md:p-10 flex flex-wrap gap-4 justify-center">
-      {itemCategories.map((category) => (
-        <div
-          key={category.id}
-          className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5"
-        >
-          <Link href={`${category.href}`}>
-            <ItemCategoryCard category={category} />
-          </Link>
-        </div>
-      ))}
-    </main>
-  );
+import { Metadata } from "next";
+import ItemsClientPage from "./ItemsClientPage";
+
+export const generateMetadata = async (): Promise<Metadata> => {
+  return {
+    title: "Items - Tarkov.db",
+    description: "Tarkov.db, Items",
+  };
 };
 
-export default ItemsPage;
+const ItemsServerPage = () => {
+  return <ItemsClientPage />;
+};
+
+export default ItemsServerPage;

@@ -18,6 +18,7 @@ const TasksServer = async () => {
     queryKey: ["tasks"],
     queryFn: () => client.getTasks(),
   });
+
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <TasksClientPage />

@@ -52,7 +52,7 @@ export const columnsBarter = [
       const level = info.row.original?.level;
 
       if (!trader || !trader.imageLink || !trader.name) {
-        return <span className="text-gray-400 italic">N/A</span>;
+        return <span className="text-muted-foreground italic">N/A</span>;
       }
 
       return (
@@ -162,7 +162,7 @@ export const columnsBarter = [
       const requiredItems = info.getValue();
 
       if (!requiredItems.length) {
-        return <span className="text-gray-400 italic">N/A</span>;
+        return <span className="text-muted-foreground italic">N/A</span>;
       }
 
       return (
@@ -231,7 +231,7 @@ export const columnsBarter = [
         return cost > 0 ? (
           <span>{formatCurrency("roubles", cost)}</span>
         ) : (
-          <span className="text-gray-400 italic">N/A</span>
+          <span className="text-muted-foreground italic">N/A</span>
         );
       },
       enableSorting: true,
@@ -254,7 +254,7 @@ export const columnsBarter = [
             {price.toLocaleString("de-DE")}₽
           </span>
         ) : (
-          <span className="text-gray-400 italic">N/A</span>
+          <span className="text-muted-foreground italic">N/A</span>
         );
       },
       enableSorting: true,
@@ -379,13 +379,13 @@ export const columnsBarterItems = [
       const value = info.getValue<number | null | undefined>();
       return typeof value === "number" ? (
         <div className="flex flex-col">
-          <span className="text-sm text-gray-700">Avg</span>
+          <span className="text-sm text-muted-foreground">Avg</span>
           <span className="text-base font-medium">
             {value.toLocaleString("de-DE")}₽
           </span>
         </div>
       ) : (
-        <span className="text-gray-400 italic">N/A</span>
+        <span className="text-muted-foreground italic">N/A</span>
       );
     },
   }),
@@ -420,13 +420,13 @@ export const columnsBarterItems = [
 
         return typeof price === "number" ? (
           <div className="flex flex-col">
-            <span className="text-sm text-gray-700">{vendor}</span>
+            <span className="text-sm text-muted-foreground">{vendor}</span>
             <span className="text-base font-medium">
               {price.toLocaleString("de-DE")}₽
             </span>
           </div>
         ) : (
-          <span className="text-gray-400 italic">N/A</span>
+          <span className="text-muted-foreground italic">N/A</span>
         );
       },
       sortingFn: "basic",
@@ -448,7 +448,7 @@ export const columnsBarterItems = [
           </a>
         </div>
       ) : (
-        <span className="text-gray-400 italic">N/A</span>
+        <span className="text-muted-foreground italic">N/A</span>
       );
     },
   }),
@@ -466,7 +466,7 @@ export const columnsCrafting = [
       const task = info.row.original?.taskUnlock;
 
       if (!station) {
-        return <span className="text-gray-400 italic">N/A</span>;
+        return <span className="text-muted-foreground italic">N/A</span>;
       }
 
       return (
@@ -500,7 +500,7 @@ export const columnsCrafting = [
         const amount = reward?.count ?? reward?.quantity;
 
         if (!item || !item.id) {
-          return <span className="text-gray-400 italic">N/A</span>;
+          return <span className="text-muted-foreground italic">N/A</span>;
         }
 
         return (
@@ -544,7 +544,7 @@ export const columnsCrafting = [
           {CraftingDurationFormat(duration)}
         </span>
       ) : (
-        <span className="text-gray-400 italic">N/A</span>
+        <span className="text-muted-foreground italic">N/A</span>
       );
     },
   }),
@@ -555,7 +555,7 @@ export const columnsCrafting = [
       const requiredItems = info.getValue();
 
       if (!requiredItems.length) {
-        return <span className="text-gray-400 italic">N/A</span>;
+        return <span className="text-muted-foreground italic">N/A</span>;
       }
 
       return (
@@ -588,7 +588,7 @@ export const columnsCrafting = [
                       {item.name}
                     </span>
                   </Link>
-                  <span className="text-xs text-gray-500">
+                  <span className="text-xs text-muted-foreground">
                     {amount !== undefined ? `${amount} x ` : ""}
                     {typeof item.avg24hPrice === "number"
                       ? `${item.avg24hPrice.toLocaleString("de-DE")}₽`
@@ -611,7 +611,7 @@ export const columnsCrafting = [
       const requiredItems = info.getValue();
 
       if (!requiredItems.length) {
-        return <span className="text-gray-400 italic">N/A</span>;
+        return <span className="text-muted-foreground italic">N/A</span>;
       }
 
       const totalCost = requiredItems.reduce(
@@ -629,7 +629,7 @@ export const columnsCrafting = [
           {totalCost > 0 ? (
             `${totalCost.toLocaleString("de-DE")}₽`
           ) : (
-            <span className="text-gray-400 italic">N/A</span>
+            <span className="text-muted-foreground italic">N/A</span>
           )}
         </div>
       );
@@ -717,7 +717,7 @@ export const columnsWeapon = [
       cell: (info) => {
         const caliberRaw = info.getValue<string | null>();
         if (!caliberRaw)
-          return <span className="text-gray-400 italic">N/A</span>;
+          return <span className="text-muted-foreground italic">N/A</span>;
 
         const caliberStripped = caliberRaw.replace(/^Caliber\s*/, "");
         const caliberFormatted = caliberStripped.replace(
@@ -741,7 +741,7 @@ export const columnsWeapon = [
         return value !== null ? (
           <span>{value}</span>
         ) : (
-          <span className="text-gray-400 italic">N/A</span>
+          <span className="text-muted-foreground italic">N/A</span>
         );
       },
     }
@@ -775,7 +775,7 @@ export const columnsWeapon = [
         return value !== null ? (
           <span>{value}m</span>
         ) : (
-          <span className="text-gray-400 italic">N/A</span>
+          <span className="text-muted-foreground italic">N/A</span>
         );
       },
     }
@@ -929,13 +929,13 @@ export const columnsBackpacks = [
       const value = info.getValue<number | null | undefined>();
       return value != null ? (
         <div className="flex flex-col">
-          <span className="text-sm text-gray-700">Avg</span>
+          <span className="text-sm text-muted-foreground">Avg</span>
           <span className="text-base font-medium">
             {value.toLocaleString("de-DE")}₽
           </span>
         </div>
       ) : (
-        <span className="text-gray-400 italic">N/A</span>
+        <span className="text-muted-foreground italic">N/A</span>
       );
     },
   }),
@@ -1029,7 +1029,7 @@ export const columnsArmors = [
           <span>{armor}</span>
         </>
       ) : (
-        <span className="italic text-gray-400 text-sm">
+        <span className="italic text-muted-foreground text-sm">
           No armor plates at default.
         </span>
       );
@@ -1309,7 +1309,7 @@ export const columnsChestRigs = [
   }),
   columnHelperChestRigs.accessor((row) => row.wikiLink, {
     id: "wikiLink",
-    header: (info) => <DefaultHeader info={info} name="WikiLink" />,
+    header: (info) => <DefaultHeader info={info} name="Wiki" />,
     cell: (info) => {
       const wikiLink = info.getValue();
 
@@ -1389,7 +1389,7 @@ export const columnsArmorPlates = [
           </div>
         </>
       ) : (
-        <span className="italic text-gray-400 text-sm">
+        <span className="italic text-muted-foreground text-sm">
           No armor plates at default.
         </span>
       );
@@ -1660,7 +1660,7 @@ export const columnsFaceCovers = [
             </Tooltip>
           </div>
         ) : (
-          <span className="italic text-gray-400 text-sm">N/A</span>
+          <span className="italic text-muted-foreground text-sm">N/A</span>
         );
       },
     }
@@ -1797,19 +1797,19 @@ export const columnsFaceCovers = [
       const value = info.getValue<number | null | undefined>();
       return value != null ? (
         <div className="flex flex-col">
-          <span className="text-sm text-gray-700">Avg</span>
+          <span className="text-sm text-muted-foreground">Avg</span>
           <span className="text-base font-medium">
             {value.toLocaleString("de-DE")}₽
           </span>
         </div>
       ) : (
-        <span className="text-gray-400 italic">N/A</span>
+        <span className="text-muted-foreground italic">N/A</span>
       );
     },
   }),
   columnHelperFaceCovers.accessor((row) => row.wikiLink, {
     id: "wikiLink",
-    header: (info) => <DefaultHeader info={info} name="WikiLink" />,
+    header: (info) => <DefaultHeader info={info} name="Wiki" />,
     cell: (info) => {
       const wikiLink = info.getValue();
 
@@ -1907,13 +1907,13 @@ export const columnsKeys = [
       const value = info.getValue<number | null | undefined>();
       return value != null ? (
         <div className="flex flex-col">
-          <span className="text-sm text-gray-700">Avg</span>
+          <span className="text-sm text-muted-foreground">Avg</span>
           <span className="text-base font-medium">
             {value.toLocaleString("de-DE")}₽
           </span>
         </div>
       ) : (
-        <span className="text-gray-400 italic">N/A</span>
+        <span className="text-muted-foreground italic">N/A</span>
       );
     },
   }),
@@ -2517,15 +2517,16 @@ export const columnsScopes = [
           <span className="text-muted-foreground text-sm italic">N/A</span>
         );
       }
-      const style = {
-        color:
-          initialValue < 0 ? "red" : initialValue > 0 ? "green" : "inherit",
-        fontWeight: 500,
-      };
+      const className =
+        initialValue < 0
+          ? "text-chart-3"
+          : initialValue > 0
+          ? "text-chart-2"
+          : "inherit";
 
       return (
         <div className="max-w-20">
-          <span style={style}>{initialValue}</span>
+          <span className={`${className} font-medium`}>{initialValue}</span>
         </div>
       );
     },
@@ -2606,13 +2607,13 @@ export const columnsScopes = [
       const value = info.getValue<number | null | undefined>();
       return value != null ? (
         <div className="flex flex-col">
-          <span className="text-sm text-gray-700">Avg</span>
+          <span className="text-sm text-muted-foreground">Avg</span>
           <span className="text-base font-medium">
             {value.toLocaleString("de-DE")}₽
           </span>
         </div>
       ) : (
-        <span className="text-gray-400 italic">N/A</span>
+        <span className="text-muted-foreground italic">N/A</span>
       );
     },
   }),
@@ -2626,7 +2627,7 @@ export const columnsScopes = [
       return (
         <div className="max-w-10">
           <a
-            className="text-chart-2 hover:text-gray-700 underline text-sm  "
+            className="text-chart-2 hover:text-muted-foreground underline text-sm  "
             href={wikiLink}
             target="_blank"
             rel="noopener noreferrer"
@@ -2729,7 +2730,7 @@ export const columnsHelmets = [
           </div>
         </>
       ) : (
-        <span className="italic text-gray-400 text-sm">N/A</span>
+        <span className="italic text-muted-foreground text-sm">N/A</span>
       );
     },
   }),
@@ -2754,7 +2755,7 @@ export const columnsHelmets = [
           </Tooltip>
         </div>
       ) : (
-        <span className="italic text-gray-400 text-sm">N/A</span>
+        <span className="italic text-muted-foreground text-sm">N/A</span>
       );
     },
   }),
@@ -2766,7 +2767,9 @@ export const columnsHelmets = [
       const ricochet: number | null = info.getValue();
 
       if (ricochet == null)
-        return <span className="italic text-gray-400 text-sm">N/A</span>;
+        return (
+          <span className="italic text-muted-foreground text-sm">N/A</span>
+        );
 
       return (
         <div className="flex items-center gap-2">
@@ -3336,7 +3339,7 @@ export const columnsTaskSimple = [
           </div>
         ) : (
           <div className="flex">
-            <span className="text-gray-400 italic ">Not Required</span>
+            <span className="text-muted-foreground italic ">Not Required</span>
           </div>
         );
       },
@@ -3406,7 +3409,7 @@ export const columnsTaskAdvanced = [
           ))}
         </div>
       ) : (
-        <span className="text-gray-400 italic">None</span>
+        <span className="text-muted-foreground italic">None</span>
       );
     },
   }),
@@ -3425,7 +3428,7 @@ export const columnsTaskAdvanced = [
       return mapName ? (
         <span className="text-sm">{mapName}</span>
       ) : (
-        <span className="text-gray-400 italic">Any</span>
+        <span className="text-muted-foreground italic">Any</span>
       );
     },
   }),
@@ -3482,7 +3485,7 @@ export const columnsTaskAdvanced = [
         </div>
       ) : (
         <div className="flex justify-center">
-          <span className="text-gray-400 italic">Not Required</span>
+          <span className="text-muted-foreground italic">Not Required</span>
         </div>
       );
     },
@@ -3565,13 +3568,13 @@ export const columnsFlea = [
       const value = info.getValue<number | null | undefined>();
       return value != null ? (
         <div className="flex flex-col">
-          <span className="text-sm text-gray-700">Avg</span>
+          <span className="text-sm text-muted-foreground">Avg</span>
           <span className="text-base font-medium">
             {value.toLocaleString("de-DE")}₽
           </span>
         </div>
       ) : (
-        <span className="text-gray-400 italic">N/A</span>
+        <span className="text-muted-foreground italic">N/A</span>
       );
     },
   }),
@@ -3582,13 +3585,13 @@ export const columnsFlea = [
       const value = info.getValue<number | null | undefined>();
       return value != null ? (
         <div className="flex flex-col">
-          <span className="text-sm text-gray-700">Low</span>
+          <span className="text-sm text-muted-foreground">Low</span>
           <span className="text-base font-medium">
             {value.toLocaleString("de-DE")}₽
           </span>
         </div>
       ) : (
-        <span className="text-gray-400 italic">N/A</span>
+        <span className="text-muted-foreground italic">N/A</span>
       );
     },
   }),
@@ -3599,13 +3602,13 @@ export const columnsFlea = [
       const value = info.getValue<number | null | undefined>();
       return value != null ? (
         <div className="flex flex-col">
-          <span className="text-sm text-gray-700">High</span>
+          <span className="text-sm text-muted-foreground">High</span>
           <span className="text-base font-medium">
             {value.toLocaleString("de-DE")}₽
           </span>
         </div>
       ) : (
-        <span className="text-gray-400 italic">N/A</span>
+        <span className="text-muted-foreground italic">N/A</span>
       );
     },
   }),
@@ -3875,13 +3878,13 @@ export const columnsContainer = [
       const value = info.getValue<number | null | undefined>();
       return typeof value === "number" ? (
         <div className="flex flex-col">
-          <span className="text-sm text-gray-600">Avg</span>
+          <span className="text-sm text-muted-foreground">Avg</span>
           <span className="text-base font-medium">
             {value.toLocaleString("de-DE")}₽
           </span>
         </div>
       ) : (
-        <span className="text-gray-600 italic">N/A</span>
+        <span className="text-muted-foreground italic">N/A</span>
       );
     },
   }),
@@ -3905,7 +3908,7 @@ export const columnsContainer = [
 
         return cheapest && typeof price === "number" ? (
           <div className="flex flex-col">
-            <span className="text-sm text-gray-600">
+            <span className="text-sm text-muted-foreground">
               {cheapest.vendor.name}
             </span>
             <span className="text-base font-medium">
@@ -3913,7 +3916,7 @@ export const columnsContainer = [
             </span>
           </div>
         ) : (
-          <span className="text-gray-600 italic">N/A</span>
+          <span className="text-muted-foreground italic">N/A</span>
         );
       },
     }
@@ -3934,7 +3937,7 @@ export const columnsContainer = [
           </a>
         </div>
       ) : (
-        <span className="text-gray-600 italic">N/A</span>
+        <span className="text-muted-foreground italic">N/A</span>
       );
     },
   }),
@@ -4044,13 +4047,13 @@ export const columnsBarrels = [
       const value = info.getValue<number | null | undefined>();
       return value != null ? (
         <div className="flex flex-col">
-          <span className="text-sm text-gray-700">Avg</span>
+          <span className="text-sm text-muted-foreground">Avg</span>
           <span className="text-base font-medium">
             {value.toLocaleString("de-DE")}₽
           </span>
         </div>
       ) : (
-        <span className="text-gray-400 italic">N/A</span>
+        <span className="text-muted-foreground italic">N/A</span>
       );
     },
   }),
@@ -4206,13 +4209,13 @@ export const columnsGasBlock = [
       const value = info.getValue<number | null | undefined>();
       return value != null ? (
         <div className="flex flex-col">
-          <span className="text-sm text-gray-700">Avg</span>
+          <span className="text-sm text-muted-foreground">Avg</span>
           <span className="text-base font-medium">
             {value.toLocaleString("de-DE")}₽
           </span>
         </div>
       ) : (
-        <span className="text-gray-400 italic">N/A</span>
+        <span className="text-muted-foreground italic">N/A</span>
       );
     },
   }),
@@ -4339,7 +4342,7 @@ export const columnsMagazines = [
           <span>{malfunctionChanceFormat(chance)}</span>
         </div>
       ) : (
-        <span className="italic text-gray-600">N/A</span>
+        <span className="italic text-muted-foreground">N/A</span>
       );
     },
   }),
@@ -4397,13 +4400,13 @@ export const columnsMagazines = [
       const value = info.getValue<number | null | undefined>();
       return value != null ? (
         <div className="flex flex-col">
-          <span className="text-sm text-gray-700">Avg</span>
+          <span className="text-sm text-muted-foreground">Avg</span>
           <span className="text-base font-medium">
             {value.toLocaleString("de-DE")}₽
           </span>
         </div>
       ) : (
-        <span className="text-gray-400 italic">N/A</span>
+        <span className="text-muted-foreground italic">N/A</span>
       );
     },
   }),
@@ -4580,13 +4583,13 @@ export const columnsItemPropertiesWeaponMod = [
       const value = info.getValue<number | null | undefined>();
       return value != null ? (
         <div className="flex flex-col">
-          <span className="text-sm text-gray-700">Avg</span>
+          <span className="text-sm text-muted-foreground">Avg</span>
           <span className="text-base font-medium">
             {value.toLocaleString("de-DE")}₽
           </span>
         </div>
       ) : (
-        <span className="text-gray-400 italic">N/A</span>
+        <span className="text-muted-foreground italic">N/A</span>
       );
     },
   }),
@@ -4779,13 +4782,13 @@ export const columnsItemPropertiesGlasses = [
       const value = info.getValue<number | null | undefined>();
       return value != null ? (
         <div className="flex flex-col">
-          <span className="text-sm text-gray-700">Avg</span>
+          <span className="text-sm text-muted-foreground">Avg</span>
           <span className="text-base font-medium">
             {value.toLocaleString("de-DE")}₽
           </span>
         </div>
       ) : (
-        <span className="text-gray-400 italic">N/A</span>
+        <span className="text-muted-foreground italic">N/A</span>
       );
     },
   }),

@@ -2,8 +2,6 @@
 
 import { client } from "@/app/api/client";
 import { useSuspenseQuery } from "@tanstack/react-query";
-
-import { Task } from "@/app/api/types";
 import { DataTableClient } from "@/components/data-table/data-table-client";
 import { columnsTaskAdvanced } from "@/components/data-table/columns";
 import UniversalFormat from "@/components/modules/universal-format";
@@ -15,7 +13,7 @@ const TasksClientPage = () => {
   });
 
   const trader = Array.from(
-    new Set((data as Task[]).map((task) => task.trader.name))
+    new Set(data.map((task) => task.trader.name))
   ).sort();
 
   const maps = Array.from(
