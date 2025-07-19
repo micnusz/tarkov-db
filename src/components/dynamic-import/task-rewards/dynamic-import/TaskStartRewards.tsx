@@ -1,9 +1,9 @@
+"use client";
 import { client } from "@/app/api/client";
 import formatCurrency from "@/components/modules/currency-format";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import Link from "next/link";
-import React from "react";
 
 type TaskStartRewardsProps = {
   taskId: string;
@@ -18,8 +18,8 @@ const TaskStartRewards = ({ taskId }: TaskStartRewardsProps) => {
     <>
       {taskData.startRewards?.items &&
       taskData.startRewards?.items.length > 0 ? (
-        <ScrollArea className="rounded-md border">
-          <ul className="p-2">
+        <ScrollArea className="rounded-md border p-2">
+          <ul>
             {taskData.startRewards.items.map((reward) => (
               <Link
                 href={`/item/${reward.item.id}`}
@@ -37,7 +37,9 @@ const TaskStartRewards = ({ taskId }: TaskStartRewardsProps) => {
           </ul>
         </ScrollArea>
       ) : (
-        <span>No starting rewards</span>
+        <ScrollArea className="rounded-md border p-2">
+          <p>No initial equipment.</p>
+        </ScrollArea>
       )}
     </>
   );

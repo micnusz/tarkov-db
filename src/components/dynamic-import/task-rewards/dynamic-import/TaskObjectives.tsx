@@ -1,7 +1,7 @@
+"use clinet";
 import { client } from "@/app/api/client";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import React from "react";
 
 type Props = {
   taskId: string;
@@ -16,7 +16,7 @@ const TaskObjectives = ({ taskId }: Props) => {
   return (
     <>
       {taskData.objectives.length > 0 ? (
-        <ScrollArea className=" rounded-md border">
+        <ScrollArea className=" rounded-md border p-2">
           <ul>
             {taskData.objectives.map((obj) => (
               <li key={obj.id} className="text-sm md:text-base">
@@ -26,7 +26,9 @@ const TaskObjectives = ({ taskId }: Props) => {
           </ul>
         </ScrollArea>
       ) : (
-        <p className="italic text-gray-400">None</p>
+        <ScrollArea className=" rounded-md border p-2">
+          <p className="italic text-gray-400">No task objectives.</p>
+        </ScrollArea>
       )}
     </>
   );

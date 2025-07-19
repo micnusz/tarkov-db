@@ -118,14 +118,17 @@ export function DataTableClient<TData, TValue>({
     setColumnFilters([]);
   };
 
+  const isFiltred = Object.values(filterState).some(
+    (val) => val !== null && val !== undefined && val !== ""
+  );
+
   return (
     <>
       <div className="w-full flex flex-col gap-4">
         <div className="flex items-center pt-4">
           <DataTableSearchClient table={table} />
           <Button
-            variant="secondary"
-            size="sm"
+            variant={isFiltred ? "destructive" : "muted"}
             className="mx-2"
             onClick={handleResetFilters}
           >

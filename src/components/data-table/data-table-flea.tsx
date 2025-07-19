@@ -14,7 +14,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import React from "react";
 import { Input } from "../ui/input";
 import { BaseItem, Category } from "@/app/api/types";
 import { DataTableSkeleton } from "./data-table-skeleton";
@@ -61,6 +60,8 @@ export function DataTableFleaMarket<TData extends BaseItem, TValue>({
   const parents = Array.from(parentMap.values());
   const parentNames = parents.map((p) => p.name);
 
+  const isFiltred = name !== "" || selectedCategory !== null;
+
   return (
     <div>
       <div className="flex items-center py-4">
@@ -74,9 +75,8 @@ export function DataTableFleaMarket<TData extends BaseItem, TValue>({
         />
         {/* Clear fillter button */}
         <Button
-          variant="secondary"
+          variant={isFiltred ? "destructive" : "muted"}
           className="mx-2"
-          size="sm"
           onClick={() => {
             setSelectedCategory(null);
             setName("");

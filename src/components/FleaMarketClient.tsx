@@ -65,7 +65,6 @@ const FleaMarketClient = () => {
     if (newPageIndex < 0 || newPageIndex >= pageCount) return;
     setPagination((prev) => ({ ...prev, pageIndex: newPageIndex }));
   }
-
   function handlePageSizeChange(newPageSize: number) {
     setPagination({ pageIndex: 0, pageSize: newPageSize });
   }

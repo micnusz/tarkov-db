@@ -1,8 +1,8 @@
+"use client";
 import { client } from "@/app/api/client";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import Link from "next/link";
-import React from "react";
 
 type Props = {
   taskId: string;
@@ -17,10 +17,10 @@ const TaskRequirements = ({ taskId }: Props) => {
   return (
     <>
       {taskData.taskRequirements.length > 0 ? (
-        <ScrollArea className="rounded-md border ">
+        <ScrollArea className="rounded-md border p-2">
           <ul>
             {taskData.taskRequirements.map((req) => (
-              <li key={req.task.id} className="text-sm md:text-base mt-4">
+              <li key={req.task.id} className="text-sm md:text-base">
                 • Must be level{" "}
                 <span className="text-destructive">
                   {req.task.minPlayerLevel}
@@ -40,7 +40,9 @@ const TaskRequirements = ({ taskId }: Props) => {
           </ul>
         </ScrollArea>
       ) : (
-        <p className="italic text-gray-400">None</p>
+        <ScrollArea className="rounded-md border p-2">
+          <p className="italic text-gray-400">No task requirements.</p>
+        </ScrollArea>
       )}
     </>
   );

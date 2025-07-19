@@ -16,7 +16,7 @@ const TaskRewards = ({ itemId }: TaskRewardsProps) => {
 
   return (
     <>
-      <ScrollArea className="rounded-md border">
+      <ScrollArea className="rounded-md border p-2">
         <ul>
           <ReceivedFromTasks
             receivedFromTasks={itemTask.receivedFromTasks}

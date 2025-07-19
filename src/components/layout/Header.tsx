@@ -36,8 +36,12 @@ export const Header = () => {
     <header className="bg-chart-5 border-b">
       <div className="max-w-screen mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
         {/* Logo */}
-        <Link aria-label="Home" href="/" className="text-xl font-bold px-6">
-          Tarkov.db
+        <Link
+          aria-label="Home"
+          href="/"
+          className="text-xl font-bold px-6 hover:text-chart-2"
+        >
+          <span>Tarkov.db</span>
         </Link>
 
         {/* Desktop nav & Search */}

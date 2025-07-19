@@ -1,4 +1,4 @@
-import React from "react";
+"use client";
 import ExperienceReward from "../ExperienceReward";
 import SkillLevelReward from "../SkillLevelReward";
 import TraderStandingReward from "../TraderStandingReward";
@@ -8,6 +8,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { client } from "@/app/api/client";
 import BarterUnlockReward from "../BarterUnlockReward";
 import { TraderUnlockReward } from "../TraderUnlockReward";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 type TaskFinishRewardsProps = {
   taskId: string;
@@ -20,10 +21,10 @@ const TaskFinishRewards = ({ taskId, experience }: TaskFinishRewardsProps) => {
     queryFn: () => client.getTaskIdReward(taskId),
   });
   return (
-    <>
+    <ScrollArea className="p-2">
       {taskData.finishRewards.items &&
       taskData.finishRewards.items.length > 0 ? (
-        <ul className="p-2">
+        <ul>
           <ExperienceReward experience={experience} />
           <SkillLevelReward
             skillLevelReward={taskData.finishRewards.skillLevelReward}
@@ -43,9 +44,9 @@ const TaskFinishRewards = ({ taskId, experience }: TaskFinishRewardsProps) => {
           />
         </ul>
       ) : (
-        <p className="italic text-gray-400">No rewards</p>
+        <p className="italic text-gray-400">No rewards.</p>
       )}
-    </>
+    </ScrollArea>
   );
 };
 
