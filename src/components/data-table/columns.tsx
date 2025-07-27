@@ -29,7 +29,6 @@ import { Briefcase, Check, TowerControl, X } from "lucide-react";
 import CraftingDurationFormat from "../modules/crafting-duration-format";
 import Image from "next/image";
 import CaliberFormat from "../modules/ammo-format";
-import formatCurrency from "../modules/currency-format";
 import { UniversalStringFilterFn } from "../modules/universal-string-filterfn";
 import RicochetChanceFormat from "../modules/ricochet-chance-format";
 import { UniversalNumberFormatFn } from "../modules/universal-number-format-fn";
@@ -95,9 +94,6 @@ export const columnsBarter = [
         return <span className="text-muted-foreground italic">N/A</span>;
       }
 
-      // Obcinamy tekst do połowy długości
-      const halfName = item.name.slice(0, Math.ceil(item.name.length / 2));
-
       return (
         <div className="flex items-center gap-3">
           <div className="relative shrink-0">
@@ -119,7 +115,9 @@ export const columnsBarter = [
           </div>
           <div className="flex flex-col">
             <Link href={`/item/${item.id}`}>
-              <span className="text-xs hover:text-chart-2 ">{halfName}…</span>
+              <span className="text-xs hover:text-chart-2 ">
+                {reward.item.name}
+              </span>
             </Link>
           </div>
         </div>
@@ -211,97 +209,6 @@ export const columnsBarter = [
     enableSorting: false,
     enableHiding: false,
   }),
-  columnHelperBarter.accessor(
-    (row) => {
-      const requiredItems = row.requiredItems ?? [];
-      return requiredItems.reduce(
-        (total, { item, count = 1, quantity = 1 }) => {
-          const itemPrice = item?.avg24hPrice ?? 0;
-          const qty = quantity ?? count;
-          return total + itemPrice * qty;
-        },
-        0
-      );
-    },
-    {
-      id: "barterCost",
-      header: (info) => <DefaultHeader info={info} name="Barter Cost" />,
-      cell: (info) => {
-        const cost = info.getValue();
-        return cost > 0 ? (
-          <span>{formatCurrency("roubles", cost)}</span>
-        ) : (
-          <span className="text-muted-foreground italic">N/A</span>
-        );
-      },
-      enableSorting: true,
-      filterFn: UniversalNumberFormatFn,
-    }
-  ),
-
-  columnHelperBarter.accessor(
-    (row) => row.rewardItems?.[0]?.item.avg24hPrice ?? null,
-    {
-      id: "fleaCost",
-      header: (info) => (
-        <DefaultHeader info={info} name="Avg Flea Cost (24h)" />
-      ),
-      cell: (info) => {
-        const price = info.getValue();
-
-        return typeof price === "number" ? (
-          <span className="text-sm font-medium">
-            {price.toLocaleString("de-DE")}₽
-          </span>
-        ) : (
-          <span className="text-muted-foreground italic">N/A</span>
-        );
-      },
-      enableSorting: true,
-      enableHiding: true,
-    }
-  ),
-  columnHelperBarter.accessor(
-    (row) => {
-      const rewardPrice = row.rewardItems?.[0]?.item.avg24hPrice ?? 0;
-
-      const barterCost = (row.requiredItems ?? []).reduce(
-        (total: number, { item, count = 1, quantity = 1 }: BarterItem) => {
-          const itemPrice = item?.avg24hPrice ?? 0;
-          const qty = quantity ?? count;
-          return total + itemPrice * qty;
-        },
-        0
-      );
-
-      return rewardPrice - barterCost;
-    },
-    {
-      id: "profit",
-      header: (info) => <DefaultHeader info={info} name="Barter profit" />,
-      cell: (info) => {
-        const profit = info.getValue();
-
-        const formattedProfit = profit.toLocaleString("de-DE") + "₽";
-
-        return (
-          <span
-            className={
-              profit > 0
-                ? "text-chart-2"
-                : profit < 0
-                ? "text-chart-3"
-                : "text-muted-foreground"
-            }
-          >
-            {formattedProfit}
-          </span>
-        );
-      },
-      enableSorting: true,
-      enableHiding: false,
-    }
-  ),
 ] as ColumnDef<Barter>[];
 
 //Column items/barter-items
