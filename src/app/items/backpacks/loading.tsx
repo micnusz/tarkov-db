@@ -3,7 +3,7 @@ import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
 export default function Loading() {
   return (
     <DataTableSkeleton
-      columnCount={9}
+      columnCount={10}
       filterCount={0}
       searchCount={1}
       cellWidths={[
@@ -13,6 +13,7 @@ export default function Loading() {
         "6rem",
         "6rem",
         "8rem",
+        "6rem",
         "6rem",
         "6rem",
         "6rem",

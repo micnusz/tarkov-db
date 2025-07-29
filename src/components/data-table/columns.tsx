@@ -59,13 +59,13 @@ export const columnsBarter = [
           <Image
             src={trader.imageLink}
             alt={trader.name}
-            width={50}
-            height={50}
+            width={72}
+            height={72}
             loading="lazy"
             className="object-contain h-25"
           />
           {level != null && (
-            <Badge className=" absolute left-0 top-0  text-xs px-1.5 py-0.5">
+            <Badge className="absolute left-0 top-0  text-xs px-1.5 py-0.5">
               Lv. {level}
             </Badge>
           )}
@@ -828,24 +828,7 @@ export const columnsBackpacks = [
       );
     },
   }),
-  columnHelperBackpacks.accessor("avg24hPrice", {
-    id: "avg24hPrice",
-    filterFn: UniversalNumberFormatFn,
-    header: (info) => <DefaultHeader info={info} name="Avg Flea Price" />,
-    cell: (info) => {
-      const value = info.getValue<number | null | undefined>();
-      return value != null ? (
-        <div className="flex flex-col">
-          <span className="text-sm text-muted-foreground">Avg</span>
-          <span className="text-base font-medium">
-            {value.toLocaleString("de-DE")}₽
-          </span>
-        </div>
-      ) : (
-        <span className="text-muted-foreground italic">N/A</span>
-      );
-    },
-  }),
+
   columnHelperBackpacks.accessor("weight", {
     header: (info) => <DefaultHeader info={info} name="Weight" />,
     id: "weight",
