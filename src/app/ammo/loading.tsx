@@ -4,7 +4,7 @@ export default function Loading() {
   return (
     <DataTableSkeleton
       columnCount={11}
-      filterCount={0}
+      filterCount={1}
       searchCount={1}
       cellWidths={[
         "5rem",

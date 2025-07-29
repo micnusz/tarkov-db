@@ -16,7 +16,7 @@ export function DataTableSkeleton({
   columnCount,
   rowCount = 20,
   searchCount = 1,
-  filterCount = 0,
+  filterCount = 1,
   cellWidths = ["auto"],
   withPagination = true,
   shrinkZero = false,
@@ -31,13 +31,13 @@ export function DataTableSkeleton({
   return (
     <div
       className={cn(
-        " w-full h-full flex-col justify-center items-center p-4 md:p-12 my-10 ",
+        " w-full h-full flex-col justify-center items-center p-4 md:p-14 my-10 ",
         className
       )}
       {...props}
     >
       <div className="w-full items-center justify-between overflow-auto ">
-        <div className="flex flex-row flex-1 items-center mb-4">
+        <div className="flex flex-row flex-1 items-center mb-2">
           {searchCount > 0
             ? Array.from({ length: searchCount }).map((_, i) => (
                 <div key={i} className="flex flex-row gap-x-2">
@@ -49,7 +49,7 @@ export function DataTableSkeleton({
         </div>
       </div>
       <div className="flex w-full items-center justify-between gap-2 overflow-auto ">
-        <div className="flex flex-1 items-center gap-2">
+        <div className="flex flex-1 items-center gap-2 mb-2">
           {filterCount > 0
             ? Array.from({ length: filterCount }).map((_, i) => (
                 <Skeleton
@@ -60,7 +60,7 @@ export function DataTableSkeleton({
             : null}
         </div>
       </div>
-      <div className="">
+      <div className="border-1">
         {/* Desktop view (md and up) */}
         <div className="hidden md:block">
           <Table>
@@ -98,7 +98,7 @@ export function DataTableSkeleton({
         </div>
       </div>
       {withPagination ? (
-        <div className="flex w-full items-center justify-between gap-4 overflow-auto p-1 sm:gap-8">
+        <div className="flex w-full items-center justify-between gap-4 overflow-auto  sm:gap-8">
           <div className="flex items-center gap-4 sm:gap-6 lg:gap-8">
             <div className="flex items-center gap-2">
               <Skeleton className="h-16 w-24" />
