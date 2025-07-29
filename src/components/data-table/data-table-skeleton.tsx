@@ -31,24 +31,24 @@ export function DataTableSkeleton({
   return (
     <div
       className={cn(
-        "w-full h-full flex-col justify-center items-center p-4 md:p-10 my-13 md:my-15 ",
+        " w-full h-full flex-col justify-center items-center p-4 md:p-12 my-10 ",
         className
       )}
       {...props}
     >
-      <div className="flex w-full items-center justify-between gap-2 overflow-auto p-1">
-        <div className="flex flex-1 items-center gap-2">
+      <div className="w-full items-center justify-between overflow-auto ">
+        <div className="flex flex-row flex-1 items-center mb-4">
           {searchCount > 0
             ? Array.from({ length: searchCount }).map((_, i) => (
-                <Skeleton
-                  key={i}
-                  className="mt-4 h-[2rem] w-full md:w-[25rem] border-dashed mb-2"
-                />
+                <div key={i} className="flex flex-row gap-x-2">
+                  <Skeleton className="h-[2rem] w-full md:w-[20rem] border-dashed mb-2" />
+                  <Skeleton className="h-[2rem] w-full md:w-[5rem] border-dashed mb-2" />
+                </div>
               ))
             : null}
         </div>
       </div>
-      <div className="flex w-full items-center justify-between gap-2 overflow-auto p-1">
+      <div className="flex w-full items-center justify-between gap-2 overflow-auto ">
         <div className="flex flex-1 items-center gap-2">
           {filterCount > 0
             ? Array.from({ length: filterCount }).map((_, i) => (

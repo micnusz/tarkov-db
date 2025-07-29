@@ -249,7 +249,7 @@ export const columnsBarterItems = [
       return (
         <div className="flex items-center  gap-3">
           <Link href={`/item/${row.id}`}>
-            <span className="text-sm font-medium hover:text-chart-2">
+            <span className="text-sm font-medium hover:text-foreground text-chart-2">
               {name}
             </span>
           </Link>
@@ -583,7 +583,7 @@ export const columnsWeapon = [
       return (
         <div className="flex flex-row gap-8">
           <Link href={`/item/${row.id}`}>
-            <span className="hover:text-chart-2 truncate max-w-[20rem] block">
+            <span className="hover:text-foreground truncate max-w-[20rem] block text-chart-2">
               {caliberRaw}
             </span>
           </Link>
@@ -727,7 +727,7 @@ export const columnsBackpacks = [
       return (
         <div className="flex items-center gap-2 w-fit">
           <Link href={`/item/${row.id}`}>
-            <span className="text-sm hover:text-chart-2 text-sm truncate max-w-[20rem] block">
+            <span className="text-sm hover:text-foreground text-chart-2 text-sm truncate max-w-[20rem] block">
               {name}
             </span>
           </Link>
@@ -901,7 +901,9 @@ export const columnsArmors = [
       return (
         <div className="flex items-center gap-2">
           <Link href={`/item/${row.id}`}>
-            <span className="text-sm hover:text-chart-2">{name}</span>
+            <span className="text-sm text-chart-2 hover:text-foreground">
+              {name}
+            </span>
           </Link>
         </div>
       );
@@ -1083,7 +1085,9 @@ export const columnsChestRigs = [
       return (
         <div className="flex items-center gap-2">
           <Link href={`/item/${row.id}`}>
-            <span className="text-sm hover:text-chart-2">{name}</span>
+            <span className="text-sm text-chart-2 hover:text-foreground">
+              {name}
+            </span>
           </Link>
         </div>
       );
@@ -1257,7 +1261,7 @@ export const columnsArmorPlates = [
       return (
         <div className="flex items-center gap-2">
           <Link href={`/item/${row.id}`}>
-            <span className="text-sm truncate hover:text-chart-2 max-w-[30rem] block">
+            <span className="text-sm truncate text-chart-2 hover:text-foreground max-w-[30rem] block">
               {name}
             </span>
           </Link>
@@ -1434,7 +1438,7 @@ export const columnsArmorPlates = [
   }),
 ] as ColumnDef<ArmorsItem>[];
 
-//Columns /face-covers
+//Columns /facewear
 const columnHelperFaceCovers = createColumnHelper<ArmorsItem>();
 export const columnsFaceCovers = [
   columnHelperArmors.accessor(
@@ -1499,7 +1503,7 @@ export const columnsFaceCovers = [
       return (
         <div className="flex items-center gap-2">
           <Link href={`/item/${row.id}`}>
-            <span className="text-sm truncate hover:text-chart-2 max-w-[15rem] block">
+            <span className="text-sm truncate text-chart-2 hover:text-foreground max-w-[15rem] block">
               {name}
             </span>
           </Link>
@@ -1741,7 +1745,7 @@ export const columnsKeys = [
       return (
         <div className="flex items-center gap-2">
           <Link href={`/item/${row.id}`}>
-            <span className="text-sm truncate hover:text-chart-2 max-w-[30rem] block">
+            <span className="text-sm truncate text-chart-2 hover:text-foreground max-w-[30rem] block">
               {name}
             </span>
           </Link>
@@ -1853,7 +1857,7 @@ export const columnsMedicalItems = [
       return (
         <div className="flex items-center gap-2">
           <Link href={`/item/${row.id}`}>
-            <span className="text-sm truncate hover:text-chart-2 max-w-[30rem] block">
+            <span className="text-sm truncate hover:text-foreground text-chart-2 max-w-[30rem] block">
               {name}
             </span>
           </Link>
@@ -2004,7 +2008,7 @@ export const columnsMedkits = [
       return (
         <div className="flex items-center gap-2">
           <Link href={`/item/${row.id}`}>
-            <span className="text-sm truncate hover:text-chart-2 max-w-[30rem] block">
+            <span className="text-sm truncate hover:text-foreground text-chart-2 max-w-[30rem] block">
               {name}
             </span>
           </Link>
@@ -2212,7 +2216,7 @@ export const columnsProvisions = [
       return (
         <div className="flex items-center gap-2 w-fit max-w-[15rem]">
           <Link href={`/item/${row.id}`}>
-            <span className="text-sm hover:text-chart-2 truncate block w-[15rem]">
+            <span className="text-sm hover:text-foreground text-chart-2 truncate block w-[15rem]">
               {name}
             </span>
           </Link>
@@ -2370,7 +2374,7 @@ export const columnsScopes = [
       return (
         <div className="flex items-center gap-2">
           <Link href={`/item/${row.id}`}>
-            <span className="text-sm truncate hover:text-chart-2 max-w-[30rem] block">
+            <span className="text-sm truncate hover:text-foreground text-chart-2 max-w-[30rem] block">
               {name}
             </span>
           </Link>
@@ -2579,7 +2583,7 @@ export const columnsHelmets = [
       return (
         <div className="flex items-center gap-2">
           <Link href={`/item/${row.id}`}>
-            <span className="text-sm truncate hover:text-chart-2 max-w-[30rem] block">
+            <span className="text-sm truncate hover:text-foreground text-chart-2 max-w-[30rem] block">
               {name}
             </span>
           </Link>
@@ -2848,7 +2852,7 @@ export const columnsGrenades = [
       return (
         <div className="flex items-center gap-2">
           <Link href={`/item/${row.id}`}>
-            <span className="text-sm truncate hover:text-chart-2 max-w-[30rem] block">
+            <span className="text-sm truncate hover:text-foreground text-chart-2 max-w-[30rem] block">
               {name}
             </span>
           </Link>
@@ -3000,7 +3004,7 @@ export const columnsHeadsets = [
       return (
         <div className="flex items-center gap-2">
           <Link href={`/item/${row.id}`}>
-            <span className="text-sm truncate hover:text-chart-2 max-w-[30rem] block">
+            <span className="text-sm truncate hover:text-foreground text-chart-2 max-w-[30rem] block">
               {name}
             </span>
           </Link>
@@ -3543,7 +3547,7 @@ export const columnsAmmo = [
       return (
         <div className="  ">
           <Link href={`/item/${info.row.original.item.id}`}>
-            <span className="text-sm truncate hover:text-chart-2 max-w-[15rem] block">
+            <span className="text-sm truncate hover:text-foreground text-chart-2 max-w-[15rem] block">
               {bulletName}
             </span>
           </Link>
@@ -3659,7 +3663,7 @@ export const columnsAmmo = [
   }),
 ] as ColumnDef<Ammo>[];
 
-//Columns Container
+//Columns Containers
 const columnHelperContainer = createColumnHelper<BaseItem>();
 export const columnsContainer = [
   columnHelperContainer.accessor((row) => row.gridImageLink, {
@@ -3697,7 +3701,7 @@ export const columnsContainer = [
       return (
         <div className="flex items-center  gap-3">
           <Link href={`/item/${row.id}`}>
-            <span className="text-sm font-medium hover:text-chart-2">
+            <span className="text-sm font-medium hover:text-foreground text-chart-2">
               {name}
             </span>
           </Link>
@@ -3854,7 +3858,7 @@ export const columnsBarrels = [
       return (
         <div className="flex items-center gap-2">
           <Link href={`/item/${row.id}`}>
-            <span className="text-sm truncate hover:text-chart-2 max-w-[30rem] block">
+            <span className="text-sm truncate hover:text-foreground text-chart-2 max-w-[30rem] block">
               {name}
             </span>
           </Link>
@@ -3991,7 +3995,7 @@ export const columnsGasBlock = [
       return (
         <div className="flex items-center gap-2">
           <Link href={`/item/${row.id}`}>
-            <span className="text-sm truncate hover:text-chart-2 max-w-[30rem] block">
+            <span className="text-sm truncate hover:text-foreground text-chart-2 max-w-[30rem] block">
               {name}
             </span>
           </Link>
@@ -4153,7 +4157,7 @@ export const columnsMagazines = [
       return (
         <div className="flex items-center gap-2">
           <Link href={`/item/${row.id}`}>
-            <span className="text-sm truncate hover:text-chart-2 max-w-[20rem] block">
+            <span className="text-sm truncate hover:text-foreground text-chart-2 max-w-[20rem] block">
               {name}
             </span>
           </Link>
@@ -4344,7 +4348,7 @@ export const columnsItemPropertiesWeaponMod = [
       return (
         <div className="flex items-center gap-2">
           <Link href={`/item/${row.id}`}>
-            <span className="text-sm truncate hover:text-chart-2 max-w-[30rem] block">
+            <span className="text-sm truncate hover:text-foreground text-chart-2 max-w-[30rem] block">
               {name}
             </span>
           </Link>
@@ -4527,7 +4531,7 @@ export const columnsItemPropertiesGlasses = [
       return (
         <div className="flex items-center gap-2">
           <Link href={`/item/${row.id}`}>
-            <span className="text-sm truncate hover:text-chart-2 max-w-[15rem] block">
+            <span className="text-sm truncate hover:text-foreground text-chart-2 max-w-[15rem] block">
               {name}
             </span>
           </Link>
