@@ -1265,6 +1265,7 @@ export const columnsArmorPlates = [
       );
     },
   }),
+
   columnHelperArmorPlates.accessor("properties.class", {
     header: (info) => <DefaultHeader info={info} name="Armor Class" />,
     id: "class",
@@ -1523,7 +1524,7 @@ export const columnsFaceCovers = [
           </div>
         </>
       ) : (
-        <span className="italic text-muted-foreground text-sm">N/A</span>
+        <span className="italic text-muted-foreground text-sm">None</span>
       );
     },
   }),
@@ -1564,7 +1565,7 @@ export const columnsFaceCovers = [
 
       if (ricochet == null)
         return (
-          <span className="italic text-muted-foreground text-sm">N/A</span>
+          <span className="italic text-muted-foreground text-sm">None</span>
         );
 
       return (
@@ -1585,7 +1586,7 @@ export const columnsFaceCovers = [
           <span>{durability}</span>
         </div>
       ) : (
-        <span className="text-muted-foreground text-sm italic">N/A</span>
+        <span className="text-muted-foreground text-sm italic">None</span>
       );
     },
   }),
@@ -1614,7 +1615,7 @@ export const columnsFaceCovers = [
 
       if (!Number.isFinite(initialValue)) {
         return (
-          <span className="text-muted-foreground text-sm italic">N/A</span>
+          <span className="text-muted-foreground text-sm italic">None</span>
         );
       }
 
@@ -1639,7 +1640,7 @@ export const columnsFaceCovers = [
 
       if (!Number.isFinite(value)) {
         return (
-          <span className="italic text-sm text-muted-foreground">N/A</span>
+          <span className="italic text-sm text-muted-foreground">None</span>
         );
       }
 
@@ -1664,7 +1665,7 @@ export const columnsFaceCovers = [
 
       if (!Number.isFinite(value)) {
         return (
-          <span className="italic text-sm text-muted-foreground">N/A</span>
+          <span className="italic text-sm text-muted-foreground">None</span>
         );
       }
 
@@ -1676,24 +1677,6 @@ export const columnsFaceCovers = [
         <div className="max-w-20">
           <span className={`${className} font-medium`}>{percent}%</span>
         </div>
-      );
-    },
-  }),
-  columnHelperFaceCovers.accessor("avg24hPrice", {
-    id: "avg24hPrice",
-    filterFn: UniversalNumberFormatFn,
-    header: (info) => <DefaultHeader info={info} name="Avg Flea Price" />,
-    cell: (info) => {
-      const value = info.getValue<number | null | undefined>();
-      return value != null ? (
-        <div className="flex flex-col">
-          <span className="text-sm text-muted-foreground">Avg</span>
-          <span className="text-base font-medium">
-            {value.toLocaleString("de-DE")}₽
-          </span>
-        </div>
-      ) : (
-        <span className="text-muted-foreground italic">N/A</span>
       );
     },
   }),
@@ -2099,13 +2082,13 @@ export const columnsMedkits = [
       const cures: string[] = info.getValue();
 
       return cures ? (
-        <div>
+        <ul className="list-disc list-inside">
           {cures.map((cure) => (
-            <span key={cure} className="truncate max-w-[15rem] block text-sm">
+            <li key={cure} className="truncate max-w-[15rem] text-sm">
               {camelCaseToTitleFormat(cure)}
-            </span>
+            </li>
           ))}
-        </div>
+        </ul>
       ) : (
         <div>
           <span className="italic text-muted-foreground">N/A</span>
@@ -4664,24 +4647,7 @@ export const columnsItemPropertiesGlasses = [
       );
     },
   }),
-  ItemPropertiesGlasses.accessor("avg24hPrice", {
-    id: "avg24hPrice",
-    filterFn: UniversalNumberFormatFn,
-    header: (info) => <DefaultHeader info={info} name="Avg Flea Price (24h)" />,
-    cell: (info) => {
-      const value = info.getValue<number | null | undefined>();
-      return value != null ? (
-        <div className="flex flex-col">
-          <span className="text-sm text-muted-foreground">Avg</span>
-          <span className="text-base font-medium">
-            {value.toLocaleString("de-DE")}₽
-          </span>
-        </div>
-      ) : (
-        <span className="text-muted-foreground italic">N/A</span>
-      );
-    },
-  }),
+
   ItemPropertiesGlasses.accessor((row) => row.wikiLink, {
     id: "wikiLink",
     header: (info) => <DefaultHeader info={info} name="Wiki" />,
