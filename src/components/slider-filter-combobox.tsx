@@ -46,7 +46,7 @@ export function SliderFilterCombobox({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
-          variant={isRangeSelected ? "secondary" : "outline"}
+          variant={isRangeSelected ? "default" : "outline"}
           className="justify-between"
         >
           {label}: {display}
@@ -68,13 +68,16 @@ export function SliderFilterCombobox({
           />
           <div className="flex justify-between items-start text-sm text-muted-foreground">
             <div className="flex flex-col">
-              <span className="font-medium">Selected:</span>
-              <span>{display}</span>
+              <span className="font-medium text-muted-foreground">
+                Selected:
+              </span>
+              <span className="text-foreground">{display}</span>
             </div>
             {showClear && (
               <Button
-                variant="ghost"
+                variant={isRangeSelected ? "destructive" : "muted"}
                 size="sm"
+                disabled={!value}
                 onClick={() => onChange({ min: null, max: null })}
               >
                 Clear

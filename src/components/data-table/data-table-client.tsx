@@ -34,6 +34,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "../ui/sheet";
+import { X } from "lucide-react";
 
 type FilterValue =
   | string
@@ -148,13 +149,13 @@ export function DataTableClient<TData, TValue>({
             className="[&>button]:hidden h-auto max-h-fit w-full md:w-auto border rounded-md overflow-y-auto px-2"
           >
             <SheetHeader>
-              <div className="flex items-center justify-between p-2 rounded-md">
+              <div className="flex items-center justify-between  rounded-md ">
                 <SheetTitle>Filter by:</SheetTitle>
                 <SheetClose
-                  className="p-2 rounded-md hover:bg-accent p-2 transition"
+                  className="p-2 rounded-md hover:bg-accent  transition hover:text-muted-foreground"
                   aria-label="Close"
                 >
-                  Close
+                  <X />
                 </SheetClose>
               </div>
             </SheetHeader>
@@ -211,7 +212,8 @@ export function DataTableClient<TData, TValue>({
             <div className="flex justify-center mb-6">
               <Button
                 className="px-20 "
-                variant="secondary"
+                variant={isFiltred ? "destructive" : "muted"}
+                disabled={!isFiltred}
                 size="sm"
                 onClick={handleResetFilters}
               >

@@ -89,8 +89,9 @@ function PopoverFilter<T extends string | number>({
           <div className="border-t p-2">
             <Button
               className="w-full text-foreground hover:text-foreground/60"
-              variant="secondary"
+              variant={value ? "destructive" : "muted"}
               size="sm"
+              disabled={!value}
               onClick={() => {
                 onChange(null);
                 setOpen(false);
