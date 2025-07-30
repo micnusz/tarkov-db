@@ -116,11 +116,12 @@ export function DataTableClient<TData, TValue>({
   const handleResetFilters = () => {
     dispatch({ type: "RESET_ALL" });
     setColumnFilters([]);
+    table.setColumnFilters([]);
   };
 
-  const isFiltred = Object.values(filterState).some(
-    (val) => val !== null && val !== undefined && val !== ""
-  );
+  const isFiltred =
+    Object.values(filterState).some((val) => val != null && val !== "") ||
+    columnFilters.length > 0;
 
   return (
     <>
