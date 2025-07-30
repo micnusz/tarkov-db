@@ -1,14 +1,13 @@
 import type { Metadata } from "next";
-import { Roboto_Mono } from "next/font/google";
+import { Manrope } from "next/font/google";
 import "./globals.css";
 import QueryProvider from "@/lib/query-provider";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/footer";
 
-const robotoMono = Roboto_Mono({
-  variable: "--font-roboto-mono",
-  subsets: ["latin"],
+const manrope = Manrope({
   weight: "400",
+  subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
@@ -24,7 +23,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${robotoMono.className} antialiased `}>
+      <body className={`${manrope.className} antialiased `}>
         <QueryProvider>
           <Header />
           {children}
