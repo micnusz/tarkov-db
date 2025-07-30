@@ -115,7 +115,7 @@ export const columnsBarter = [
           </div>
           <div className="flex flex-col">
             <Link href={`/item/${item.id}`}>
-              <span className="text-xs hover:text-chart-2 ">
+              <span className="text-sm hover:text-foreground text-chart-2 ">
                 {reward.item.name}
               </span>
             </Link>
@@ -143,11 +143,11 @@ export const columnsBarter = [
 
         return name ? (
           <div className="flex flex-col leading-tight">
-            <span className="text-sm text-muted">{parentName}</span>
+            <span className="text-sm text-muted-foreground">{parentName}</span>
             <span className="text-base font-medium">{name}</span>
           </div>
         ) : (
-          <span className="text-muted italic">N/A</span>
+          <span className="text-muted-foreground italic">N/A</span>
         );
       },
     }
@@ -275,7 +275,7 @@ export const columnsBarterItems = [
           <span className="text-base font-medium">{name}</span>
         </div>
       ) : (
-        <span className="text-muted italic">N/A</span>
+        <span className="text-muted-foreground italic">N/A</span>
       );
     },
   }),
@@ -610,7 +610,7 @@ export const columnsWeapon = [
           <span className="text-base font-medium">{name}</span>
         </div>
       ) : (
-        <span className="text-muted italic">N/A</span>
+        <span className="text-muted-foreground italic">N/A</span>
       );
     },
   }),
@@ -753,7 +753,7 @@ export const columnsBackpacks = [
           <span className="text-base font-medium">{name}</span>
         </div>
       ) : (
-        <span className="text-muted italic">N/A</span>
+        <span className="text-muted-foreground italic">N/A</span>
       );
     },
   }),
@@ -1111,7 +1111,7 @@ export const columnsChestRigs = [
           <span className="text-base font-medium">{name}</span>
         </div>
       ) : (
-        <span className="text-muted italic">N/A</span>
+        <span className="text-muted-foreground italic">N/A</span>
       );
     },
   }),
@@ -1771,7 +1771,7 @@ export const columnsKeys = [
           <span className="text-base font-medium">{name}</span>
         </div>
       ) : (
-        <span className="text-muted italic">N/A</span>
+        <span className="text-muted-foreground italic">N/A</span>
       );
     },
   }),
@@ -1883,7 +1883,7 @@ export const columnsMedicalItems = [
           <span className="text-base font-medium">{name}</span>
         </div>
       ) : (
-        <span className="text-muted italic">N/A</span>
+        <span className="text-muted-foreground italic">N/A</span>
       );
     },
   }),
@@ -2034,7 +2034,7 @@ export const columnsMedkits = [
           <span className="text-base font-medium">{name}</span>
         </div>
       ) : (
-        <span className="text-muted italic">N/A</span>
+        <span className="text-muted-foreground italic">N/A</span>
       );
     },
   }),
@@ -2242,7 +2242,7 @@ export const columnsProvisions = [
           <span className="text-base font-medium">{name}</span>
         </div>
       ) : (
-        <span className="text-muted italic">N/A</span>
+        <span className="text-muted-foreground italic">N/A</span>
       );
     },
   }),
@@ -3431,7 +3431,7 @@ export const columnsFlea = [
           <span className="text-base  font-medium">{name}</span>
         </div>
       ) : (
-        <span className="text-muted italic">N/A</span>
+        <span className="text-muted-foreground italic">N/A</span>
       );
     },
     filterFn: (row, columnId, filterValue) => {
@@ -3727,7 +3727,7 @@ export const columnsContainer = [
           <span className="text-base font-medium">{name}</span>
         </div>
       ) : (
-        <span className="text-muted italic">N/A</span>
+        <span className="text-muted-foreground italic">N/A</span>
       );
     },
   }),
@@ -4374,7 +4374,7 @@ export const columnsItemPropertiesWeaponMod = [
           <span className="text-base font-medium">{name}</span>
         </div>
       ) : (
-        <span className="text-muted italic">N/A</span>
+        <span className="text-muted-foreground italic">N/A</span>
       );
     },
   }),
@@ -4557,7 +4557,7 @@ export const columnsItemPropertiesGlasses = [
           <span className="text-base font-medium">{name}</span>
         </div>
       ) : (
-        <span className="text-muted italic">N/A</span>
+        <span className="text-muted-foreground italic">N/A</span>
       );
     },
   }),
