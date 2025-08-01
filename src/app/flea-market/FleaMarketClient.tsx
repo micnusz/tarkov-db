@@ -2,12 +2,13 @@
 
 import { client } from "@/app/api/client";
 import { useQuery } from "@tanstack/react-query";
-import { DataTableFleaMarket } from "./data-table/data-table-flea";
-import { columnsFlea } from "./data-table/columns";
+
 import { useEffect, useMemo, useState } from "react";
 import debounce from "lodash.debounce";
 import { BaseItem } from "@/app/api/types";
-import { DataTablePagination } from "./data-table/data-table-pagination";
+import { DataTableFleaMarket } from "@/components/data-table/data-table-flea";
+import { columnsFlea } from "@/components/data-table/columns";
+import { DataTablePagination } from "@/components/data-table/data-table-pagination";
 
 const FleaMarketClient = () => {
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 20 });

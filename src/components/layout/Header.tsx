@@ -24,7 +24,7 @@ const navLinks: { href: string; title: string }[] = [
   { href: "/ammo", title: "Ammo" },
   { href: "/barters", title: "Barters" },
   { href: "/items", title: "Items" },
-  { href: "/", title: "Flea Market" },
+  { href: "/flea-market", title: "Flea Market" },
   { href: "/tasks", title: "Tasks" },
 ];
 
