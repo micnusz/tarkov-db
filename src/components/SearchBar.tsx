@@ -6,6 +6,7 @@ import debounce from "lodash.debounce";
 import { Input } from "./ui/input";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
@@ -16,7 +17,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "./ui/separator";
 import Link from "next/link";
 import SearchBarLoading from "./ui/search-bar-loading";
-import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { X } from "lucide-react";
 
 const SearchBar = () => {
   const [search, setSearch] = useState("");
@@ -64,21 +65,28 @@ const SearchBar = () => {
           </div>
         </DialogTrigger>
         <DialogContent className="border-foreground/20">
-          <DialogTitle>
-            <VisuallyHidden>Title</VisuallyHidden>
+          <DialogTitle asChild>
+            <div className="flex justify-between items-center">
+              <span className="text-muted-foreground">Search by:</span>
+              <DialogClose
+                className="rounded-md hover:bg-accent transition hover:text-muted-foreground"
+                aria-label="Close"
+              >
+                <X className="w-6 h-6" />
+              </DialogClose>
+            </div>
           </DialogTitle>
           <DialogHeader>
             <Input
               type="text"
-              placeholder="Search items..."
+              placeholder="Search"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full px-4 py-4 border rounded mb-2"
+              className="flex flex-grow flex-shrink  duration-200 ease-in-out rounded-md border-3 border-input bg-accent px-3 py-1 text-sm text-muted-foreground shadow-sm  transition-colors hover:border-chart-1 hover:text-foreground "
             />
-
             <DialogTitle hidden={true}>Search Items</DialogTitle>
             <DialogDescription asChild className="h-[20rem]">
-              <ScrollArea className="w-full rounded-md border">
+              <ScrollArea className="w-full rounded-md border p-2">
                 <>
                   {isLoading && <SearchBarLoading />}
                   {data?.map((item) => (
@@ -87,7 +95,9 @@ const SearchBar = () => {
                         href={`/item/${item.id}`}
                         onClick={() => setOpen(false)}
                       >
-                        <p className="text-lg">{item.name}</p>
+                        <p className="text-lg hover:text-chart-2">
+                          {item.name}
+                        </p>
                       </Link>
                       <Separator className="my-2" />
                     </React.Fragment>

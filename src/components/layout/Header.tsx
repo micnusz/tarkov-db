@@ -96,7 +96,6 @@ export const Header = () => {
             >
               <div className="px-4 py-6 space-y-6">
                 {/* SearchBar wewnątrz Sheet */}
-
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex-1 min-w-0">
                     <SearchBar />
