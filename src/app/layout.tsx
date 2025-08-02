@@ -23,7 +23,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${manrope.className} antialiased `}>
+      <body className={`${manrope.className} antialiased bg-background`}>
         <QueryProvider>
           <Header />
           {children}
