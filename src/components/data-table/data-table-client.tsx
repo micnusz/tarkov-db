@@ -34,7 +34,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "../ui/sheet";
-import { X } from "lucide-react";
+import { Filter, X } from "lucide-react";
 
 type FilterValue =
   | string
@@ -139,28 +139,32 @@ export function DataTableClient<TData, TValue>({
         </div>
         <Sheet>
           <SheetTrigger asChild>
-            <Button className="flex w-[8rem]" variant="outline">
-              Filter by:
+            <Button
+              className="flex w-[8rem]"
+              variant={isFiltred ? "outline" : "muted"}
+            >
+              <Filter className="h-4 w-4" />
+              <span>Filter by:</span>
             </Button>
           </SheetTrigger>
 
           <SheetContent
             side="left"
-            className="[&>button]:hidden h-auto max-h-fit w-full md:w-auto border rounded-md overflow-y-auto px-2"
+            className="[&>button]:hidden h-auto max-h-fit w-full border rounded-md overflow-y-auto px-4"
           >
             <SheetHeader>
-              <div className="flex items-center justify-between  rounded-md ">
+              <div className="flex items-center justify-between rounded-md">
                 <SheetTitle>Filter by:</SheetTitle>
                 <SheetClose
-                  className="p-2 rounded-md hover:bg-accent  transition hover:text-muted-foreground"
+                  className="rounded-md hover:bg-accent transition hover:text-muted-foreground"
                   aria-label="Close"
                 >
-                  <X />
+                  <X className="w-6 h-6" />
                 </SheetClose>
               </div>
             </SheetHeader>
             <div>
-              <div className="flex flex-wrap flex-row gap-2  p-2 rounded-md">
+              <div className="flex flex-wrap flex-col gap-y-2 rounded-md">
                 {filters?.map((filter) => {
                   if (!filter.id) return null;
                   if (filter.filterType === "slider") {
