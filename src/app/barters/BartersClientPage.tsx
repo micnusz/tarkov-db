@@ -33,44 +33,46 @@ const BartersClientPage = () => {
   ).sort((a, b) => a - b);
 
   return (
-    <div className="w-full h-full flex-col justify-center items-center p-4 md:p-10">
-      <h1 className="scroll-m-20 text-center text-2xl md:text-4xl font-extrabold tracking-tight text-balance">
-        Barters
-      </h1>
-      <DataTableClient
-        data={data}
-        columns={columnsBarter}
-        filters={[
-          {
-            id: "trader",
-            label: "Trader",
-            filterType: "select",
-            options: traders,
-          },
-          {
-            id: "traderLevel",
-            label: "Trader Lv",
-            filterType: "select",
-            options: traderLevel.map(String),
-            formatter: (val) => `Level ${val}`,
-          },
-          {
-            id: "category",
-            label: "Category",
-            filterType: "select",
-            options: categories,
-          },
-          {
-            id: "barterCost",
-            label: "Barter Cost",
-            filterType: "slider",
-            min: 0,
-            max: 15500000,
-            step: 1000,
-            formatter: (val) => formatCurrency("roubles", val as number),
-          },
-        ]}
-      />
+    <div className="flex flex-col min-h-screen">
+      <main className="flex-col justify-center items-center p-4 md:p-10">
+        <h1 className="scroll-m-20 text-center text-2xl md:text-4xl font-extrabold tracking-tight text-balance">
+          Barters
+        </h1>
+        <DataTableClient
+          data={data}
+          columns={columnsBarter}
+          filters={[
+            {
+              id: "trader",
+              label: "Trader",
+              filterType: "select",
+              options: traders,
+            },
+            {
+              id: "traderLevel",
+              label: "Trader Lv",
+              filterType: "select",
+              options: traderLevel.map(String),
+              formatter: (val) => `Level ${val}`,
+            },
+            {
+              id: "category",
+              label: "Category",
+              filterType: "select",
+              options: categories,
+            },
+            {
+              id: "barterCost",
+              label: "Barter Cost",
+              filterType: "slider",
+              min: 0,
+              max: 15500000,
+              step: 1000,
+              formatter: (val) => formatCurrency("roubles", val as number),
+            },
+          ]}
+        />
+      </main>
     </div>
   );
 };

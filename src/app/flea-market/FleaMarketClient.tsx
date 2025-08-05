@@ -2,7 +2,6 @@
 
 import { client } from "@/app/api/client";
 import { useQuery } from "@tanstack/react-query";
-
 import { useEffect, useMemo, useState } from "react";
 import debounce from "lodash.debounce";
 import { BaseItem } from "@/app/api/types";
@@ -71,30 +70,32 @@ const FleaMarketClient = () => {
   }
 
   return (
-    <div className="w-full h-full flex-col justify-center items-center p-4 md:p-10">
-      <h1 className="scroll-m-20 text-center text-2xl md:text-4xl font-extrabold tracking-tight text-balance">
-        Flea Market
-      </h1>
-      <DataTableFleaMarket
-        data={fleaItems ?? []}
-        columns={columnsFlea}
-        name={name}
-        setName={setName}
-        categories={categories ?? []}
-        selectedCategory={selectedCategory}
-        setSelectedCategory={setSelectedCategory}
-        isLoadingCat={isLoadingCat}
-        isLoading={isLoading}
-      />
-      <DataTablePagination
-        pageIndex={pagination.pageIndex}
-        pageSize={pagination.pageSize}
-        pageCount={pageCount}
-        onPageChange={handlePageChange}
-        onPageSizeChange={handlePageSizeChange}
-        canPreviousPage={pagination.pageIndex > 0}
-        canNextPage={pagination.pageIndex + 1 < pageCount}
-      />
+    <div className="flex flex-col min-h-screen">
+      <main className="flex-col justify-center items-center p-4 md:p-10">
+        <h1 className="scroll-m-20 text-center text-2xl md:text-4xl font-extrabold tracking-tight text-balance">
+          Flea Market
+        </h1>
+        <DataTableFleaMarket
+          data={fleaItems ?? []}
+          columns={columnsFlea}
+          name={name}
+          setName={setName}
+          categories={categories ?? []}
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+          isLoadingCat={isLoadingCat}
+          isLoading={isLoading}
+        />
+        <DataTablePagination
+          pageIndex={pagination.pageIndex}
+          pageSize={pagination.pageSize}
+          pageCount={pageCount}
+          onPageChange={handlePageChange}
+          onPageSizeChange={handlePageSizeChange}
+          canPreviousPage={pagination.pageIndex > 0}
+          canNextPage={pagination.pageIndex + 1 < pageCount}
+        />
+      </main>
     </div>
   );
 };

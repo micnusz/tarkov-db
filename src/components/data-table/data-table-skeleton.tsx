@@ -9,7 +9,7 @@ interface DataTableSkeletonProps extends React.ComponentProps<"div"> {
   cellWidths?: string[];
   withPagination?: boolean;
   shrinkZero?: boolean;
-  searchCount?: number;
+  searchCount: number;
 }
 
 export function DataTableSkeleton({

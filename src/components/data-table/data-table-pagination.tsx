@@ -27,11 +27,11 @@ export function DataTablePagination({
   canNextPage,
 }: DataTablePaginationProps) {
   return (
-    <div className="flex items-center justify-between px-2">
-      <div className="flex items-center space-x-6 lg:space-x-8">
+    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 px-2">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 gap-2">
         <div className="flex items-center space-x-2">
           <label htmlFor="rows-per-page" className="text-sm font-medium">
-            Rows per page
+            Rows per Page
           </label>
           <select
             id="rows-per-page"
@@ -46,53 +46,53 @@ export function DataTablePagination({
             ))}
           </select>
         </div>
-
-        <nav
-          role="navigation"
-          aria-label="Pagination navigation"
-          className="flex items-center space-x-2"
-        >
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => onPageChange(0)}
-            disabled={!canPreviousPage}
-            aria-label="Go to first page"
-          >
-            <ChevronsLeft />
-          </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => onPageChange(pageIndex - 1)}
-            disabled={!canPreviousPage}
-            aria-label="Go to previous page"
-          >
-            <ChevronLeft />
-          </Button>
-          <span>
-            Page {pageIndex + 1} of {pageCount}
-          </span>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => onPageChange(pageIndex + 1)}
-            disabled={!canNextPage}
-            aria-label="Go to next page"
-          >
-            <ChevronRight />
-          </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => onPageChange(pageCount - 1)}
-            disabled={!canNextPage}
-            aria-label="Go to last page"
-          >
-            <ChevronsRight />
-          </Button>
-        </nav>
       </div>
+
+      <nav
+        role="navigation"
+        aria-label="Pagination navigation"
+        className="flex flex-wrap items-center gap-2"
+      >
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => onPageChange(0)}
+          disabled={!canPreviousPage}
+          aria-label="Go to first page"
+        >
+          <ChevronsLeft />
+        </Button>
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => onPageChange(pageIndex - 1)}
+          disabled={!canPreviousPage}
+          aria-label="Go to previous page"
+        >
+          <ChevronLeft />
+        </Button>
+        <span className="text-sm">
+          Page {pageIndex + 1} of {pageCount}
+        </span>
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => onPageChange(pageIndex + 1)}
+          disabled={!canNextPage}
+          aria-label="Go to next page"
+        >
+          <ChevronRight />
+        </Button>
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => onPageChange(pageCount - 1)}
+          disabled={!canNextPage}
+          aria-label="Go to last page"
+        >
+          <ChevronsRight />
+        </Button>
+      </nav>
     </div>
   );
 }
