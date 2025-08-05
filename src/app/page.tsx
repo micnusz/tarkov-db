@@ -52,8 +52,8 @@ export default async function Home() {
     ];
 
   return (
-    <div className="flex flex-col min-h-screen ">
-      <main className="flex-col justify-center items-center p-4 md:p-10 border-1">
+    <div className="flex flex-col min-h-screen">
+      <main className="flex-col justify-center items-center p-4 md:p-10">
         <div className="flex flex-col gap-y-8">
           {/* Page header */}
           <div className="flex flex-col gap-y-4  p-4">

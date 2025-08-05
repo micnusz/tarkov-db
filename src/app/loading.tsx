@@ -1,23 +1,5 @@
-import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton";
+import HomePageSkeleton from "@/components/ui/home-page-skeleton";
 
 export default function Loading() {
-  return (
-    <DataTableSkeleton
-      columnCount={9}
-      filterCount={0}
-      searchCount={1}
-      cellWidths={[
-        "4rem",
-        "15rem",
-        "10rem",
-        "4rem",
-        "4rem",
-        "4rem",
-        "4rem",
-        "4rem",
-        "4rem",
-      ]}
-      shrinkZero
-    />
-  );
+  return <HomePageSkeleton />;
 }
